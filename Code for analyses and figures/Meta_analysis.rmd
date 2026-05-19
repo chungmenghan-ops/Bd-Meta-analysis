@@ -1,0 +1,1807 @@
+---
+title: "Chytrid_meta_analysis"
+---
+```{r}
+install.packages(c(
+  "dplyr",
+  "tidyr",
+  "readr",
+  "pacman",
+  "metafor",
+  "corrplot",
+  "ape",
+  "stringr",
+  "minqa"
+))
+
+library(dplyr)
+library(tidyr)
+library(readr)
+library(metafor)
+library(corrplot)
+library(ape)
+library(stringr)
+library(minqa)
+
+install.packages("remotes")
+remotes::install_github("daniel1noble/orchaRd")
+library(orchaRd)
+```
+
+### Prevalence (log risk ratio) ###
+### Main analysis ###
+```{r}
+## read.table
+metadata <- read.csv("metadata.csv")
+preval <- metadata %>% filter(trait == "prevalence")
+
+## create new columns
+preval$T_all <- round(preval$n_T_animals)
+preval$T_infected <- round(preval$mean_T_trait/100 * preval$n_T_animals)
+preval$T_uninfected <- round(preval$n_T_animals - preval$T_infected)
+
+preval$C_all <- round(preval$n_C_animals)
+preval$C_infected <- round(preval$mean_C_trait/100 * preval$n_C_animals)
+preval$C_uninfected <- round(preval$n_C_animals - preval$C_infected)
+
+preval <- preval %>% filter(!(T_infected == 0 & C_infected == 0)) ## remove column when all groups have prevelence = 0 %           
+#############################
+## log risk ratio (log RR) ##
+#############################
+
+preval_es <- escalc(
+  measure = "RR",
+  ai = T_infected,  bi = T_uninfected, # ai = event, bi = non-event
+  ci = C_infected,  di = C_uninfected, # ci = event, di = non-event
+  data = preval,
+  add = 0.5, to = "only0") ## add 0.5 when a cell is zero 
+
+# This prevents the log RR from being infinite (when % in treatment = 0) or undefined (when % in control = 0)) 
+
+###########################################
+## Non-independence: Shared animal group ##
+###########################################
+
+# Adjust non-independence of sampling variances/co-variances
+V_preval <- vcalc(vi      = vi,
+           cluster = study_exp_id, # experiment level where shared value occurred
+           grp1    = T_ID, # cohort ID of treatment
+           grp2    = C_ID, # cohort ID of control
+           w1      = n_T_animals,
+           w2      = n_C_animals,
+           data = preval_es)
+
+# Visualize
+corrplot::corrplot(cov2cor(V_preval)) 
+
+######################################
+## Random factor: observation-level ##
+######################################
+
+preval_es$obs <- 1:nrow(preval_es)
+
+##############################
+## Random factor: phylogeny ##
+##############################
+
+tree <- read.tree("tree_for_imputation.tre")
+
+# Species set from my metadata
+sp_data <- preval_es$host_species %>% as.character() %>%
+  str_squish() %>%           # collapse multiple spaces
+  str_trim()
+
+sp_data_treefmt <- gsub(" ", "_", sp_data)  # match typical tree tip style
+
+# Check any mismatch between species in the metadata and species in existing tree
+sp_tree_spaces <- gsub("_", " ", tree$tip.label)
+setdiff(unique(sp_data), sp_tree_spaces) # In data but not in tree
+
+# Prune the tree: only keep species present in BOTH tree and my metadata
+tips_to_keep <- intersect(tree$tip.label, unique(sp_data_treefmt))
+tree_pruned_preval <- keep.tip(tree, tips_to_keep) 
+
+# Force the tree to be binary
+tree_pruned_preval <- multi2di(tree_pruned_preval)
+is.binary (tree_pruned_preval) # yes, the tree is binary
+
+# visualize the tree
+plot(tree_pruned_preval, type = "radial", cex = 0.8, no.margin = TRUE)
+
+# Create correlation phylogeny matrix for analysis
+phylo_cor_preval <- vcv(tree_pruned_preval, corr = TRUE)
+
+# Create a column in metadata that matches the tree’s tip-label format
+preval_es <- preval_es %>%
+  mutate(species_OTL = gsub(" ", "_", str_squish(as.character(host_species))),
+         species_OTL = factor(species_OTL))
+
+####################
+## Overall effect ##
+####################
+
+M3_preval <- rma.mv(yi = yi, V = V_preval,
+  mods = ~  1,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs), 
+  R = list(species_OTL = phylo_cor_preval),
+  data = preval_es,
+  method = "REML", 
+  test = "t") 
+
+summary(M3_preval)
+
+## Estimate absolute heterogenesity
+sum(M3_preval$sigma2)
+## Estimate relative heterogeneity
+orchaRd::i2_ml(M3_preval)
+orchaRd::cvh2_ml(M3_preval)
+orchaRd::m2_ml(M3_preval)
+
+
+# Count the number of studies, experiments and species
+preval_es %>%
+  summarise(n_k = n(),
+            n_study = n_distinct(study_id),
+            n_species = n_distinct (species_OTL),
+            n_exp = n_distinct (study_exp_id),
+            .groups = "drop")  
+
+##########################
+## Procedural variation ## 
+##########################
+
+#### ** (1) Measurement effort throughout the experiment ##
+# Assuming a much lower prevalence in treated group than in controls with increasing measurement effort 
+# One more measure → negative log RR (treatment vs control).
+
+# standardize (mean-centered) n_infection_measure
+preval_es$n_infection_measure_c <- scale(preval_es$n_infection_measure, center = TRUE, scale = FALSE)
+
+#### ** (2) Time elapsed between infection challenges and outcome measurement ##
+
+# Assume higher prevalence risk in controls than in treated groups when prevalence is measured long after Bd exposure
+# (i.e., more time for disease to develop, so more control individuals were infected).
+# A one-day increase in elapsed time → negative log RR (treatment vs control).
+
+# Time elapsed has been extracted separately for control and treatment groups. Two values are highly correlated (because they often measured together) so cannot be treated as independent moderators. I took the average time_elapsed.
+
+# standardize (mean-centered) average time at measure 
+preval_es$avg_time_measure   <- (preval_es$T_time_post + preval_es$C_time_post)/2
+preval_es$time_measure_c <- scale(preval_es$avg_time_measure, center = TRUE, scale = FALSE)
+
+#### ** (3) Time elapsed between immunisation and infection challenge ##
+
+# Assuming increased risk of being infected in treated groups when pathogen re-exposure occurs long after completion of treatment 
+# (i.e., treatment-induced protection wanes over time)
+# A one-day increase in the time interval → positive log RR (treatment vs control).
+
+# standardize (mean-centered) time intervals
+preval_es$time_persist_c <- scale(preval_es$time_interval, center = TRUE, scale = FALSE)
+
+# MODEL accounting for (1) measurement effort (2) time intervals between challenge and measurement and (3) time interval between immunisation and challenge
+M3_cov_pre <- rma.mv(yi = yi, V = V_preval,
+  mods = ~  1 + time_persist_c + time_measure_c + n_infection_measure_c,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs), 
+  R = list(species_OTL = phylo_cor_preval),
+  data = preval_es,
+  method = "REML", 
+  test = "t") 
+
+summary(M3_cov_pre) ## none of these procedural variables were significant. I excluded them to test for the moderating effects of immunisation type and host type.
+
+#############################################
+## categorical variable: immunisation type ##
+#############################################
+
+# Set as a factor
+preval_es$treatment <- factor(
+  preval_es$treatment,
+  levels = c("other","synthetic_antiparastics", "dead_pathogen", "probiotic","live_pathogen","natural_chem"))
+
+## ANALYSIS: test for the effect for individual treatment
+
+M_treat_infected <- rma.mv(yi = yi, V = V_preval,
+  mods = ~  -1 + treatment,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs), 
+  R = list(species_OTL = phylo_cor_preval), data = preval_es,
+  method = "REML", test = "t") 
+
+summary(M_treat_infected) 
+
+## Prediction intervals
+levs <- levels(preval_es$treatment)
+out <- cbind(treatment = levs,
+             round(as.data.frame(predict(M_treat_infected,
+                                         newmods = model.matrix(~ -1 + treatment,
+                                                               data = data.frame(treatment = levs)))), 3))
+out
+
+# Check k per treatment type
+preval_es %>%
+  group_by(treatment) %>%
+  summarise(total_k = n(),
+            .groups = "drop")  
+
+######################################
+## categorical variable: life stage ##
+######################################
+
+## There are two types of life stage:
+## 'life_stage_treated' at which prophylatic treatments were applied (= during treatment)
+## 'life_stage_tested' at which pathogen resistance was tested (= during pathogen exposure)
+
+## I first assessed how many studies having mismatch between the two life stages (= cross-stage study)
+preval_es %>%
+  group_by(life_stage_matched) %>%
+  summarise(total_n = n(),
+            .groups = "drop") # two life stages are the same in most of the effect sizes (9/90 = 90%)
+
+# Therefore, I only accounted for life_stage_tested
+# Set as a factor
+preval_es$life_stage_tested <- factor(
+  preval_es$life_stage_tested,
+  levels = c("adult","juvenile", "larva"))
+
+# Check k per treatment type
+preval_es %>%
+  group_by(life_stage_tested) %>%
+  summarise(total_k = n(),
+            .groups = "drop")  
+            
+## ANALYSIS: test for the effect for individual life stage
+M_stage_infected <- rma.mv(yi = yi, V = V_preval,
+  mods = ~  -1 + life_stage_tested,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs), 
+  R = list(species_OTL = phylo_cor_preval), data = preval_es,
+  method = "REML", test = "t", control = list(optimizer = "bobyqa")) 
+
+summary(M_stage_infected) 
+
+## Prediction intervals
+levs <- levels(preval_es$life_stage_tested)
+out_stage <- cbind(life_stage_tested = levs,
+                   as.data.frame(predict(M_stage_infected,
+                     newmods = model.matrix(~ -1 + life_stage_tested,
+                       data = data.frame(life_stage_tested = levs)))))
+out_stage
+
+## Estimate absolute heterogenesity
+sum(M_stage_infected$sigma2)
+## Estimate relative heterogeneity: I^2 (orchaRd)
+orchaRd::i2_ml(M_stage_infected)
+
+#######################################
+## categorical variable: host origin ##
+#######################################
+
+# 'Larvae' were all sourced from the wild. I removed "larva" group here and test the effect of host origin (wild vs captive) for "adult" and "juvenile" only.
+
+# Keep only adult + juvenile rows
+keep_preval <- preval_es$life_stage_tested %in% c("adult","juvenile")
+
+# Subset the already-built variance-covariance matrix
+V_keep_preval <- V_preval[keep_preval, keep_preval]
+
+# Subset the data (random effects & phylo R will align by factor levels automatically)
+data_preval <- preval_es[keep_preval, ]
+
+# Set as a factor
+data_preval$host_origin <- factor(
+  data_preval$host_origin,
+  levels = c("captive", "wild"))
+
+# ANALYSIS: test for the effect for individual host origin
+M_host_infected <- rma.mv(yi = yi, V = V_keep_preval,
+                         mods = ~ -1 + host_origin,
+                         random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs), 
+                         R = list(species_OTL = phylo_cor_preval), data = data_preval,
+                         method = "REML", test = "t") 
+
+summary(M_host_infected)
+
+# Count k per origin
+data_preval %>%
+  group_by(host_origin) %>%
+  summarise(total_n = n(),
+            .groups = "drop") 
+
+
+#########################################
+## categorical variable: host taxonomy ##
+#########################################
+
+# Set as a factor
+preval_es$family <- factor(preval_es$family)
+
+preval_es$family <- factor(
+  preval_es$family,
+  levels = c("Bufonidae", "Ranidae", "Hylidae", "Alytidae", "Cryptobranchidae", "Sirenidae", "Plethodontidae", "Pipidae", "Ambystomatidae"))
+
+## ANALYSIS: test for the effect for individual family
+
+M_taxa_infected <- rma.mv(yi = yi, V = V_preval,
+  mods = ~  -1 + family,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs), 
+  R = list(species_OTL = phylo_cor_preval), data = preval_es,
+  method = "REML", test = "t") 
+
+summary(M_taxa_infected) 
+
+## Prediction intervals
+levs <- gsub("^family", "", names(coef(M_taxa_infected)))  # nice labels (optional)
+
+Xnew <- diag(length(coef(M_taxa_infected)))
+colnames(Xnew) <- names(coef(M_taxa_infected))
+
+pred_taxa <- predict(M_taxa_infected, newmods = Xnew)
+options(digits = 3)
+out_taxa <- data.frame(family = levs, as.data.frame(pred_taxa))
+out_taxa
+
+# Check k per family type
+preval_es %>%
+  group_by(family) %>%
+  summarise(total_k = n(),
+            .groups = "drop")  
+          
+```
+## Prevalence ##
+## checking for publication bias ##
+```{r}
+# Standardize (mean-centered) publication year
+preval_es$year_c <- scale(preval_es$publication_year, center = TRUE, scale = FALSE)
+
+# Calculate the inverse of the "effective sample size" 
+preval_es$inv_n_tilda <-  with(preval_es, (n_T_animals + n_C_animals)/(n_T_animals*n_C_animals))
+preval_es$sqrt_inv_n_tilda <-  with(preval_es, sqrt(inv_n_tilda))
+
+# sqrt (inverse of effective sample size) = uncertainty / small sample size => larger value = smaller N, more uncertain
+
+# Add sqrt__inverse_effective_sample_size to the intercept-only multilevel meta-regression: M3_preval)
+pub.bias_preval_M3 <- rma.mv(yi = yi, V = V_preval,
+  mods = ~  1 + sqrt_inv_n_tilda + year_c,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs), 
+  R = list(species_OTL = phylo_cor_preval),
+  data = preval_es,
+  method = "REML", 
+  test = "t") 
+
+summary(pub.bias_preval_M3)
+
+### Figure ###
+## NOTE: Visual inspection is not recommended in datasets with multiple level of non-independence and high heterogeneity (Nakagawa et al. 2021)
+
+# Raw residuals (observed - fitted)
+res2 <- residuals(M3_preval, type = "response")
+
+# Use original sampling SE for precision axis
+sei2 <- sqrt(M3_preval$vi)
+
+# Funnel of residuals vs precision (1/SE)
+funnel(x = res2,
+       sei = sei2,
+       yaxis = "seinv",
+       xlab  = "Residuals",
+       ylab  = "Precision (1/SE)")
+abline(v = 0, lty = 2)
+```
+
+### Prevalence ###
+### Does baseline mortality rate (inherent mortality) affect effect size?
+```{r}
+## testing the moderating effect of baseline mortality rates on immunisation effectiveness
+inherent_preval <- rma.mv(yi = yi, V = V_preval,
+  mods = ~  1 + C_mortality,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs), 
+  R = list(species_OTL = phylo_cor_preval),
+  data = preval_es,
+  method = "REML", 
+  test = "t", control = list(optimizer = "bobyqa")) 
+
+summary(inherent_preval) 
+```
+
+### Infection intensity ###
+### Before meta-analysis => back transforming the log-scale value to the raw-scale value ###
+```{r}
+metadata <- read.csv("metadata.csv")
+
+ln10 <- log(10)
+
+metadata_new <- metadata %>%
+  mutate(
+    ## TREATMENT mean
+    mean_T_trait = case_when(
+      flag_unit_transformed == "FALSE" ~ mean_T_trait_initial,
+      flag_unit_transformed == "ln(X)_NOSD" ~ exp(mean_T_trait_initial),
+      flag_unit_transformed == "log10(X)" ~ {
+        Z  <- mean_T_trait_initial * ln10
+        SZ <- SD_T_initial * ln10
+        exp(Z + (SZ^2)/2)
+      },
+      flag_unit_transformed == "log10(X+1)" ~ {
+        Z  <- mean_T_trait_initial * ln10
+        SZ <- SD_T_initial * ln10
+        exp(Z + (SZ^2)/2) - 1
+      },
+      flag_unit_transformed == "log10(X+1)_NOSD" ~ {
+        Z  <- mean_T_trait_initial * ln10
+        exp(Z) - 1
+      },
+      TRUE ~ mean_T_trait_initial
+    ),
+    SD_T = case_when(
+      flag_unit_transformed == "FALSE" ~ SD_T_initial,
+      flag_unit_transformed == "log10(X)" ~ {
+        Z  <- mean_T_trait_initial * ln10
+        SZ <- SD_T_initial * ln10
+        sqrt( (exp(SZ^2) - 1) * exp(2*Z + SZ^2) )
+      },
+      flag_unit_transformed == "log10(X+1)" ~ {
+        ## subtracting 1 is a shift -> SD unchanged from the back-transformed X+1
+        Z  <- mean_T_trait_initial * ln10
+        SZ <- SD_T_initial * ln10
+        sqrt( (exp(SZ^2) - 1) * exp(2*Z + SZ^2) )
+      },
+      TRUE ~ SD_T_initial
+    ),
+    mean_C_trait = case_when(
+      flag_unit_transformed == "FALSE" ~ mean_C_trait_initial,
+      flag_unit_transformed == "ln(X)_NOSD" ~ exp(mean_C_trait_initial),
+      flag_unit_transformed == "log10(X)" ~ {
+        Z  <- mean_C_trait_initial * ln10
+        SZ <- SD_C_initial * ln10
+        exp(Z + (SZ^2)/2)
+      },
+      flag_unit_transformed == "log10(X+1)" ~ {
+        Z  <- mean_C_trait_initial * ln10
+        SZ <- SD_C_initial * ln10
+        exp(Z + (SZ^2)/2) - 1
+      }, 
+        flag_unit_transformed == "log10(X+1)_NOSD" ~ {
+        Z  <- mean_C_trait_initial * ln10
+        exp(Z) - 1
+      },
+      TRUE ~ mean_C_trait_initial
+    ),
+    SD_C = case_when(
+      flag_unit_transformed == "FALSE" ~ SD_C_initial,
+      flag_unit_transformed == "log10(X)" ~ {
+        Z  <- mean_C_trait_initial * ln10
+        SZ <- SD_C_initial * ln10
+        sqrt( (exp(SZ^2) - 1) * exp(2*Z + SZ^2) )
+      },
+      flag_unit_transformed == "log10(X+1)" ~ {
+        Z  <- mean_C_trait_initial * ln10
+        SZ <- SD_C_initial * ln10
+        sqrt( (exp(SZ^2) - 1) * exp(2*Z + SZ^2) )
+      },
+      TRUE ~ SD_C_initial
+    )
+  )
+```
+
+## infection intensity ##
+## main analysis ##
+## Removing dataset containing zero value (= uninfected individuals) ## 
+```{R}
+## Infection intensity should include only infected survivors.
+## However, some contrasts included uninfected animals (Bd load = 0) 
+## In these cases, the effect on infection intensity is conflated with that on prevalence 
+## Here, we excluded those data sets to re-assess the effects.
+
+## Remove contrasts that used a different definition to calculate pathogen load (k = 15)
+intensity_INC <- metadata_new %>% 
+  filter(Data_inclusiveness_flag %in% c("FALSE","MAYBE")) %>% 
+  filter(trait == "intensity", 
+         mean_T_trait > 0, mean_C_trait > 0, # ensure all values are positive (lnRR cannot be calculated with zero value)
+         n_T_animals > 1, n_C_animals > 1) ## removing effect size with n = 1 (where SD cannot be estimated)
+
+######################################################
+## Using the 'missing-cases' method to calculate vi ##
+######################################################
+
+# Compute observed CV^2 (where available)
+intensity_INC <- intensity_INC %>%
+  mutate(CV2_T = (SD_T / mean_T_trait)^2,    # treatment CV^2
+         CV2_C = (SD_C / mean_C_trait)^2)    # control CV^2
+
+# Calculate the average between study CV, which will replace missing values
+intensity_INC <- cv_avg(x = mean_T_trait, sd = SD_T, n = n_T_animals,
+              group = study_id, label = "T", data = intensity_INC) #b_CV2_T (between-study treatment CV*2)
+intensity_INC <- cv_avg(x = mean_C_trait, sd = SD_C, n = n_C_animals,
+              group = study_id, label = "C", data = intensity_INC) #b_CV2_C (between-study control CV*2)
+
+# Use weighted mean CV in replacement for where CV's are missing. Otherwise, calculate CV^2 of data that is known.
+intensity_INC <- intensity_INC %>%
+              mutate(cv2_T_new = if_else(is.na(CV2_T), b_CV2_T, CV2_T),
+                     cv2_C_new = if_else(is.na(CV2_C), b_CV2_C, CV2_C))
+    
+# Calculate effect size (yi) and sampling variances (vi) using the 'missing-cases' method
+intensity_data_INC <- intensity_INC %>%
+  mutate(yi = lnrr_laj(m1 = mean_T_trait, m2 = mean_C_trait,
+                    cv1_2 = cv2_T_new, cv2_2 = cv2_C_new,
+                       n1 = n_T_animals, n2 = n_C_animals),
+       vi = v_lnrr_laj(cv1_2 = cv2_T_new, n1 = n_T_animals,
+                       cv2_2 = cv2_C_new, n2 = n_C_animals))
+
+###########################################
+## Non-independence: Shared animal group ##
+###########################################
+V <- vcalc(vi      = vi,
+           cluster = study_exp_id,
+           grp1    = T_ID, 
+           grp2    = C_ID, 
+           w1      = n_T_animals,
+           w2      = n_C_animals,
+           data = intensity_data_INC) 
+
+######################################
+## Random factor: observation-level ##
+######################################
+
+intensity_data_INC$obs <- 1:nrow(intensity_data_INC)
+
+#################################
+## Non-independence: phylogeny ##
+#################################
+
+# Species set from this filtered metadata
+sp_data <- unique(trimws(gsub("\\s+", " ", intensity_data_INC$host_species)))
+sp_data_treefmt <- gsub(" ", "_", sp_data)  # match typical tree tip style
+
+# Prune the tree: only keep species present in BOTH tree and the filtered metadata
+tips_to_keep <- intersect(tree$tip.label, sp_data_treefmt)
+tree_pruned0 <- keep.tip(tree, tips_to_keep) 
+
+# Force the tree to be binary
+tree_pruned_INC <- multi2di(tree_pruned0)
+is.binary (tree_pruned_INC) # yes, the tree is binary
+
+# Create correlation phylogeny matrix for analysis
+phylo_cor_INC <- vcv(tree_pruned_INC, cor = T)
+
+# Create a column in metadata that matches the tree’s tip-label format
+intensity_data_INC$species_OTL <- gsub(" ", "_", trimws(intensity_data_INC$host_species))
+
+####################################
+###  Overall immunisation effect ###
+####################################
+
+M3_INC <- rma.mv(yi = yi, V = V,
+  mods = ~  1,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor_INC),
+  data = intensity_data_INC,
+  method = "REML", test = "t")
+
+summary (M3_INC)
+
+## Estimate absolute heterogenesity
+sum(M3_INC$sigma2)
+## Estimate relative heterogeneity
+orchaRd::i2_ml(M3_INC)
+orchaRd::cvh2_ml(M3_INC)
+orchaRd::m2_ml(M3_INC)
+
+##########################
+## Procedural variation ##
+##########################
+
+#### ** (1) Measurement effort throughout the experiment ##
+
+# standardize (mean-centered) n_infection_measure
+intensity_data_INC$n_infection_measure_c <- scale(intensity_data_INC$n_infection_measure, center = TRUE, scale = FALSE)
+
+#### ** (2) Time elapsed between infection challenge and trait measurement ##
+
+# standardize (mean-centered) average time at measure 
+intensity_data_INC$time_measure   <- (intensity_data_INC$T_time_post + intensity_data_INC$C_time_post)/2
+intensity_data_INC$time_measure_c <- scale(intensity_data_INC$time_measure, center = TRUE, scale = FALSE)
+
+#### ** (3) Time interval between immunisation and infection challenge ##
+
+# standardize (mean-centered) time intervals
+intensity_data_INC$time_persist_c <- scale(intensity_data_INC$time_interval, center = TRUE, scale = FALSE)
+
+#### MODEL accounting for (1) measurement effort (2) time interval between challenge and measurement and (3) time interval between immunisation and challenge
+M3_covariate <- rma.mv(yi = yi, V = V,
+  mods = ~ time_persist_c + time_measure_c + n_infection_measure_c,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor),
+  data = intensity_data_INC,
+  method = "REML", test = "t")
+
+summary (M3_covariate)
+
+############################################
+### Moderating effect: immunisation type ###
+############################################
+
+intensity_data_INC$treatment <- factor(
+  intensity_data_INC$treatment,
+  levels = c("other","synthetic_antiparastics", "dead_pathogen", "probiotic","live_pathogen","natural_chem"))
+
+
+## Analysis: test for individual effect of each category
+M_T_INC <- rma.mv(yi = yi, V = V,
+  mods = ~  -1 + treatment,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor_INC),
+  data = intensity_data_INC,
+  method = "REML", test = "t")
+
+summary (M_T_INC) 
+
+## Prediction intervals
+intensity_data_INC$treatment <- droplevels(factor(intensity_data_INC$treatment))
+levs <- levels(intensity_data_INC$treatment)
+
+Xnew <- model.matrix(~ -1 + treatment,
+                     data = data.frame(treatment = factor(levs, levels = levs)))
+
+pred <- predict(M_T_INC, newmods = Xnew)
+
+out_M_T_INC <- data.frame(treatment = levs, as.data.frame(pred))
+
+out_M_T_INC[-1] <- round(out_M_T_INC[-1], 4)
+out_M_T_INC
+
+# Check k for each treatment type 
+count <- intensity_data_INC %>% group_by(treatment) %>% summarise(total_k = n(),.groups = "drop") 
+count
+
+#####################################
+### Moderating effect: life stage ###
+#####################################
+
+# Set as a factor
+intensity_data_INC$life_stage_tested <- factor (intensity_data_INC$life_stage_tested, levels = c ("adult","juvenile", "larva"))
+
+## Analysis: test for individual effect of each category
+M_LS_INC <- rma.mv(yi = yi, V = V,
+  mods = ~  -1 + life_stage_tested,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor_INC),
+  data = intensity_data_INC,
+  method = "REML", test = "t")
+
+summary (M_LS_INC) 
+
+## Prediction intervals
+levs <- levels(intensity_data_INC$life_stage_tested)
+out_stage_int <- cbind(life_stage_tested = levs,
+                   as.data.frame(predict(M_LS_INC,
+                     newmods = model.matrix(~ -1 + life_stage_tested,
+                       data = data.frame(life_stage_tested = levs)))))
+options(digits = 4)
+out_stage_int
+
+
+# Check k per life stage
+count <- intensity_data_INC %>%
+  group_by(life_stage_tested) %>%
+  summarise(total_k = n(),
+            .groups = "drop")  
+count
+
+###################################
+### Moderating effect: Taxonomy ###
+###################################
+
+intensity_data_INC$family <- factor(
+  intensity_data_INC$family,
+  levels = c("Bufonidae", "Ranidae", "Hylidae", "Alytidae", "Cryptobranchidae", "Sirenidae", "Plethodontidae", "Pipidae", "Ambystomatidae"))
+
+## Analysis: test for individual effect of each category (taxonomaic families)
+M_taxa_INC <- rma.mv(yi = yi, V = V,
+  mods = ~  -1 + family,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor_INC),
+  data = intensity_data_INC,
+  method = "REML", test = "t")
+
+summary (M_taxa_INC) 
+
+## Prediction intervals
+intensity_data_INC$family <- droplevels(factor(intensity_data_INC$family))
+levs <- levels(intensity_data_INC$family)
+newdat <- data.frame(family = factor(levs, levels = levs))
+Xnew <- model.matrix(~ -1 + family, data = newdat)
+pred <- predict(M_taxa_INC, newmods = Xnew)
+out_M_taxa_INC <- data.frame(family = levs, as.data.frame(pred))
+out_M_taxa_INC[-1] <- round(out_M_taxa_INC[-1],4)
+out_M_taxa_INC
+
+# Check k for each family type
+count <- intensity_data_INC %>% group_by(family) %>% summarise(total_k = n(),.groups = "drop") 
+count
+
+####################################
+## Moderating effect: host origin ##
+####################################
+
+# Here I only consider "juvenile" while examining the effect of host origin (wild vs captive)
+
+# Keep only juvenile rows
+keepINC <- (intensity_data_INC$life_stage_tested %in% "juvenile") &
+  (intensity_data_INC$host_origin %in% c("captive", "wild"))
+
+# Subset the data
+dat_INC <- intensity_data_INC[keepINC, ]
+
+# Subset the already-built variance-covariance matrix
+V_INC <- V [keepINC, keepINC]
+
+# Re-generate the phylogeny matrix ###
+tree <- read.tree("tree_for_imputation.tre")
+
+# Species set from the new metadata
+sp_data <- unique(trimws(gsub("\\s+", " ", dat_INC$host_species)))
+sp_data_treefmt <- gsub(" ", "_", sp_data)  # match typical tree tip style
+
+# Check the mismatch between species in my metadata and species in existing tree
+sp_tree_spaces <- gsub("_", " ", tree$tip.label)
+setdiff(sp_data, sp_tree_spaces) # In data but not in tree
+
+# Prune the tree: only keep species present in BOTH tree and my metadata
+tips_to_keep <- intersect(tree$tip.label, sp_data_treefmt)
+tree_juv_INC <- keep.tip(tree, tips_to_keep) 
+
+# Force the tree to be binary
+tree_juv_INC <- multi2di(tree_juv_INC)
+is.binary (tree_juv_INC) # yes, the tree is binary
+
+# Create correlation phylogeny matrix for analysis
+phylo_cor_juv_INC <- vcv(tree_juv_INC, cor = T)
+
+# Create a column in metadata that matches the tree’s tip-label format
+dat_INC $species_OTL <- gsub(" ", "_", trimws(dat_INC$host_species))
+
+## Analysis: test for individual effect of each category
+
+M_origin_juv_INC <- rma.mv(yi = yi, V = V_INC,
+                       mods = ~ -1 + host_origin,
+                       random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs), 
+                       R = list(species_OTL = phylo_cor_juv_INC), data = dat_INC,
+                       method = "REML", test = "t")
+
+summary(M_origin_juv_INC)  
+
+## Prediction intervals
+dat_INC$host_origin <- droplevels(factor(dat_INC$host_origin))
+levs <- levels(dat_INC$host_origin)
+newdat <- data.frame(host_origin = factor(levs, levels = levs))
+Xnew <- model.matrix(~ -1 + host_origin, data = newdat)
+pred <- predict(M_origin_juv_INC, newmods = Xnew)
+out_host_origin_INC <- data.frame(host_origin = levs, as.data.frame(pred))
+out_host_origin_INC[-1] <- round(out_host_origin_INC[-1], 4)
+out_host_origin_INC
+
+# Check K per juvenile origin
+count <- dat_INC %>%
+  group_by(host_origin) %>%
+  summarise(total_k = n(),
+            .groups = "drop")  
+count
+```
+## infection intensity ##
+## checking for publication bias ##
+```{r}
+# Standardize (mean-centered) publication year
+intensity_data_INC$year_c <- scale(intensity_data_INC$publication_year, center = TRUE, scale = FALSE)
+
+# Calculate the inverse of the "effective sample size" to account for unbalanced sampling lnRR 
+intensity_data_INC$inv_n_tilda <-  with(intensity_data_INC, (n_T_animals + n_C_animals)/(n_T_animals*n_C_animals))
+intensity_data_INC$sqrt_inv_n_tilda <-  with(intensity_data_INC, sqrt(inv_n_tilda))
+
+pub_bias_M3_load <- rma.mv(yi = yi, V = V,
+  mods = ~  1 + sqrt_inv_n_tilda + year_c,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor_INC),
+  data = intensity_data_INC,
+  method = "REML",  test = "t") 
+
+summary (pub_bias_M3_load)
+
+### Funnel plots ###
+## NOTE: Visual inspection is not recommended in dataset with multiple level of non-independence and high heterogeneity (Nakagawa et al. 2021)
+
+# Raw residuals (observed - fitted)
+res <- residuals(M3_INC, type = "response")
+
+# Use original sampling SE for precision axis
+sei <- sqrt(M3_INC$vi)
+
+# Funnel of residuals vs precision (1/SE)
+funnel(x = res,
+       sei = sei,
+       yaxis = "seinv",
+       xlab  = "Residuals",
+       ylab  = "Precision (1/SE)",
+       xlim = c(-8.5,8.5))
+abline(v = 0, lty = 2)
+
+## output = 4 * 7 (portrait)
+```
+
+## infection intensity ##
+## Do baseline mortality rate (= inherent susceptability) affect the effect size of infection loads?
+```{r}
+inherent_load <- rma.mv(yi = yi, V = V,
+  mods = ~  1 + C_mortality,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor_INC),
+  data = intensity_data_INC,
+  method = "REML",  test = "t") 
+
+summary (inherent_load)
+```
+
+## infection intensity (log response ratio) ##
+## sensitivity analysis - including zero value (uninfected individuals) dataset
+```{r}
+# Select intensity data
+intensity <- metadata_new %>% 
+  filter(trait == "intensity", 
+         mean_T_trait > 0, mean_C_trait > 0, # ensure all values are positive (lnRR cannot be calculated with zero value)
+         n_T_animals > 1, n_C_animals > 1) ## removing effect size with n = 1 (where SD cannot be estimated)
+
+#################################
+## Implementation of missing SD #
+#################################
+
+## Deal with observations with missing sampling variance (Cashin et al. 2013; Waddle PhD thesis, Becker et al. 2021; Barnett et al. 2023)
+## code from Nakagawa et al 2022 (Ecology Letters) 
+## missing cases method: https://alistairmcnairsenior.github.io/Miss_SD_Sim/
+
+source("func.R") ## https://osf.io/sqr4w
+
+# Compute observed CV^2 (where available)
+intensity <- intensity %>%
+  mutate(
+    CV2_T = (SD_T / mean_T_trait)^2,   # treatment CV^2
+    CV2_C = (SD_C / mean_C_trait)^2)    # control CV^2
+
+# Calculate the average between study CV, which will replace missing values
+intensity <- cv_avg(x = mean_T_trait, sd = SD_T, n = n_T_animals,
+              group = study_id, label = "T", data = intensity) #b_CV2_T (between-study treatment CV*2)
+intensity <- cv_avg(x = mean_C_trait, sd = SD_C, n = n_C_animals,
+              group = study_id, label = "C", data = intensity) #b_CV2_C (between-study control CV*2)
+
+# Use weighted mean CV in replacement for where CV's are missing. Otherwise, calculate CV^2 of data that is known.
+intensity <- intensity %>%
+              mutate(cv2_T_new = if_else(is.na(CV2_T), b_CV2_T, CV2_T),
+                     cv2_C_new = if_else(is.na(CV2_C), b_CV2_C, CV2_C))
+    
+# Calculate effect size (yi) and sampling variances (vi) using missing-cases method
+intensity_data <- intensity %>%
+  mutate(
+    yi = lnrr_laj(m1 = mean_T_trait, m2 = mean_C_trait,
+                 cv1_2 = cv2_T_new, cv2_2 = cv2_C_new,
+                 n1= n_T_animals, n2 = n_C_animals),
+    vi = v_lnrr_laj(cv1_2 = cv2_T_new, n1 = n_T_animals,
+                       cv2_2 = cv2_C_new, n2 = n_C_animals))
+
+###########################################
+## Non-independence: Shared animal group ##
+###########################################
+
+# Adjust non-independence of sampling variances/co-variances
+V <- vcalc(vi      = vi,
+           cluster = study_exp_id, # experiment level where shared value occurred
+           grp1    = T_ID, # cohort ID of treatment
+           grp2    = C_ID, # cohort ID of control
+           w1      = n_T_animals,
+           w2      = n_C_animals,
+           data = intensity_data)
+
+# Visualization 
+corrplot::corrplot(cov2cor(V)) # I will replace "vi" using "V" in the following model
+
+######################################
+## Random factor: observation-level ##
+######################################
+
+intensity_data$obs <- 1:nrow(intensity_data)
+
+##############################
+## Random factor: phylogeny ##
+##############################
+tree <- read.tree("tree_for_imputation.tre")
+
+# Species set from my metadata
+sp_data <- unique(trimws(gsub("\\s+", " ", intensity_data$host_species)))
+sp_data_treefmt <- gsub(" ", "_", sp_data)  # match typical tree tip style
+
+# Check the mismatch between species in my metadata and species in existing tree
+sp_tree_spaces <- gsub("_", " ", tree$tip.label)
+setdiff(sp_data, sp_tree_spaces) # In data but not in tree
+
+# Prune the tree: only keep species present in BOTH tree and my metadata
+tips_to_keep <- intersect(tree$tip.label, sp_data_treefmt)
+tree_pruned0 <- keep.tip(tree, tips_to_keep) 
+
+# Force the tree to be binary
+tree_pruned <- multi2di(tree_pruned0)
+is.binary (tree_pruned) # yes, the tree is binary
+
+# Create correlation phylogeny matrix for analysis
+phylo_cor <- vcv(tree_pruned, cor = T)
+
+# Create a column in metadata that matches the tree’s tip-label format
+intensity_data$species_OTL <- gsub(" ", "_", trimws(intensity_data$host_species))
+
+####################
+## Overall effect ##
+####################
+
+M3_load <- rma.mv(yi = yi, V = V,
+  mods = ~  1,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor),
+  data = intensity_data,
+  method = "REML",  test = "t") 
+  
+summary (M3_load) # final model for overall treatment effect on pathogen load
+predict(M3_load)
+## Estimate absolute heterogenesity
+sum(M3_load$sigma2)
+## Estimate relative heterogeneity
+orchaRd::i2_ml(M3_load)
+orchaRd::cvh2_ml(M3_load)
+orchaRd::m2_ml(M3_load)
+
+#############################################
+## categorical variable: immunisation type ##
+#############################################
+
+# Set as a factor
+intensity_data$treatment <- factor(
+  intensity_data$treatment,
+  levels = c("other", "probiotic", "synthetic_antiparastics","natural_chem", "dead_pathogen", "live_pathogen"))
+
+## Analysis
+M_treatment <- rma.mv(yi = yi, V = V,
+  mods = ~  -1 + treatment,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor),
+  data = intensity_data,
+  method = "REML", test = "t")
+
+summary (M_treatment) 
+
+## Prediction intervals
+levs <- levels(intensity_data$treatment)
+out_treat_int <- cbind(treatment = levs,
+                   as.data.frame(predict(M_treatment,
+                     newmods = model.matrix(~ -1 + treatment,
+                       data = data.frame(treatment = levs)))))
+options(digits = 4)
+out_treat_int
+
+# Count k per treatment type
+count <- intensity_data %>%
+  group_by(treatment) %>%
+  summarise(total_k = n(),
+            .groups = "drop")  
+count
+
+######################################
+## categorical variable: life stage ##
+######################################
+
+# Set as factor
+intensity_data$life_stage_tested <- factor(
+  intensity_data$life_stage_tested,
+  levels = c("larva","juvenile","adult"))
+
+## ANALYSIS: test for the effect for individual life stage
+M_stage <- rma.mv(yi = yi, V = V,
+  mods = ~  -1 + life_stage_tested,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor),
+  data = intensity_data,
+  method = "REML", test = "t")
+
+summary (M_stage) 
+
+## Prediction intervals
+levs <- levels(intensity_data$life_stage_tested)
+out_stage_int <- cbind(life_stage_tested = levs,
+                   as.data.frame(predict(M_stage,
+                     newmods = model.matrix(~ -1 + life_stage_tested,
+                       data = data.frame(life_stage_tested = levs)))))
+options(digits = 4)
+out_stage_int
+
+
+# Count k per life stage
+intensity_data %>%
+  group_by(life_stage_tested) %>%
+  summarise(total_n = n(),
+            .groups = "drop") 
+
+####################################
+## categorical variable: taxonomy ##
+####################################
+
+# Set as a factor
+intensity_data$family <- factor(intensity_data$family)
+
+intensity_data$family <- factor(
+  intensity_data$family,
+  levels = c("Bufonidae", "Ranidae", "Hylidae", "Alytidae", "Cryptobranchidae", "Sirenidae", "Plethodontidae", "Pipidae", "Ambystomatidae"))
+
+## ANALYSIS: test for the effect for individual family
+M_taxa <- rma.mv(yi = yi, V = V,
+  mods = ~  -1 + family,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor),
+  data = intensity_data,
+  method = "REML", test = "t")
+
+summary (M_taxa) 
+
+## Prediction intervals
+levs <- gsub("^family", "", names(coef(M_taxa)))
+
+Xnew <- diag(length(coef(M_taxa)))
+colnames(Xnew) <- names(coef(M_taxa))
+
+pred_taxa <- predict(M_taxa, newmods = Xnew)
+options(digits = 4)
+out_taxa <- data.frame(family = levs, as.data.frame(pred_taxa))
+out_taxa
+
+# Count k per family type
+count <- intensity_data %>%
+  group_by(family) %>%
+  summarise(total_k = n(),
+            .groups = "drop")  
+count
+
+#######################################
+## categorical variable: host origin ##
+#######################################
+
+# Count origin per life stage
+origin_count <- intensity_data %>%
+  group_by(life_stage_tested, host_origin) %>%
+  summarise(total_n = n(),
+            .groups = "drop") 
+origin_count
+
+# most adults (15/16 = 94%) and all larvae were from the wild, whereas juveniles originated from either captive or wild populations. 
+# I therefore subdivided the dataset to test the effect of origin in juveniles only. 
+
+# Keep only juvenile rows
+keep2 <- (intensity_data$life_stage_tested %in% "juvenile") &
+  (intensity_data$host_origin %in% c("wild", "captive"))
+
+# Subset the data
+dat1in <- intensity_data[keep2, ]
+
+# Subset the already-built variance-covariance matrix
+V_keep2 <- V [keep2, keep2]
+
+# Re-generate the phylogeny matrix ###
+tree <- read.tree("tree_for_imputation.tre")
+
+# Species set from the new metadata
+sp_data <- unique(trimws(gsub("\\s+", " ", dat1in$host_species)))
+sp_data_treefmt <- gsub(" ", "_", sp_data)  # match typical tree tip style
+
+# Check the mismatch between species in my metadata and species in existing tree
+sp_tree_spaces <- gsub("_", " ", tree$tip.label)
+setdiff(sp_data, sp_tree_spaces) # In data but not in tree
+
+# Prune the tree: only keep species present in BOTH tree and my metadata
+tips_to_keep <- intersect(tree$tip.label, sp_data_treefmt)
+tree_pruned_juv <- keep.tip(tree, tips_to_keep) 
+
+# Force the tree to be binary
+tree_pruned_juv <- multi2di(tree_pruned_juv)
+is.binary (tree_pruned_juv) # yes, the tree is binary
+
+# Create correlation phylogeny matrix for analysis
+phylo_cor_juv <- vcv(tree_pruned_juv, cor = T)
+
+# Create a column in metadata that matches the tree’s tip-label format
+dat1in$species_OTL <- gsub(" ", "_", trimws(dat1in$host_species))
+
+# Set as a factor
+dat1in$host_origin <- factor(
+  dat1in$host_origin,
+  levels = c("captive", "wild"))
+
+## ANALYSIS: test for individal effect of origin
+M_juv_origin <- rma.mv(yi = yi, V = V_keep2,
+                       mods = ~ -1 + host_origin,
+                       random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs), 
+                       R = list(species_OTL = phylo_cor_juv), data = dat1in,
+                       method = "REML", test = "t")
+
+summary(M_juv_origin) 
+
+## Prediction intervals
+levs <- levels(dat1in$host_origin)
+out_origin_int <- cbind(host_origin = levs,
+                   as.data.frame(predict(M_juv_origin,
+                     newmods = model.matrix(~ -1 + host_origin,
+                       data = data.frame(host_origin = levs)))))
+options(digits = 4)
+out_origin_int
+
+# Count k per origin
+dat1in %>%
+  group_by(host_origin) %>%
+  summarise(total_n = n(),
+            .groups = "drop") 
+
+```
+
+## infection intensity  ##
+## sensitivity analysis (II) ##
+## Removing contrasts with log-transformed values ## 
+```{r}
+## Here, I exclude records with back-transformed data to check whether the effects change.
+
+## Remove contrasts (k = 18) with transformed values
+intensity_NTV <- metadata_new %>% 
+  filter(flag_unit_transformed == "FALSE") %>% 
+  filter(Data_inclusiveness_flag %in% c("FALSE","MAYBE")) %>% 
+  filter(trait == "intensity", 
+         mean_T_trait > 0, mean_C_trait > 0, # ensure all values are positive (lnRR cannot be calculated with zero value)
+         n_T_animals > 1, n_C_animals > 1) ## removing effect size with n = 1 (where SD cannot be estimated)
+
+##################################################################
+## using the 'missing-cases' method to calculate unavailable vi ##
+##################################################################
+
+# Compute observed CV^2 (where available)
+intensity_NTV <- intensity_NTV %>%
+  mutate(CV2_T = (SD_T / mean_T_trait)^2,    # treatment CV^2
+         CV2_C = (SD_C / mean_C_trait)^2)    # control CV^2
+
+# Calculate the average between-study CV, which will replace missing values
+intensity_NTV <- cv_avg(x = mean_T_trait, sd = SD_T, n = n_T_animals,
+              group = study_id, label = "T", data = intensity_NTV) #b_CV2_T (between-study treatment CV*2)
+intensity_NTV <- cv_avg(x = mean_C_trait, sd = SD_C, n = n_C_animals,
+              group = study_id, label = "C", data = intensity_NTV) #b_CV2_C (between-study control CV*2)
+
+# Use weighted mean CV in replacement for where CV's are missing. Otherwise, calculate CV^2 of data that is known.
+intensity_NTV <- intensity_NTV %>%
+              mutate(cv2_T_new = if_else(is.na(CV2_T), b_CV2_T, CV2_T),
+                     cv2_C_new = if_else(is.na(CV2_C), b_CV2_C, CV2_C))
+    
+# Calculate effect size (yi) and sampling variances (vi) using the 'missing-cases' method
+intensity_data_NTV <- intensity_NTV %>%
+  mutate(
+    yi = lnrr_laj(m1 = mean_T_trait, m2 = mean_C_trait,
+                 cv1_2 = cv2_T_new, cv2_2 = cv2_C_new,
+                 n1= n_T_animals, n2 = n_C_animals),
+    vi = v_lnrr_laj (cv1_2 = cv2_T_new, n1 = n_T_animals,
+                       cv2_2 = cv2_C_new, n2 = n_C_animals))
+
+###########################################
+## Non-independence: Shared animal group ##
+###########################################
+V <- vcalc(vi      = vi,
+           cluster = study_exp_id, 
+           grp1    = T_ID, 
+           grp2    = C_ID, 
+           w1      = n_T_animals,
+           w2      = n_C_animals,
+           data = intensity_data_NTV) ## matrix
+
+######################################
+## Random factor: observation-level ##
+######################################
+
+intensity_data_NTV$obs <- 1:nrow(intensity_data_NTV)
+
+#################################
+## Non-independence: phylogeny ##
+#################################
+
+# Species set from this filtered metadata
+sp_data <- unique(trimws(gsub("\\s+", " ", intensity_data_NTV$host_species)))
+sp_data_treefmt <- gsub(" ", "_", sp_data)  # match typical tree tip style
+
+# Prune the tree: only keep species present in BOTH tree and the filtered metadata
+tips_to_keep <- intersect(tree$tip.label, sp_data_treefmt)
+tree_pruned0 <- keep.tip(tree, tips_to_keep) 
+
+# Force the tree to be binary
+tree_pruned_NTV <- multi2di(tree_pruned0)
+is.binary (tree_pruned_NTV) # yes, the tree is binary
+
+# Create correlation phylogeny matrix for analysis
+phylo_cor_NTV <- vcv(tree_pruned_NTV, cor = T)
+
+# Create a column in metadata that matches the tree’s tip-label format
+intensity_data_NTV$species_OTL <- gsub(" ", "_", trimws(intensity_data_NTV$host_species))
+
+#########################################
+### Moderating effect: Overall effect ###
+#########################################
+
+M3_NTV <- rma.mv(yi = yi, V = V,
+  mods = ~  1,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor_NTV),
+  data = intensity_data_NTV,
+  method = "REML", test = "t")
+
+summary (M3_NTV) 
+predict (M3_NTV)
+
+###########################################
+### Moderating effect: immunisation type ##
+###########################################
+
+# Set as a factor
+intensity_data_NTV$treatment <- factor(
+  intensity_data_NTV$treatment,
+  levels = c("other", "probiotic", "synthetic_antiparastics","natural_chem", "dead_pathogen", "live_pathogen"))
+
+## Analysis: test for individual effect of treatment type
+M_T_NTV <- rma.mv(yi = yi, V = V,
+  mods = ~  -1 + treatment,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor_NTV),
+  data = intensity_data_NTV,
+  method = "REML", test = "t")
+
+summary (M_T_NTV) 
+
+## Prediction intervals
+intensity_data_NTV$treatment <- droplevels(factor(intensity_data_NTV$treatment))
+levs <- levels(intensity_data_NTV$treatment)
+newdat <- data.frame(treatment = factor(levs, levels = levs))
+Xnew <- model.matrix(~ -1 + treatment, data = newdat)
+pred <- predict(M_T_NTV, newmods = Xnew)
+out_M_T_NTV <- data.frame(treatment = levs, as.data.frame(pred))
+out_M_T_NTV[-1] <- round(out_M_T_NTV[-1], 4)
+out_M_T_NTV
+
+# Check k per treatment type after excluding the transformed value
+count <- intensity_data_NTV %>% group_by(treatment) %>% summarise(total_k = n(),.groups = "drop") 
+count
+
+#####################################
+### Moderating effect: life stage ###
+#####################################
+
+# Set as a factor
+intensity_data_NTV$life_stage_tested <- as.factor (intensity_data_NTV$life_stage_tested)
+
+# ANALYSIS: test for individual effect on life stage
+M_L_NTV <- rma.mv(yi = yi, V = V,
+                  mods = ~  -1 + life_stage_tested,
+                  random = list(~1 | study_id, ~ 1 | species_OTL, ~1 | obs),
+                  R = list(species_OTL = phylo_cor_NTV),
+                  data = intensity_data_NTV,
+                  method = "REML", test = "t")
+
+summary (M_L_NTV) 
+
+## Prediction intervals
+intensity_data_NTV$life_stage_tested <- droplevels(factor(intensity_data_NTV$life_stage_tested))
+levs <- levels(intensity_data_NTV$life_stage_tested)
+newdat <- data.frame(life_stage_tested = factor(levs, levels = levs))
+Xnew <- model.matrix(~ -1 + life_stage_tested, data = newdat)
+pred <- predict(M_L_NTV, newmods = Xnew)
+out_M_L_NTV <- data.frame(life_stage_tested = levs, as.data.frame(pred))
+out_M_L_NTV[-1] <- round(out_M_L_NTV[-1], 4)
+out_M_L_NTV
+
+# Check k per life stage after excluding the transformed value
+count <- intensity_data_NTV %>%
+  group_by(life_stage_tested) %>%
+  summarise(total_k = n(),
+            .groups = "drop")  
+count
+
+###################################
+### Moderating effect: taxonomy ###
+###################################
+
+intensity_data_NTV$family <- as.factor (intensity_data_NTV$family)
+
+## Analysis: test for individual effect of treatment type
+M_Taxa_NTV <- rma.mv(yi = yi, V = V,
+  mods = ~  -1 + family,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor_NTV),
+  data = intensity_data_NTV,
+  method = "REML", test = "t")
+
+summary (M_Taxa_NTV) 
+
+## Prediction intervals
+intensity_data_NTV$family <- droplevels(factor(intensity_data_NTV$family))
+levs <- levels(intensity_data_NTV$family)
+newdat <- data.frame(family = factor(levs, levels = levs))
+Xnew <- model.matrix(~ -1 + family, data = newdat)
+pred <- predict(M_Taxa_NTV, newmods = Xnew)
+out_M_Taxa_NTV <- data.frame(family = levs, as.data.frame(pred))
+out_M_Taxa_NTV[-1] <- round(out_M_Taxa_NTV[-1], 4)
+out_M_Taxa_NTV
+
+# Check k per treatment type after excluding the transformed value
+count <- intensity_data_NTV %>% group_by(family) %>% summarise(total_k = n(),.groups = "drop") 
+count
+
+####################################
+## Moderating effect: host origin ##
+####################################
+
+# Here I only consider "juvenile" while examining the effect of host origin (wild vs captive)
+
+# Keep only juvenile rows
+keepNTV <- (intensity_data_NTV$life_stage_tested %in% "juvenile") &
+  (intensity_data_NTV$host_origin %in% c("captive", "wild"))
+
+# Subset the data
+dat_NTV <- intensity_data_NTV[keepNTV, ]
+
+# Subset the already-built variance-covariance matrix
+V_NTV <- V [keepNTV, keepNTV]
+
+# Re-generate the phylogeny matrix ###
+tree <- read.tree("tree_for_imputation.tre")
+
+# Species set from the new metadata
+sp_data <- unique(trimws(gsub("\\s+", " ", dat_NTV$host_species)))
+sp_data_treefmt <- gsub(" ", "_", sp_data)  # match typical tree tip style
+
+# Check the mismatch between species in my metadata and species in existing tree
+sp_tree_spaces <- gsub("_", " ", tree$tip.label)
+setdiff(sp_data, sp_tree_spaces) # In data but not in tree
+
+# Prune the tree: only keep species present in BOTH tree and my metadata
+tips_to_keep <- intersect(tree$tip.label, sp_data_treefmt)
+tree_juv_NTV <- keep.tip(tree, tips_to_keep) 
+
+# Force the tree to be binary
+tree_juv_NTV <- multi2di(tree_juv_NTV)
+is.binary (tree_juv_NTV) # yes, the tree is binary
+
+# Create correlation phylogeny matrix for analysis
+phylo_cor_juv_NTV <- vcv(tree_juv_NTV, cor = T)
+
+# Create a column in metadata that matches the tree’s tip-label format
+dat_NTV$species_OTL <- gsub(" ", "_", trimws(dat_NTV$host_species))
+
+## Run model
+
+## Analysis: test for inidivdual effect on juvenile origin
+M_origin_juv_NTV <- rma.mv(yi = yi, V = V_NTV,
+                       mods = ~ -1 + host_origin,
+                       random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs), 
+                       R = list(species_OTL = phylo_cor_juv_NTV), data = dat_NTV,
+                       method = "REML", test = "t")
+
+summary(M_origin_juv_NTV) 
+
+## Prediction intervals
+dat_NTV$host_origin <- droplevels(factor(dat_NTV$host_origin))
+levs <- levels(dat_NTV$host_origin)
+newdat <- data.frame(host_origin= factor(levs, levels = levs))
+Xnew <- model.matrix(~ -1 + host_origin, data = newdat)
+pred <- predict(M_origin_juv_NTV, newmods = Xnew)
+out_M_origin_juv_NTV <- data.frame(host_origin = levs, as.data.frame(pred))
+out_M_origin_juv_NTV[-1] <- round(out_M_origin_juv_NTV[-1], 4)
+out_M_origin_juv_NTV
+
+# Count k per origin for juveniles only
+
+dat_NTV %>%
+  group_by(host_origin) %>%
+  summarise(total_n = n(),
+            .groups = "drop") 
+            
+```
+
+## mortality (log risk ratio) ##
+## main analysis
+```{r}
+## Read.table
+metadata <- read.csv("metadata.csv")
+mortal <- metadata %>% filter(trait == "mortality")
+
+## Create new columns
+mortal$T_deaths <- round(mortal$mean_T_trait/100 * mortal$n_T_animals)
+mortal$T_survivors <- round(mortal$n_T_animals - mortal$T_deaths)
+
+mortal$C_deaths <- round(mortal$mean_C_trait/100 * mortal$n_C_animals)
+mortal$C_survivors <- round(mortal$n_C_animals - mortal$C_deaths)
+
+mortal <- mortal %>% filter(!(T_deaths == 0 & C_deaths == 0)) ## remove column when no deaths at all        
+
+#############################
+## log risk ratio (log RR) ##
+#############################
+
+mort_es <- escalc(
+  measure = "RR",
+  ai = T_deaths,  bi = T_survivors, # ai = event, bi = non-event
+  ci = C_deaths,  di = C_survivors, # ci = event, di = non-event
+  data = mortal,
+  add = 0.5, to = "only0") ## add 0.5 when a cell is zero 
+
+###########################################
+## Non-independence: Shared animal group ##
+###########################################
+
+# Adjust non-independence of sampling variances/co-variances
+V_mor <- vcalc(vi      = vi,
+           cluster = study_exp_id, # experiment level where shared value occurred
+           grp1    = T_ID, # cohort ID of treatment
+           grp2    = C_ID, # cohort ID of control
+           w1      = n_T_animals,
+           w2      = n_C_animals,
+           data = mort_es)
+
+# Visualize
+corrplot::corrplot(cov2cor(V_mor)) 
+
+######################################
+## Random factor: observation-level ##
+######################################
+
+mort_es$obs <- 1:nrow(mort_es)
+
+##############################
+## Random factor: phylogeny ##
+##############################
+
+# Read the tree from Pottier et al. (2024) Nature:
+# https://github.com/p-pottier/Vulnerability_amphibians_global_warming 
+
+tree <- read.tree("tree_for_imputation.tre")
+
+# Species set from the metadata
+sp_data <- mort_es$host_species %>% as.character() %>% str_squish() %>% str_trim()
+
+# Match typical tree tip style
+sp_data_treefmt <- gsub(" ", "_", sp_data)  
+
+# Check any mismatch between species in the metadata and species in existing tree
+sp_tree_spaces <- gsub("_", " ", tree$tip.label)
+setdiff(unique(sp_data), sp_tree_spaces) # In data but not in tree
+
+# Prune the tree: only keep species present in BOTH tree and my metadata
+tips_to_keep <- intersect(tree$tip.label, unique(sp_data_treefmt))
+tree_pruned_mor <- keep.tip(tree, tips_to_keep) 
+
+# Force the tree to be binary
+tree_pruned_mor <- multi2di(tree_pruned_mor)
+is.binary (tree_pruned_mor) # yes, the tree is binary
+
+# Create correlation phylogeny matrix for analysis
+phylo_cor_mor <- vcv(tree_pruned_mor, corr = TRUE)
+
+# Create a column in metadata that matches the tree’s tip-label format
+mort_es <- mort_es %>% mutate(species_OTL = gsub(" ", "_", str_squish(as.character(host_species))), species_OTL = factor(species_OTL))
+
+####################
+## Overall effect ##
+####################
+
+M3_mor <- rma.mv(yi = yi, V = V_mor,
+  mods = ~  1,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs), 
+  R = list(species_OTL = phylo_cor_mor),
+  data = mort_es,
+  method = "REML", 
+  test = "t",
+  control = list(optimizer = "optim", optmethod = "BFGS", maxit = 20000, reltol = 1e-10)) 
+
+summary(M3_mor) # final model for overall treatment effect on pathogen load
+
+## Heterogeneity
+orchaRd::i2_ml(M3_mor)
+orchaRd::cvh2_ml(M3_mor)
+orchaRd::m2_ml(M3_mor)
+
+
+##########################
+## Procedural variation ##
+##########################
+
+#### (1) Time elapsed between infection challenge and trait measurement ###
+
+# Assume higher mortality risk in controls than in treated groups when mortality is measured long after Bd exposure
+# (i.e., more time for disease to develop, so more control individuals have died).
+# A one-day increase in elapsed time → negative log RR (treatment vs control).
+
+# Time elapsed has been extracted separately for the control and treatment groups. Two values are highly correlated (because both groups were often measured together) and cannot be treated as two separate moderators in a model (an issue of collinarity). I took the average time_elapsed.
+
+# standardize (mean-centered) average time at measure 
+mort_es$avg_time_measure   <- (mort_es$T_time_post + mort_es$C_time_post)/2
+mort_es$time_measure_c <- scale(mort_es$avg_time_measure, center = TRUE, scale = FALSE)
+
+#### (2) Time interval between immunisation and pathogen challenge ###
+
+# Assuming increased mortality risk in treated groups when pathogen re-exposure occurs long after completion of treatment 
+# (i.e., treatment-induced protection wanes over time)
+# A one-day increase in the time interval → positive log RR (treatment vs control).
+
+# standardize (mean-centered) time intervals
+mort_es$time_persist_c <- scale(mort_es$time_interval, center = TRUE, scale = FALSE)
+
+# MODEL accounting for (1) time interval between infection challenge and outcome measurement and (2) time interval between immunisation and infection challenge
+M3_cov <- rma.mv(yi = yi, V = V_mor,
+  mods = ~  1 + time_persist_c + time_measure_c,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs), 
+  R = list(species_OTL = phylo_cor_mor),
+  data = mort_es,
+  method = "REML", 
+  test = "t",
+  control = list(optimizer = "optim", optmethod = "BFGS", maxit = 20000, reltol = 1e-10)) 
+
+summary(M3_cov) ## both were non-significant
+
+#############################################
+## categorical variable: immunisation type ##
+#############################################
+
+mort_es$treatment <- factor(
+  mort_es$treatment,
+  levels = c("synthetic_antiparastics", "dead_pathogen", "probiotic","live_pathogen","natural_chem"))
+
+## ANALYSIS: test for the effect for individual treatment
+
+M_treat_dead1 <- rma.mv(yi = yi, V = V_mor,
+  mods = ~  -1 + treatment,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs), 
+  R = list(species_OTL = phylo_cor_mor), data = mort_es,
+  method = "REML", test = "t",
+  control = list(optimizer = "optim", optmethod = "BFGS", maxit = 20000, reltol = 1e-10)) 
+
+summary(M_treat_dead1) 
+
+## Prediction intervals
+levs <- levels(mort_es$treatment)
+out_mor <- cbind(treatment = levs,
+                   as.data.frame(predict(M_treat_dead1,
+                     newmods = model.matrix(~ -1 + treatment,
+                       data = data.frame(treatment = levs)))))
+options(digits = 3)
+out_mor
+
+# Check k per treatment type
+count <- mort_es %>%
+  group_by(treatment) %>%
+  summarise(total_k = n(),
+            .groups = "drop")  
+count
+
+######################################
+## categorical variable: life stage ##
+######################################
+
+# Set as a factor
+mort_es$life_stage_tested <- factor(
+  mort_es$life_stage_tested,
+  levels = c("adult","juvenile", "larva"))
+
+## ANALYSIS: test for the effect for individual life stage
+M_stage_dead <- rma.mv(yi = yi, V = V_mor,
+  mods = ~  -1 + life_stage_tested,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs), 
+  R = list(species_OTL = phylo_cor_mor), data = mort_es,
+  method = "REML", test = "t",
+  control = list(optimizer = "optim", optmethod = "BFGS", maxit = 20000, reltol = 1e-10)) 
+
+summary(M_stage_dead) 
+
+## Prediction intervals
+levs <- levels(mort_es$life_stage_tested)
+out_mor_stage <- cbind(life_stage_tested = levs,
+                   as.data.frame(predict(M_stage_dead,
+                     newmods = model.matrix(~ -1 + life_stage_tested,
+                       data = data.frame(life_stage_tested = levs)))))
+options(digits = 3)
+out_mor_stage
+
+# Count the k per life stage
+count <- mort_es %>%
+  group_by(life_stage_tested) %>%
+  summarise(total_k = n(),
+            .groups = "drop")  
+count
+
+#######################################
+## categorical variable: host origin ##
+#######################################
+
+origin_count <- mort_es %>%
+  group_by(host_origin, life_stage_tested) %>%
+  summarise(total_n = n(),
+            .groups = "drop") 
+
+# 'Larvae' were only sourced from wild, so I removed "larva" group here and tested the effect of host origin (wild vs captive) for "adults" and "juveniles" only.
+
+# Keep only adult + juvenile rows
+keep1 <- mort_es$life_stage_tested %in% c("adult","juvenile")
+
+# Subset the already-built variance-covariance matrix
+V_keep1 <- V_mor[keep1, keep1]
+
+# Subset the data (random effects & phylo R will align by factor levels automatically)
+dat1 <- mort_es[keep1, ]
+
+# Set as a factor
+dat1$host_origin <- factor(
+  dat1$host_origin,
+  levels = c("captive", "wild"))
+
+# Analysis: test for individual moderating effect of origin
+M_host_dead1 <- rma.mv(yi = yi, V = V_keep1,
+                         mods = ~ -1 + host_origin,
+                         random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs), 
+                         R = list(species_OTL = phylo_cor_mor), data = dat1,
+                         method = "REML", test = "t",
+                         control = list(optimizer = "optim", optmethod = "BFGS", maxit = 20000, reltol = 1e-10)) 
+
+summary(M_host_dead1) 
+
+## Prediction intervals
+levs <- levels(dat1$host_origin)
+out_mor_origin <- cbind(host_origin = levs,
+                   as.data.frame(predict(M_host_dead1,
+                     newmods = model.matrix(~ -1 + host_origin,
+                       data = data.frame(host_origin = levs)))))
+options(digits = 3)
+out_mor_origin
+
+# Count the k per origin
+count <- dat1 %>%
+  group_by(host_origin) %>%
+  summarise(total_k = n(),
+            .groups = "drop")  
+count
+
+#########################################
+## categorical variable: Host taxonomy ##
+#########################################
+mort_es$family <- factor(
+  mort_es$family,
+  levels = c("Bufonidae", "Ranidae", "Hylidae", "Alytidae", "Cryptobranchidae", "Sirenidae", "Plethodontidae", "Pipidae", "Ambystomatidae"))
+
+## ANALYSIS: Individual effect on ech host taxonomy
+
+M_taxa_dead1 <- rma.mv(yi = yi, V = V_mor,
+  mods = ~  -1 + family,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs), 
+  R = list(species_OTL = phylo_cor_mor), data = mort_es,
+  method = "REML", test = "t",
+  control = list(optimizer = "optim", optmethod = "BFGS", maxit = 20000, reltol = 1e-10)) 
+
+summary(M_taxa_dead1) 
+
+## Prediction intervals
+levs <- gsub("^family", "", names(coef(M_taxa_dead1)))  # nice labels (optional)
+
+Xnew <- diag(length(coef(M_taxa_dead1)))
+colnames(Xnew) <- names(coef(M_taxa_dead1))
+
+pred_taxa <- predict(M_taxa_dead1, newmods = Xnew)
+options(digits = 4)
+out_taxa <- data.frame(family = levs, as.data.frame(pred_taxa))
+out_taxa
+
+# Check k per family type
+count <- mort_es %>%
+  group_by(family) %>%
+  summarise(total_k = n(),
+            .groups = "drop")  
+count
+```
+
+## mortality ##
+## checking for publication bias ##
+``` {r}
+## Nakagawa et al (2021) Methods in Ecology and Evolution
+## file:///Users/s449735/Documents/GitHub/amphib_chytrid/STEP%204%20-%20analysis/mee313724-sup-0001-Supinfo.html
+
+# Standardize (mean-centered) publication year (to test for time-lag bias)
+mort_es$year_c <- scale(mort_es$publication_year, center = TRUE, scale = FALSE)
+
+# Calculate the inverse of the "effective sample size" (to test for small-study effects)
+mort_es$inv_n_tilda <-  with(mort_es, (n_T_animals + n_C_animals)/(n_T_animals*n_C_animals))
+mort_es$sqrt_inv_n_tilda <-  with(mort_es, sqrt(inv_n_tilda))
+
+# Add sqrt__inverse_effective_sample_size to the meta-regression: M3_mor
+pub_bias_M3_mor <- rma.mv(yi = yi, V = V_mor,
+  mods = ~  1 + sqrt_inv_n_tilda + year_c,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs), 
+  R = list(species_OTL = phylo_cor_mor),
+  data = mort_es,
+  method = "REML", 
+  test = "t",
+  control = list(optimizer = "optim", optmethod = "BFGS", maxit = 20000, reltol = 1e-10)) 
+
+summary(pub_bias_M3_mor)
+
+### Funnel plots ###
+
+## NOTE: Visual inspection is not recommended in dataset with multiple level of non-independence and high heterogeneity (Nakagawa et al. 2021)
+
+# Raw residuals (observed - fitted)
+res <- residuals(M3_mor, type = "response")
+
+# Use original sampling SE for precision axis
+sei <- sqrt(M3_mor$vi)
+
+# Funnel of residuals vs precision (1/SE)
+funnel(x = res,
+       sei = sei,
+       yaxis = "seinv",
+       xlab  = "Residuals",
+       ylab  = "Precision (1/SE)")
+abline(v = 0, lty = 2)
+
+## output = 4 * 7 (portrait)
+```
+
+### mortality ###
+## Do baseline mrotality rates affect effect size of mortality? 
+```{R}
+inherent_mor <- rma.mv(yi = yi, V = V_mor,
+  mods = ~  1 + C_mortality,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs), 
+  R = list(species_OTL = phylo_cor_mor),
+  data = mort_es,
+  method = "REML", 
+  test = "t",
+  control = list(optimizer = "optim", optmethod = "BFGS", maxit = 20000, reltol = 1e-10)) 
+
+summary(inherent_mor)
+```
+
+### Infection progression ###
+## Within-experiment correlation between effect sizes of three infection outcomes
+```{r}
+# https://www.metafor-project.org/doku.php/tips:i2_multilevel_multivariate
+
+####################
+## pool datasets ##
+####################
+
+# select columns from datasets of each infection outcome that are needed for multivariate models
+mort_es1 <- mort_es %>% select(trait, yi, vi, study_id, study_exp_id, T_cohort_ID, host_species, family, treatment, life_stage_tested, host_origin, T_ID, C_ID, n_T_animals, n_C_animals)
+
+preval_es1 <- preval_es %>% select(trait, yi, vi, study_id, study_exp_id, T_cohort_ID, host_species, family, treatment, life_stage_tested, host_origin, T_ID, C_ID, n_T_animals, n_C_animals)
+
+int_es1 <- intensity_data_INC %>% select(trait, yi, vi, study_id, study_exp_id, T_cohort_ID, host_species, family, treatment, life_stage_tested, host_origin, T_ID, C_ID, n_T_animals, n_C_animals)
+
+# pool three datasets
+all_es <- bind_rows (mort_es1, preval_es1,int_es1)
+
+# Create a new column called "cohort_id", which pools the three measurements (prevalence, infection load, mortality) from the same animal cohort.
+# Note that this differs from T_ID and C_ID, which identify value of a single trait repeatedly used across different effect comparisons (e.g., shared controls).
+all_es <- all_es %>%
+  mutate(cohort_id = paste0(study_exp_id, sep = "_", T_cohort_ID))
+
+########################
+## Effect correlation ##
+########################
+
+# Model: within-EXPERIMENT correlation between effect sizes of three outcomes (cannot be estimated)
+exp_cor <- rma.mv(yi = yi, V = vi,
+                     mods = ~  -1 + trait,
+                     random = list(~ trait -1 | study_exp_id),
+                     struc = "UN",
+                     data = all_es)
+
+
+summary (exp_cor)
+confint (exp_cor)
+
+```
+            

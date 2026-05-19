@@ -1,0 +1,21 @@
+Source,ID,treatment,peak_ZE,associated_week
+Northshore,1,CONTROL,147136,5
+Northshore,2,CONTROL,232045,7
+Northshore,3,CONTROL,32285,5
+Northshore,4,CONTROL,70583,4
+Northshore,5,CONTROL,113368,7
+Northshore,6,CONTROL,10490,7
+Black Canyon,7,CONTROL,492929,5
+Black Canyon,8,CONTROL,14046,7
+Black Canyon,9,CONTROL,15583,7
+Black Canyon,10,CONTROL,36798,4
+Black Canyon,60,CONTROL,56902,7
+Northshore,13,SLL_incoluated,1039,4
+Northshore,14,SLL_incoluated,345,11
+Northshore,15,SLL_incoluated,600,5
+Northshore,16,SLL_incoluated,1344,4
+Northshore,18,SLL_incoluated,42,5
+Black Canyon,21,SLL_incoluated,36578,7
+Black Canyon,22,SLL_incoluated,237,11
+Black Canyon,23,SLL_incoluated,14989,6
+Black Canyon,24,SLL_incoluated,166,9

@@ -1,0 +1,1280 @@
+week,greenhouse,T.body,Bd_exposure,ITS,treatment
+1,shaded,21.8,chytrid,23724.94219,naive
+1,shaded,11.2,chytrid,17448.52618,naive
+1,unshaded,19.1,chytrid,30795.13875,naive
+1,shaded,25.5,chytrid,2910.880483,naive
+1,unshaded,15.3,chytrid,2330.147464,naive
+1,unshaded,14.5,chytrid,16966.6573,naive
+1,unshaded,21.5,chytrid,29046.26461,naive
+1,unshaded,17,chytrid,5716.779658,naive
+1,shaded,20.7,chytrid,1728.484984,naive
+1,shaded,12.6,chytrid,4347.67612,naive
+1,shaded,19.5,chytrid,41437.00864,naive
+1,shaded,15.5,chytrid,6233.112077,naive
+1,unshaded,17.4,chytrid,23914.2584,naive
+1,unshaded,16.3,chytrid,12615.12766,naive
+1,unshaded,20,chytrid,239.5061115,naive
+1,shaded,12.8,chytrid,2853.285277,naive
+1,shaded,12.4,chytrid,5175.748824,naive
+1,unshaded,24.2,chytrid,1602.187294,naive
+1,unshaded,21,chytrid,525.5177305,naive
+1,shaded,14.1,chytrid,25366.09409,naive
+1,unshaded,24.5,chytrid,11381.12923,naive
+1,shaded,13,chytrid,10630.9971,naive
+1,shaded,16.1,chytrid,123767.142,naive
+1,unshaded,15.4,chytrid,240.0900921,naive
+1,unshaded,17.6,chytrid,1427.291011,naive
+1,shaded,15.8,chytrid,45165.30751,naive
+1,shaded,14.7,chytrid,24.33685267,naive
+1,shaded,15.9,chytrid,146694.3264,naive
+1,shaded,20.6,chytrid,6073.577778,naive
+1,unshaded,23.2,chytrid,988.622337,naive
+1,unshaded,21.8,chytrid,4874.364107,naive
+1,unshaded,17.6,chytrid,43137.31446,naive
+1,unshaded,19.1,chytrid,36118.17218,naive
+1,unshaded,15.2,chytrid,20449.70998,naive
+1,unshaded,17.9,chytrid,0,naive
+1,shaded,13.7,chytrid,13374.26095,prior-exposure
+1,unshaded,25.8,chytrid,874.3646629,prior-exposure
+1,shaded,12,chytrid,3918.515681,prior-exposure
+1,unshaded,18.8,chytrid,19190.69097,prior-exposure
+1,unshaded,26.3,chytrid,0,prior-exposure
+1,shaded,21.6,chytrid,513.4549537,prior-exposure
+1,shaded,17.6,chytrid,0,prior-exposure
+1,unshaded,20.1,chytrid,36963.1184,prior-exposure
+1,shaded,11.7,chytrid,0,prior-exposure
+1,shaded,14.8,chytrid,28379.76333,prior-exposure
+1,shaded,21.9,chytrid,5011.111577,prior-exposure
+1,unshaded,17,chytrid,5606.511096,prior-exposure
+1,unshaded,25.4,chytrid,2226.21162,prior-exposure
+1,unshaded,16.3,chytrid,62.56977633,prior-exposure
+1,unshaded,21.4,chytrid,75896.80278,prior-exposure
+1,unshaded,25.4,chytrid,0,prior-exposure
+1,shaded,20.5,chytrid,16529.30889,prior-exposure
+1,unshaded,18,chytrid,1171.160152,prior-exposure
+1,shaded,23.5,chytrid,24626.63864,prior-exposure
+1,shaded,14.8,chytrid,88319.31082,prior-exposure
+1,unshaded,18.5,chytrid,76.97518258,prior-exposure
+1,unshaded,23.2,chytrid,0,prior-exposure
+1,shaded,19.6,chytrid,399.3610095,prior-exposure
+1,shaded,13,chytrid,0,prior-exposure
+1,unshaded,23.5,chytrid,5589.828733,prior-exposure
+1,unshaded,15.4,chytrid,23011.02453,prior-exposure
+1,unshaded,17.8,chytrid,132592.97,prior-exposure
+1,shaded,15.9,chytrid,264.1728768,prior-exposure
+1,shaded,17.2,chytrid,1301.949823,prior-exposure
+1,shaded,12.6,chytrid,0,prior-exposure
+1,unshaded,16.3,chytrid,6227.801032,prior-exposure
+1,shaded,10.6,chytrid,0,prior-exposure
+1,unshaded,17.2,chytrid,1367.538378,prior-exposure
+1,unshaded,16.5,chytrid,24393.20439,prior-exposure
+1,shaded,13.5,chytrid,13751.45797,prior-exposure
+1,unshaded,19.6,chytrid,0,naive
+1,shaded,13,chytrid,0,naive
+1,shaded,17.1,chytrid,0,naive
+1,shaded,17.9,chytrid,0,naive
+1,shaded,15.2,chytrid,0,naive
+1,unshaded,22.9,chytrid,0,naive
+1,unshaded,16.3,chytrid,0,naive
+1,unshaded,17,chytrid,0,naive
+1,unshaded,19.6,chytrid,0,naive
+1,shaded,25,chytrid,0,naive
+1,unshaded,20.1,chytrid,0,naive
+1,shaded,16.4,chytrid,0,naive
+1,unshaded,17.6,chytrid,0,naive
+1,unshaded,15,chytrid,85.32738623,naive
+1,shaded,12.9,chytrid,0,naive
+1,unshaded,20.1,chytrid,0,naive
+1,shaded,9.4,chytrid,174.8422514,naive
+1,unshaded,18.4,chytrid,0,naive
+1,unshaded,20.1,chytrid,0,naive
+1,unshaded,18.5,chytrid,0,naive
+1,shaded,11.5,chytrid,0,naive
+1,shaded,11.5,chytrid,0,naive
+1,unshaded,14.3,chytrid,0,naive
+1,shaded,NA,chytrid,0,naive
+1,unshaded,16.1,chytrid,0,naive
+1,shaded,21,chytrid,0,naive
+1,unshaded,17.1,chytrid,0,naive
+1,shaded,11.8,chytrid,0,naive
+1,unshaded,13.8,chytrid,3075.642924,naive
+1,unshaded,22,chytrid,0,naive
+1,shaded,18.3,chytrid,0,naive
+1,unshaded,21.6,chytrid,0,naive
+1,unshaded,16.8,chytrid,0,naive
+1,unshaded,20,chytrid,0,prior-exposure
+1,shaded,19.2,chytrid,0,prior-exposure
+1,unshaded,15.3,chytrid,0,prior-exposure
+1,shaded,15.2,chytrid,0,prior-exposure
+1,shaded,10.6,chytrid,0,prior-exposure
+1,unshaded,19.6,chytrid,0,prior-exposure
+1,shaded,16,chytrid,0,prior-exposure
+1,unshaded,22,chytrid,0,prior-exposure
+1,unshaded,15,chytrid,0,prior-exposure
+1,unshaded,19.3,chytrid,0,prior-exposure
+1,shaded,12.7,chytrid,0,prior-exposure
+1,unshaded,18.8,chytrid,0,prior-exposure
+1,shaded,14.4,chytrid,0,prior-exposure
+1,shaded,19.4,chytrid,0,prior-exposure
+1,unshaded,22.4,chytrid,0,prior-exposure
+1,shaded,15.3,chytrid,0,prior-exposure
+1,shaded,15.2,chytrid,0,prior-exposure
+1,shaded,13.5,chytrid,0,prior-exposure
+1,shaded,14.3,chytrid,0,prior-exposure
+1,unshaded,15.3,chytrid,0,prior-exposure
+1,unshaded,17,chytrid,0,prior-exposure
+1,shaded,21.3,chytrid,0,prior-exposure
+1,shaded,15,chytrid,0,prior-exposure
+1,shaded,19.5,chytrid,0,prior-exposure
+1,shaded,17.7,chytrid,0,prior-exposure
+1,unshaded,15.4,chytrid,1256.272053,prior-exposure
+1,shaded,17.6,chytrid,0,prior-exposure
+1,unshaded,19.7,chytrid,0,prior-exposure
+1,unshaded,20.3,chytrid,0,prior-exposure
+1,unshaded,22.4,chytrid,0,prior-exposure
+1,shaded,16.3,chytrid,0,prior-exposure
+1,shaded,21.1,chytrid,0,prior-exposure
+1,unshaded,26.3,chytrid,0,prior-exposure
+1,unshaded,17,chytrid,86.91147032,prior-exposure
+1,shaded,11.4,chytrid,0,prior-exposure
+1,unshaded,19.4,chytrid,0,prior-exposure
+2,shaded,20.8,chytrid,364480.3246,naive
+2,shaded,14.8,chytrid,141474.1408,naive
+2,unshaded,14.2,chytrid,135496.4258,naive
+2,shaded,16.1,chytrid,173401.6937,naive
+2,unshaded,21.6,chytrid,0,naive
+2,unshaded,23.6,chytrid,120333.6488,naive
+2,unshaded,20.4,chytrid,247293.2543,naive
+2,shaded,15.1,chytrid,50345.29037,naive
+2,unshaded,15,chytrid,115768.659,naive
+2,shaded,14.2,chytrid,5605.130084,naive
+2,shaded,14.5,chytrid,103485.2744,naive
+2,shaded,16.6,chytrid,69993.76902,naive
+2,unshaded,27.2,chytrid,134822.0895,naive
+2,unshaded,25.9,chytrid,12674.82707,naive
+2,unshaded,22.1,chytrid,9630.83952,naive
+2,shaded,15.6,chytrid,48778.51204,naive
+2,shaded,18.9,chytrid,4497.97689,naive
+2,unshaded,15.3,chytrid,251350.5515,naive
+2,unshaded,22.1,chytrid,16014.55022,naive
+2,shaded,20,chytrid,860516.8956,naive
+2,unshaded,20.5,chytrid,224530.4898,naive
+2,shaded,16.5,chytrid,113500.2896,naive
+2,shaded,18.8,chytrid,241126.3193,naive
+2,shaded,17.4,chytrid,17448.56252,naive
+2,shaded,16.6,chytrid,26008.62146,naive
+2,unshaded,29.2,chytrid,11092.32394,naive
+2,unshaded,15.9,chytrid,400150.9383,naive
+2,shaded,20.6,chytrid,15640.1324,naive
+2,shaded,14.5,chytrid,1617079.477,naive
+2,shaded,16.4,chytrid,36371.11186,naive
+2,unshaded,15.4,chytrid,5501.51531,naive
+2,unshaded,17.1,chytrid,1844637.139,naive
+2,unshaded,26.7,chytrid,638158.3796,naive
+2,unshaded,18.7,chytrid,714840.6535,naive
+2,unshaded,28.2,chytrid,1266.202883,naive
+2,shaded,15.5,chytrid,101248.9538,prior-exposure
+2,unshaded,19.3,chytrid,29779.76914,prior-exposure
+2,shaded,20.4,chytrid,409.5453313,prior-exposure
+2,unshaded,24.7,chytrid,160993.9611,prior-exposure
+2,unshaded,28.1,chytrid,0,prior-exposure
+2,shaded,14.5,chytrid,9360.044474,prior-exposure
+2,shaded,13.8,chytrid,1291.466919,prior-exposure
+2,unshaded,13.2,chytrid,30322.56208,prior-exposure
+2,shaded,16.2,chytrid,16487.37308,prior-exposure
+2,shaded,14.2,chytrid,80554.54661,prior-exposure
+2,shaded,16.6,chytrid,80778.187,prior-exposure
+2,unshaded,17.5,chytrid,12781.41335,prior-exposure
+2,unshaded,23.1,chytrid,28551.43866,prior-exposure
+2,unshaded,23.3,chytrid,13265.33501,prior-exposure
+2,unshaded,18.2,chytrid,725413.4562,prior-exposure
+2,unshaded,21.6,chytrid,3802.54016,prior-exposure
+2,shaded,16.4,chytrid,17189.74016,prior-exposure
+2,unshaded,32.1,chytrid,5016.287181,prior-exposure
+2,shaded,17,chytrid,738940.0274,prior-exposure
+2,shaded,16.5,chytrid,819333.1047,prior-exposure
+2,unshaded,35.2,chytrid,62.95351147,prior-exposure
+2,unshaded,17.1,chytrid,0,prior-exposure
+2,shaded,21.6,chytrid,2437.037425,prior-exposure
+2,shaded,14,chytrid,2313.855791,prior-exposure
+2,unshaded,20.1,chytrid,0,prior-exposure
+2,unshaded,18.3,chytrid,0,prior-exposure
+2,unshaded,13.9,chytrid,70376.98803,prior-exposure
+2,shaded,13.6,chytrid,54586.45781,prior-exposure
+2,unshaded,17.4,chytrid,2155.782004,prior-exposure
+2,shaded,15.2,chytrid,0,prior-exposure
+2,unshaded,23.2,chytrid,74093.71005,prior-exposure
+2,unshaded,30.9,chytrid,91134.20579,prior-exposure
+2,shaded,16.1,chytrid,189923.4711,prior-exposure
+2,shaded,17.7,chytrid,10648.01971,prior-exposure
+2,unshaded,25.9,chytrid,0,naive
+2,shaded,12.6,chytrid,2564.697279,naive
+2,shaded,16.6,chytrid,502.1395033,naive
+2,shaded,18.7,chytrid,0,naive
+2,shaded,15.9,chytrid,223.9535596,naive
+2,unshaded,17.2,chytrid,0,naive
+2,unshaded,13.6,chytrid,0,naive
+2,unshaded,14.8,chytrid,559.6080438,naive
+2,unshaded,30.2,chytrid,0,naive
+2,shaded,17.3,chytrid,0,naive
+2,unshaded,26.2,chytrid,277.9098239,naive
+2,shaded,16.4,chytrid,0,naive
+2,unshaded,13.9,chytrid,0,naive
+2,unshaded,21.8,chytrid,0,naive
+2,shaded,18,chytrid,0,naive
+2,unshaded,15,chytrid,360.0434905,naive
+2,shaded,20.4,chytrid,0,naive
+2,unshaded,23.3,chytrid,0,naive
+2,unshaded,25.9,chytrid,65.17723909,naive
+2,unshaded,14.2,chytrid,0,naive
+2,shaded,17,chytrid,0,naive
+2,shaded,17.8,chytrid,0,naive
+2,unshaded,17.7,chytrid,0,naive
+2,unshaded,17.8,chytrid,0,naive
+2,unshaded,17.9,chytrid,333.1427971,naive
+2,shaded,16.8,chytrid,83.25394805,naive
+2,unshaded,25.7,chytrid,0,naive
+2,shaded,21.8,chytrid,0,naive
+2,shaded,16.6,chytrid,66.78957223,naive
+2,unshaded,34.2,chytrid,275.0827413,naive
+2,shaded,16.9,chytrid,170.4546222,naive
+2,unshaded,23.5,chytrid,0,naive
+2,unshaded,36.7,chytrid,0,prior-exposure
+2,shaded,18.1,chytrid,0,prior-exposure
+2,unshaded,17.7,chytrid,15193.24451,prior-exposure
+2,shaded,18.7,chytrid,1264.875627,prior-exposure
+2,shaded,18.1,chytrid,0,prior-exposure
+2,unshaded,18,chytrid,0,prior-exposure
+2,shaded,15.6,chytrid,0,prior-exposure
+2,unshaded,17.7,chytrid,131.0626688,prior-exposure
+2,unshaded,23,chytrid,0,prior-exposure
+2,unshaded,15.8,chytrid,0,prior-exposure
+2,shaded,14.2,chytrid,0,prior-exposure
+2,unshaded,13.1,chytrid,4050.21212,prior-exposure
+2,shaded,16.6,chytrid,0,prior-exposure
+2,shaded,15,chytrid,390.0042506,prior-exposure
+2,unshaded,17.1,chytrid,0,prior-exposure
+2,shaded,20.4,chytrid,0,prior-exposure
+2,shaded,16.9,chytrid,0,prior-exposure
+2,shaded,22.6,chytrid,0,prior-exposure
+2,shaded,15.4,chytrid,0,prior-exposure
+2,unshaded,17.1,chytrid,0,prior-exposure
+2,unshaded,17.3,chytrid,0,prior-exposure
+2,shaded,20.1,chytrid,83.1751052,prior-exposure
+2,shaded,21.5,chytrid,0,prior-exposure
+2,shaded,16.2,chytrid,1738.329157,prior-exposure
+2,shaded,16.6,chytrid,0,prior-exposure
+2,unshaded,17.4,chytrid,75020.21865,prior-exposure
+2,shaded,14.6,chytrid,699.3508057,prior-exposure
+2,unshaded,14.8,chytrid,0,prior-exposure
+2,unshaded,19.2,chytrid,0,prior-exposure
+2,shaded,13.4,chytrid,0,prior-exposure
+2,unshaded,18.7,chytrid,0,prior-exposure
+2,unshaded,14.4,chytrid,0,prior-exposure
+2,shaded,13.2,chytrid,0,prior-exposure
+2,unshaded,20.8,chytrid,0,prior-exposure
+4,unshaded,31.1,chytrid,38155.60677,naive
+4,shaded,15.4,chytrid,144822.405,naive
+4,shaded,10.1,chytrid,433543.3954,naive
+4,unshaded,11.1,chytrid,2168042.418,naive
+4,shaded,11.6,chytrid,2022913.904,naive
+4,unshaded,16.4,chytrid,0,naive
+4,unshaded,13.9,chytrid,4049594.71,naive
+4,unshaded,18.9,chytrid,2676451.914,naive
+4,shaded,9.3,chytrid,39665.81199,naive
+4,unshaded,11.3,chytrid,74542.39364,naive
+4,shaded,16.5,chytrid,85921.02118,naive
+4,shaded,11.8,chytrid,4311.082955,naive
+4,shaded,13.7,chytrid,1195660.777,naive
+4,unshaded,17.4,chytrid,465601.1671,naive
+4,unshaded,23.5,chytrid,80965.01756,naive
+4,unshaded,28,chytrid,22027.45707,naive
+4,shaded,10.2,chytrid,154221.6113,naive
+4,shaded,12.3,chytrid,998304.8511,naive
+4,unshaded,10.5,chytrid,670107.7391,naive
+4,unshaded,22.8,chytrid,333750.9479,naive
+4,shaded,24,chytrid,2777717.709,naive
+4,unshaded,16,chytrid,26861.69028,naive
+4,shaded,15.1,chytrid,108748.5429,naive
+4,shaded,14.4,chytrid,2356075.98,naive
+4,shaded,13.4,chytrid,205797.2363,naive
+4,shaded,15.4,chytrid,9486.753538,naive
+4,unshaded,10.3,chytrid,10991.05842,naive
+4,shaded,14.3,chytrid,712334.1501,naive
+4,shaded,15.7,chytrid,25564.34254,naive
+4,shaded,11.1,chytrid,4990549.318,naive
+4,shaded,13.3,chytrid,589532.0981,naive
+4,unshaded,11.6,chytrid,173797.2035,naive
+4,unshaded,18,chytrid,13246813.52,naive
+4,unshaded,20,chytrid,2715584.918,naive
+4,unshaded,22.8,chytrid,21420.32268,naive
+4,shaded,13.3,chytrid,5134.124214,prior-exposure
+4,unshaded,16.4,chytrid,108.6077205,prior-exposure
+4,shaded,20,chytrid,241533.5448,prior-exposure
+4,unshaded,13.4,chytrid,15532.48601,prior-exposure
+4,unshaded,24.7,chytrid,0,prior-exposure
+4,shaded,10.2,chytrid,55.51715573,prior-exposure
+4,unshaded,11.3,chytrid,120762.4231,prior-exposure
+4,shaded,14.4,chytrid,26.56053745,prior-exposure
+4,shaded,10.6,chytrid,40105.20706,prior-exposure
+4,shaded,19.7,chytrid,4369.136936,prior-exposure
+4,unshaded,12.6,chytrid,551.7785045,prior-exposure
+4,unshaded,19.1,chytrid,425.4971747,prior-exposure
+4,unshaded,20.1,chytrid,0,prior-exposure
+4,unshaded,19.5,chytrid,283826.1344,prior-exposure
+4,unshaded,19.4,chytrid,0,prior-exposure
+4,shaded,15.9,chytrid,8249.925567,prior-exposure
+4,unshaded,19.5,chytrid,1068.148895,prior-exposure
+4,shaded,13.3,chytrid,80200.30199,prior-exposure
+4,shaded,10,chytrid,299899.6804,prior-exposure
+4,unshaded,31.1,chytrid,0,prior-exposure
+4,unshaded,10,chytrid,3030.013812,prior-exposure
+4,shaded,15,chytrid,0,prior-exposure
+4,shaded,21.8,chytrid,81641.2925,prior-exposure
+4,unshaded,19.4,chytrid,9788.143643,prior-exposure
+4,unshaded,18.2,chytrid,361600.3675,prior-exposure
+4,unshaded,10.9,chytrid,19224.23293,prior-exposure
+4,shaded,15,chytrid,11468.3902,prior-exposure
+4,shaded,12.3,chytrid,161.5318544,prior-exposure
+4,unshaded,18.1,chytrid,3622.447415,prior-exposure
+4,shaded,13.5,chytrid,0,prior-exposure
+4,unshaded,19.4,chytrid,116319.7904,prior-exposure
+4,unshaded,23.1,chytrid,1387.12044,prior-exposure
+4,shaded,12.7,chytrid,8682.927537,prior-exposure
+4,shaded,12.9,chytrid,1229.965736,prior-exposure
+4,unshaded,14.2,chytrid,2564.481082,naive
+4,shaded,10.7,chytrid,215628.8003,naive
+4,shaded,13.7,chytrid,5067.894699,naive
+4,shaded,11.6,chytrid,2638.660394,naive
+4,shaded,11.4,chytrid,51436.79365,naive
+4,unshaded,18,chytrid,1228.68389,naive
+4,unshaded,11.2,chytrid,66206.21558,naive
+4,unshaded,24.5,chytrid,0,naive
+4,shaded,15,chytrid,3528.793278,naive
+4,unshaded,12.7,chytrid,9310.973253,naive
+4,shaded,15.6,chytrid,0,naive
+4,unshaded,12.2,chytrid,0,naive
+4,unshaded,23.2,chytrid,996.6303177,naive
+4,shaded,17.3,chytrid,98.13429203,naive
+4,unshaded,10.4,chytrid,112358.9304,naive
+4,shaded,10.1,chytrid,1977.188162,naive
+4,unshaded,21.4,chytrid,9040.1198,naive
+4,unshaded,14.4,chytrid,52124.8802,naive
+4,unshaded,14.4,chytrid,2918.975257,naive
+4,shaded,13.9,chytrid,7062.759854,naive
+4,shaded,14.3,chytrid,0,naive
+4,unshaded,10,chytrid,117447.9873,naive
+4,shaded,15.6,chytrid,1365.751699,naive
+4,shaded,16.1,chytrid,354.9253884,naive
+4,unshaded,18.9,chytrid,3391.674629,naive
+4,shaded,14.8,chytrid,7178.248368,naive
+4,unshaded,32.4,chytrid,1107.464978,naive
+4,shaded,10,chytrid,13520.0646,naive
+4,unshaded,19.1,chytrid,86734.49727,naive
+4,unshaded,30,chytrid,0,naive
+4,unshaded,31.2,chytrid,19209.02159,prior-exposure
+4,shaded,13.8,chytrid,4993.433247,prior-exposure
+4,unshaded,18.5,chytrid,290965.136,prior-exposure
+4,shaded,10.7,chytrid,60600.4683,prior-exposure
+4,shaded,14.4,chytrid,0,prior-exposure
+4,unshaded,32.5,chytrid,0,prior-exposure
+4,unshaded,16.9,chytrid,153471.5551,prior-exposure
+4,unshaded,24.4,chytrid,64187.04254,prior-exposure
+4,unshaded,20.8,chytrid,153.2868319,prior-exposure
+4,unshaded,18.8,chytrid,9540.203831,prior-exposure
+4,shaded,15.9,chytrid,0,prior-exposure
+4,unshaded,11.6,chytrid,195.7165467,prior-exposure
+4,shaded,15.9,chytrid,203.1965191,prior-exposure
+4,shaded,12.1,chytrid,38907.83508,prior-exposure
+4,unshaded,15.3,chytrid,856.5069773,prior-exposure
+4,shaded,16.4,chytrid,0,prior-exposure
+4,shaded,12.8,chytrid,114332.2793,prior-exposure
+4,shaded,14.7,chytrid,939.1339177,prior-exposure
+4,shaded,7.5,chytrid,35639.67486,prior-exposure
+4,unshaded,29.8,chytrid,0,prior-exposure
+4,unshaded,11.5,chytrid,99.91191387,prior-exposure
+4,shaded,9.2,chytrid,7502.009,prior-exposure
+4,shaded,10.1,chytrid,2939.941947,prior-exposure
+4,shaded,14.3,chytrid,19017.65233,prior-exposure
+4,shaded,15.1,chytrid,69326.6106,prior-exposure
+4,unshaded,20.1,chytrid,2024.497,prior-exposure
+4,shaded,11.8,chytrid,217382.3903,prior-exposure
+4,unshaded,10.7,chytrid,730.4896151,prior-exposure
+4,unshaded,18.4,chytrid,9041.824852,prior-exposure
+4,shaded,17.2,chytrid,9456.140014,prior-exposure
+4,unshaded,12.4,chytrid,2114.307757,prior-exposure
+4,shaded,19.7,chytrid,761.2029525,prior-exposure
+4,unshaded,24.8,chytrid,178.5305489,prior-exposure
+6,unshaded,19.5,chytrid,14463.74804,naive
+6,unshaded,11.6,chytrid,9159.504583,naive
+6,shaded,19.1,chytrid,649922.4336,naive
+6,unshaded,20.6,chytrid,178093.6399,naive
+6,unshaded,17,chytrid,7049.980062,naive
+6,unshaded,NA,chytrid,NA,naive
+6,unshaded,15.2,chytrid,126346.8313,naive
+6,shaded,26.6,chytrid,282281.7642,naive
+6,unshaded,13.9,chytrid,15506.60406,naive
+6,shaded,18.5,chytrid,267043.7743,naive
+6,shaded,11.2,chytrid,28534821.15,naive
+6,unshaded,14.4,chytrid,31592.3714,naive
+6,unshaded,13.3,chytrid,27815.39305,naive
+6,unshaded,29,chytrid,2744.19137,naive
+6,shaded,19.4,chytrid,1519428.13,naive
+6,shaded,15.4,chytrid,8213475.495,naive
+6,unshaded,12.7,chytrid,57306.08546,naive
+6,unshaded,27.9,chytrid,91.63005234,naive
+6,shaded,18.6,chytrid,670480.3894,naive
+6,unshaded,17.3,chytrid,146866.1684,naive
+6,shaded,NA,chytrid,NA,naive
+6,shaded,21.5,chytrid,840326.4855,naive
+6,shaded,15.1,chytrid,682099.3839,naive
+6,shaded,13,chytrid,28333.02526,naive
+6,shaded,25.1,chytrid,207425.7914,naive
+6,shaded,NA,chytrid,NA,naive
+6,shaded,NA,chytrid,NA,naive
+6,unshaded,NA,chytrid,NA,naive
+6,unshaded,32.7,chytrid,0,naive
+6,unshaded,19.6,chytrid,20495539.89,naive
+6,unshaded,29,chytrid,58257.53407,naive
+6,unshaded,14.3,chytrid,188032.7088,prior-exposure
+6,shaded,16.6,chytrid,46037.89879,prior-exposure
+6,unshaded,13.5,chytrid,0,prior-exposure
+6,shaded,15.3,chytrid,22232.82683,prior-exposure
+6,unshaded,25.5,chytrid,167.4687668,prior-exposure
+6,unshaded,25.2,chytrid,0,prior-exposure
+6,shaded,28.6,chytrid,203.3653236,prior-exposure
+6,unshaded,10.1,chytrid,24527.86123,prior-exposure
+6,shaded,17.9,chytrid,72621.17458,prior-exposure
+6,shaded,12.8,chytrid,96434.07144,prior-exposure
+6,shaded,25.8,chytrid,755.1526295,prior-exposure
+6,unshaded,12.1,chytrid,3191.186831,prior-exposure
+6,unshaded,13.6,chytrid,2831.260906,prior-exposure
+6,unshaded,13.8,chytrid,1241.875949,prior-exposure
+6,unshaded,26.6,chytrid,15475.11021,prior-exposure
+6,shaded,17.9,chytrid,18982.18229,prior-exposure
+6,unshaded,29.8,chytrid,681.6065676,prior-exposure
+6,shaded,16.5,chytrid,441468.2663,prior-exposure
+6,shaded,12.6,chytrid,629160.5642,prior-exposure
+6,unshaded,22.7,chytrid,0,prior-exposure
+6,unshaded,12.7,chytrid,435.1206597,prior-exposure
+6,shaded,18.1,chytrid,0,prior-exposure
+6,shaded,21.3,chytrid,10205.0009,prior-exposure
+6,unshaded,36,chytrid,6487.938572,prior-exposure
+6,unshaded,17.1,chytrid,1125749.28,prior-exposure
+6,shaded,23.5,chytrid,892.2093548,prior-exposure
+6,shaded,12.5,chytrid,10127.90569,prior-exposure
+6,shaded,NA,chytrid,NA,prior-exposure
+6,unshaded,15.3,chytrid,0,prior-exposure
+6,unshaded,24.9,chytrid,773220.9899,prior-exposure
+6,unshaded,21.6,chytrid,915.6362375,prior-exposure
+6,shaded,15,chytrid,4977.563354,prior-exposure
+6,unshaded,13.8,chytrid,202734.1365,naive
+6,unshaded,10.8,chytrid,1539177.73,naive
+6,shaded,12.9,chytrid,1460771.539,naive
+6,shaded,22.3,chytrid,106043.2046,naive
+6,shaded,22.4,chytrid,371477.5332,naive
+6,shaded,16.5,chytrid,2294370.234,naive
+6,unshaded,16.2,chytrid,326654.9112,naive
+6,unshaded,22.7,chytrid,0,naive
+6,shaded,19.3,chytrid,95905.64197,naive
+6,unshaded,25.2,chytrid,5848.593045,naive
+6,shaded,17,chytrid,65967.05041,naive
+6,unshaded,14.4,chytrid,208873.732,naive
+6,unshaded,26,chytrid,13388.98767,naive
+6,shaded,27.5,chytrid,8302.687109,naive
+6,shaded,14.4,chytrid,56593.74991,naive
+6,unshaded,16.1,chytrid,67466.03447,naive
+6,unshaded,30.8,chytrid,1321835.412,naive
+6,unshaded,15.6,chytrid,34422.21026,naive
+6,shaded,14.4,chytrid,136838.5182,naive
+6,shaded,17.6,chytrid,7406.31211,naive
+6,unshaded,12.3,chytrid,1303858.287,naive
+6,unshaded,26.4,chytrid,2651261.765,naive
+6,shaded,16.5,chytrid,45465.94121,naive
+6,shaded,19.8,chytrid,16135.94026,naive
+6,unshaded,13.7,chytrid,22666.59769,naive
+6,shaded,16.5,chytrid,108149.1072,naive
+6,unshaded,30.7,chytrid,9870.096876,naive
+6,shaded,12.4,chytrid,1574774.549,naive
+6,unshaded,13.7,chytrid,11674.33496,naive
+6,unshaded,24.3,chytrid,85.37893178,naive
+6,unshaded,10.3,chytrid,496.390604,prior-exposure
+6,unshaded,13.3,chytrid,43871.10312,prior-exposure
+6,unshaded,26.7,chytrid,1093.706004,prior-exposure
+6,shaded,19.9,chytrid,11241.6171,prior-exposure
+6,unshaded,26.1,chytrid,4039421.307,prior-exposure
+6,shaded,12.8,chytrid,620366.34,prior-exposure
+6,shaded,24.7,chytrid,6755.135311,prior-exposure
+6,unshaded,25.4,chytrid,423.005237,prior-exposure
+6,shaded,18.5,chytrid,2470.363048,prior-exposure
+6,unshaded,NA,chytrid,NA,prior-exposure
+6,unshaded,12.7,chytrid,33406.54547,prior-exposure
+6,unshaded,27.9,chytrid,768.7304422,prior-exposure
+6,unshaded,13.3,chytrid,236514.7471,prior-exposure
+6,shaded,14.7,chytrid,15161.11199,prior-exposure
+6,shaded,20.8,chytrid,688.7494882,prior-exposure
+6,shaded,17.9,chytrid,6804.454923,prior-exposure
+6,unshaded,16.2,chytrid,4439.669659,prior-exposure
+6,shaded,17.4,chytrid,4836.033561,prior-exposure
+6,shaded,13.6,chytrid,1698014.047,prior-exposure
+6,shaded,23.9,chytrid,3267.859552,prior-exposure
+6,shaded,20.9,chytrid,74409.13815,prior-exposure
+6,unshaded,31.3,chytrid,0,prior-exposure
+6,unshaded,14.8,chytrid,3749.526147,prior-exposure
+6,unshaded,25.1,chytrid,915977.8674,prior-exposure
+6,shaded,15.2,chytrid,104261.039,prior-exposure
+6,shaded,14.7,chytrid,11986.64374,prior-exposure
+6,shaded,26,chytrid,148847.5225,prior-exposure
+6,shaded,12.2,chytrid,247765.7156,prior-exposure
+6,unshaded,32.5,chytrid,348.8844387,prior-exposure
+6,shaded,16.2,chytrid,3448398.257,prior-exposure
+6,unshaded,33,chytrid,1590.151126,prior-exposure
+6,shaded,21,chytrid,17851.75243,prior-exposure
+6,unshaded,26.5,chytrid,38264.24933,prior-exposure
+6,unshaded,14,chytrid,85677.4862,prior-exposure
+6,shaded,18,chytrid,5307.085465,prior-exposure
+10,shaded,13.8,chytrid,18566.64776,naive
+10,shaded,15.5,chytrid,26989.78822,naive
+10,unshaded,19.5,chytrid,188.4898321,naive
+10,shaded,15.5,chytrid,9106.21965,naive
+10,unshaded,15.1,chytrid,0,naive
+10,unshaded,23.9,chytrid,4496.530038,naive
+10,shaded,17.3,chytrid,4585.219358,naive
+10,unshaded,25,chytrid,0,naive
+10,shaded,15.4,chytrid,0,naive
+10,unshaded,14.1,chytrid,0,naive
+10,unshaded,22.4,chytrid,0,naive
+10,unshaded,13.2,chytrid,0,naive
+10,shaded,15.9,chytrid,464197.1611,naive
+10,shaded,18.4,chytrid,0,naive
+10,unshaded,22.3,chytrid,0,naive
+10,unshaded,13.9,chytrid,0,naive
+10,shaded,16.8,chytrid,20897.55552,naive
+10,unshaded,23.1,chytrid,2362.644053,naive
+10,shaded,14.9,chytrid,6482.135729,naive
+10,unshaded,23.4,chytrid,3141.16824,naive
+10,shaded,20.3,chytrid,16256.26541,naive
+10,shaded,20.5,chytrid,0,naive
+10,unshaded,27.1,chytrid,1172.367103,naive
+10,unshaded,17.1,chytrid,0,naive
+10,shaded,20.8,chytrid,0,prior-exposure
+10,unshaded,33.3,chytrid,1340.611112,prior-exposure
+10,shaded,22.7,chytrid,0,prior-exposure
+10,unshaded,13.9,chytrid,0,prior-exposure
+10,unshaded,14.7,chytrid,0,prior-exposure
+10,shaded,17.5,chytrid,649.3683888,prior-exposure
+10,unshaded,25.2,chytrid,0,prior-exposure
+10,shaded,17.1,chytrid,15664.96986,prior-exposure
+10,shaded,16.7,chytrid,2619.445159,prior-exposure
+10,shaded,16.3,chytrid,146.6707954,prior-exposure
+10,unshaded,26,chytrid,464.2834898,prior-exposure
+10,unshaded,28.4,chytrid,1734.299624,prior-exposure
+10,unshaded,24,chytrid,0,prior-exposure
+10,unshaded,13.6,chytrid,8109.376159,prior-exposure
+10,unshaded,17.4,chytrid,0,prior-exposure
+10,shaded,14.7,chytrid,0,prior-exposure
+10,unshaded,14.6,chytrid,0,prior-exposure
+10,shaded,15.8,chytrid,0,prior-exposure
+10,shaded,13.7,chytrid,16946.62458,prior-exposure
+10,unshaded,12.8,chytrid,0,prior-exposure
+10,unshaded,24.8,chytrid,171.7225986,prior-exposure
+10,shaded,14.6,chytrid,0,prior-exposure
+10,shaded,18.7,chytrid,0,prior-exposure
+10,unshaded,16.5,chytrid,174.5508166,prior-exposure
+10,unshaded,14.8,chytrid,0,prior-exposure
+10,unshaded,25.6,chytrid,0,prior-exposure
+10,shaded,18.6,chytrid,0,prior-exposure
+10,shaded,22.8,chytrid,0,prior-exposure
+10,unshaded,28.7,chytrid,0,prior-exposure
+10,shaded,19.4,chytrid,0,prior-exposure
+10,unshaded,15.1,chytrid,0,prior-exposure
+10,unshaded,14.9,chytrid,0,prior-exposure
+10,shaded,19.6,chytrid,557.13621,prior-exposure
+10,shaded,24.7,chytrid,154.5898084,prior-exposure
+10,shaded,18.8,chytrid,5838.728632,naive
+10,shaded,15.8,chytrid,2031.881238,naive
+10,shaded,14.5,chytrid,95941.0482,naive
+10,shaded,21.3,chytrid,2179.227056,naive
+10,unshaded,25.8,chytrid,2421.64731,naive
+10,unshaded,24.8,chytrid,3564.430729,naive
+10,unshaded,14.2,chytrid,328.2878729,naive
+10,shaded,17.1,chytrid,28447.21056,naive
+10,unshaded,33.1,chytrid,36273.54876,naive
+10,unshaded,14.1,chytrid,0,naive
+10,shaded,21.9,chytrid,1275.109515,naive
+10,unshaded,22.9,chytrid,99099.77771,naive
+10,shaded,15.4,chytrid,5418.1969,naive
+10,unshaded,33.9,chytrid,708.8987881,naive
+10,unshaded,14.5,chytrid,1869.389993,naive
+10,unshaded,23.8,chytrid,0,naive
+10,shaded,22.6,chytrid,11801.17762,naive
+10,shaded,16.3,chytrid,16087.08474,naive
+10,unshaded,25.8,chytrid,2659.844543,naive
+10,unshaded,22.9,chytrid,0,naive
+10,shaded,16.9,chytrid,3771.770712,naive
+10,shaded,23.7,chytrid,5216.536487,naive
+10,unshaded,25.8,chytrid,0,naive
+10,shaded,16.3,chytrid,37834.71602,naive
+10,unshaded,15.3,chytrid,143.4290299,naive
+10,unshaded,22.3,chytrid,172.5206354,naive
+10,unshaded,13.8,chytrid,4598.994045,naive
+10,unshaded,14.2,chytrid,179.9760692,prior-exposure
+10,shaded,18.3,chytrid,2563.708504,prior-exposure
+10,shaded,19.3,chytrid,0,prior-exposure
+10,shaded,14.5,chytrid,12706.7574,prior-exposure
+10,unshaded,14,chytrid,1257.947387,prior-exposure
+10,shaded,20.6,chytrid,0,prior-exposure
+10,unshaded,27.4,chytrid,1783.56169,prior-exposure
+10,unshaded,14.6,chytrid,0,prior-exposure
+10,unshaded,22.8,chytrid,1253.459916,prior-exposure
+10,shaded,22.9,chytrid,490.1740487,prior-exposure
+10,unshaded,23.7,chytrid,0,prior-exposure
+10,shaded,17.1,chytrid,980.8727655,prior-exposure
+10,shaded,16.4,chytrid,0,prior-exposure
+10,unshaded,22.8,chytrid,92.84287769,prior-exposure
+10,shaded,18.8,chytrid,0,prior-exposure
+10,shaded,18.7,chytrid,3622.405909,prior-exposure
+10,shaded,21.4,chytrid,2828.745252,prior-exposure
+10,unshaded,13,chytrid,14066.55712,prior-exposure
+10,unshaded,23.2,chytrid,0,prior-exposure
+10,unshaded,15.2,chytrid,0,prior-exposure
+10,shaded,22.8,chytrid,0,prior-exposure
+10,shaded,20.5,chytrid,25908.06944,prior-exposure
+10,shaded,14.5,chytrid,5487.051993,prior-exposure
+10,unshaded,16.7,chytrid,0,prior-exposure
+10,shaded,18.8,chytrid,46106.7276,prior-exposure
+10,unshaded,29.4,chytrid,262.7180302,prior-exposure
+10,unshaded,15.9,chytrid,1550.24985,prior-exposure
+10,shaded,18.6,chytrid,1355.848767,prior-exposure
+10,unshaded,17.2,chytrid,976.2472093,prior-exposure
+10,unshaded,19.5,chytrid,4916.907434,prior-exposure
+10,shaded,15.4,chytrid,737.4700651,prior-exposure
+15,shaded,19,chytrid,0,naive
+15,shaded,22,chytrid,177.5403736,naive
+15,unshaded,22.7,chytrid,0,naive
+15,shaded,20.3,chytrid,0,naive
+15,unshaded,20.1,chytrid,0,naive
+15,unshaded,22,chytrid,0,naive
+15,shaded,22.7,chytrid,0,naive
+15,unshaded,24.3,chytrid,0,naive
+15,shaded,21.4,chytrid,0,naive
+15,unshaded,20.8,chytrid,0,naive
+15,unshaded,21.7,chytrid,0,naive
+15,unshaded,20.8,chytrid,0,naive
+15,shaded,20.5,chytrid,0,naive
+15,shaded,21,chytrid,0,naive
+15,unshaded,22.7,chytrid,0,naive
+15,unshaded,21.3,chytrid,0,naive
+15,shaded,21.3,chytrid,0,naive
+15,unshaded,21.6,chytrid,0,naive
+15,shaded,20.5,chytrid,0,naive
+15,shaded,20.3,chytrid,138.1976801,naive
+15,shaded,19,chytrid,0,naive
+15,unshaded,22.7,chytrid,0,naive
+15,shaded,20.5,chytrid,0,naive
+15,shaded,21.6,chytrid,0,naive
+15,unshaded,23,chytrid,0,naive
+15,unshaded,19.8,chytrid,0,naive
+15,shaded,21.7,chytrid,0,prior-exposure
+15,shaded,21.6,chytrid,0,prior-exposure
+15,unshaded,19.9,chytrid,0,prior-exposure
+15,unshaded,20.6,chytrid,0,prior-exposure
+15,shaded,20.5,chytrid,0,prior-exposure
+15,unshaded,22.7,chytrid,3631.491092,prior-exposure
+15,shaded,20.5,chytrid,0,prior-exposure
+15,shaded,23.3,chytrid,0,prior-exposure
+15,shaded,21,chytrid,0,prior-exposure
+15,unshaded,23.5,chytrid,0,prior-exposure
+15,unshaded,21.9,chytrid,0,prior-exposure
+15,unshaded,21.9,chytrid,0,prior-exposure
+15,unshaded,20.8,chytrid,0,prior-exposure
+15,shaded,21.4,chytrid,0,prior-exposure
+15,unshaded,20.7,chytrid,0,prior-exposure
+15,shaded,21,chytrid,0,prior-exposure
+15,unshaded,20.5,chytrid,0,prior-exposure
+15,shaded,20.5,chytrid,0,prior-exposure
+15,shaded,19.3,chytrid,0,prior-exposure
+15,unshaded,20.1,chytrid,0,prior-exposure
+15,unshaded,22,chytrid,0,prior-exposure
+15,shaded,20.7,chytrid,0,prior-exposure
+15,shaded,20.6,chytrid,0,prior-exposure
+15,unshaded,20.2,chytrid,0,prior-exposure
+15,shaded,19,chytrid,0,prior-exposure
+15,shaded,23.6,chytrid,0,prior-exposure
+15,unshaded,22,chytrid,0,prior-exposure
+15,shaded,21.3,chytrid,0,prior-exposure
+15,unshaded,21.2,chytrid,0,prior-exposure
+15,unshaded,20,chytrid,0,prior-exposure
+15,shaded,19.5,chytrid,0,prior-exposure
+15,shaded,20.7,chytrid,0,prior-exposure
+15,shaded,24.6,chytrid,0,naive
+15,shaded,19,chytrid,255.2989032,naive
+15,shaded,20.1,chytrid,96.03320807,naive
+15,shaded,19.9,chytrid,0,naive
+15,unshaded,22.6,chytrid,0,naive
+15,unshaded,23.3,chytrid,0,naive
+15,unshaded,22.1,chytrid,77.30757561,naive
+15,unshaded,21.8,chytrid,0,naive
+15,shaded,21.1,chytrid,0,naive
+15,unshaded,21,chytrid,0,naive
+15,shaded,20.5,chytrid,0,naive
+15,unshaded,22.7,chytrid,0,naive
+15,unshaded,20.1,chytrid,0,naive
+15,shaded,21.5,chytrid,836.280822,naive
+15,unshaded,22.7,chytrid,0,naive
+15,shaded,20.5,chytrid,3913.693934,naive
+15,unshaded,22,chytrid,0,naive
+15,unshaded,20.7,chytrid,0,naive
+15,unshaded,22.7,chytrid,0,naive
+15,shaded,21.6,chytrid,0,naive
+15,shaded,20.5,chytrid,1090.583321,naive
+15,unshaded,22.9,chytrid,0,naive
+15,unshaded,22.7,chytrid,0,naive
+15,shaded,20.5,chytrid,0,naive
+15,shaded,21.8,chytrid,0,naive
+15,unshaded,22.2,chytrid,0,naive
+15,shaded,19,chytrid,70.23614602,naive
+15,unshaded,20.1,chytrid,114.09653,naive
+15,unshaded,22,chytrid,0,naive
+15,unshaded,20.7,chytrid,0,naive
+15,unshaded,20.1,chytrid,0,previous infection
+15,unshaded,20.1,chytrid,0,prior-exposure
+15,shaded,21.1,chytrid,255.0207906,prior-exposure
+15,shaded,23.6,chytrid,0,prior-exposure
+15,shaded,22.2,chytrid,0,prior-exposure
+15,unshaded,20.1,chytrid,0,prior-exposure
+15,shaded,21,chytrid,2043.847147,prior-exposure
+15,unshaded,22.1,chytrid,0,prior-exposure
+15,unshaded,23.2,chytrid,0,prior-exposure
+15,shaded,21.3,chytrid,0,prior-exposure
+15,unshaded,21.3,chytrid,0,prior-exposure
+15,shaded,21.2,chytrid,0,prior-exposure
+15,shaded,21.1,chytrid,0,prior-exposure
+15,unshaded,23.5,chytrid,0,prior-exposure
+15,shaded,21.5,chytrid,0,prior-exposure
+15,shaded,21,chytrid,0,prior-exposure
+15,shaded,20.5,chytrid,0,prior-exposure
+15,unshaded,20.8,chytrid,0,prior-exposure
+15,unshaded,22.7,chytrid,0,prior-exposure
+15,unshaded,19.8,chytrid,0,prior-exposure
+15,shaded,21.9,chytrid,0,prior-exposure
+15,shaded,20.3,chytrid,0,prior-exposure
+15,shaded,21,chytrid,0,prior-exposure
+15,unshaded,20.6,chytrid,802.8469752,prior-exposure
+15,shaded,21.9,chytrid,152.9780837,prior-exposure
+15,unshaded,22.8,chytrid,0,prior-exposure
+15,unshaded,22.6,chytrid,5442.897227,prior-exposure
+15,unshaded,21,chytrid,0,prior-exposure
+15,unshaded,24.6,chytrid,311.5321045,prior-exposure
+15,shaded,20.3,chytrid,0,prior-exposure
+8,shaded,12.4,chytrid,23313.53637,naive
+8,shaded,18.3,chytrid,193340.9085,naive
+8,unshaded,19.8,chytrid,45740.49289,naive
+8,shaded,13.9,chytrid,9261.614677,naive
+8,unshaded,16.9,chytrid,0,naive
+8,unshaded,26.1,chytrid,5267.259674,naive
+8,shaded,18.2,chytrid,146449.1104,naive
+8,unshaded,24.6,chytrid,1380.814444,naive
+8,shaded,18.7,chytrid,11088.35321,naive
+8,unshaded,24.4,chytrid,0,naive
+8,unshaded,12.4,chytrid,6999.761463,naive
+8,shaded,16.4,chytrid,3593266.192,naive
+8,shaded,14.6,chytrid,307896.4305,naive
+8,unshaded,20.8,chytrid,227.0756815,naive
+8,unshaded,23.1,chytrid,3919.253382,naive
+8,shaded,17,chytrid,79328.2809,naive
+8,unshaded,27.4,chytrid,93.25856362,naive
+8,shaded,16.7,chytrid,986.2355061,naive
+8,shaded,12.4,chytrid,267227.7122,naive
+8,unshaded,19.8,chytrid,15266.27506,naive
+8,shaded,19.7,chytrid,7387.699412,naive
+8,shaded,16.1,chytrid,28061.15287,naive
+8,unshaded,22.5,chytrid,11257.0827,naive
+8,unshaded,23.1,chytrid,93.17925693,naive
+8,unshaded,16.2,chytrid,0,naive
+8,shaded,17.8,chytrid,3049.292519,prior-exposure
+8,unshaded,36.5,chytrid,0,prior-exposure
+8,shaded,16.9,chytrid,1613.865996,prior-exposure
+8,unshaded,12.6,chytrid,0,prior-exposure
+8,unshaded,16.2,chytrid,0,prior-exposure
+8,shaded,14.8,chytrid,632.8413711,prior-exposure
+8,unshaded,21.4,chytrid,0,prior-exposure
+8,shaded,15.4,chytrid,65491.32743,prior-exposure
+8,shaded,14.8,chytrid,76540.34086,prior-exposure
+8,shaded,14.4,chytrid,0,prior-exposure
+8,unshaded,20.2,chytrid,0,prior-exposure
+8,unshaded,27.9,chytrid,0,prior-exposure
+8,unshaded,24.4,chytrid,1094.881973,prior-exposure
+8,unshaded,23.4,chytrid,2129.393613,prior-exposure
+8,unshaded,16.4,chytrid,219.0733622,prior-exposure
+8,shaded,12.9,chytrid,5521.10018,prior-exposure
+8,unshaded,16.2,chytrid,0,prior-exposure
+8,shaded,15,chytrid,0,prior-exposure
+8,shaded,15.5,chytrid,287641.2909,prior-exposure
+8,unshaded,14.4,chytrid,0,prior-exposure
+8,unshaded,31.8,chytrid,36.04434349,prior-exposure
+8,shaded,13.8,chytrid,0,prior-exposure
+8,shaded,19.6,chytrid,119.3904961,prior-exposure
+8,unshaded,15.8,chytrid,158.9797206,prior-exposure
+8,unshaded,12.9,chytrid,203031.8771,prior-exposure
+8,unshaded,20.3,chytrid,0,prior-exposure
+8,shaded,13.4,chytrid,119.3623503,prior-exposure
+8,shaded,20.4,chytrid,3485.834702,prior-exposure
+8,unshaded,33.8,chytrid,140.1159448,prior-exposure
+8,shaded,22.2,chytrid,429.490312,prior-exposure
+8,unshaded,16.8,chytrid,0,prior-exposure
+8,unshaded,14.3,chytrid,138.5940615,prior-exposure
+8,shaded,17.6,chytrid,1443.664602,prior-exposure
+8,shaded,14.6,chytrid,29014.50436,naive
+8,shaded,12.1,chytrid,2546.916416,naive
+8,shaded,14.2,chytrid,8385.388207,naive
+8,shaded,13.1,chytrid,188561.5669,naive
+8,unshaded,19.4,chytrid,140144.2148,naive
+8,unshaded,22.2,chytrid,2337.165186,naive
+8,unshaded,13.9,chytrid,3638.081391,naive
+8,shaded,12.5,chytrid,1796.375029,naive
+8,unshaded,14.5,chytrid,103.9527611,naive
+8,shaded,16.7,chytrid,36025.92693,naive
+8,unshaded,24.7,chytrid,1223.056361,naive
+8,unshaded,14.6,chytrid,0,naive
+8,shaded,21.3,chytrid,40109.17073,naive
+8,unshaded,20.1,chytrid,123569.0817,naive
+8,shaded,15.4,chytrid,198491.2233,naive
+8,unshaded,30.9,chytrid,4502.10146,naive
+8,unshaded,13.6,chytrid,4547771.903,naive
+8,unshaded,28.6,chytrid,0,naive
+8,shaded,18.6,chytrid,162152.3269,naive
+8,shaded,17.8,chytrid,164777.9204,naive
+8,unshaded,22.2,chytrid,12923.36974,naive
+8,unshaded,23.3,chytrid,2152.889927,naive
+8,shaded,13.1,chytrid,65470.77071,naive
+8,shaded,19.9,chytrid,68455.96325,naive
+8,unshaded,21.2,chytrid,3973.598282,naive
+8,shaded,12.4,chytrid,14460.62933,naive
+8,unshaded,16.3,chytrid,0,naive
+8,shaded,17.3,chytrid,45509788.65,naive
+8,unshaded,31.4,chytrid,90.14694386,naive
+8,unshaded,13.7,chytrid,531.0029335,naive
+8,unshaded,15,chytrid,187.7929554,prior-exposure
+8,shaded,16.1,chytrid,714.0367534,prior-exposure
+8,shaded,15.2,chytrid,14277.87901,prior-exposure
+8,unshaded,15.9,chytrid,0,prior-exposure
+8,shaded,21.2,chytrid,191.4768394,prior-exposure
+8,unshaded,25.6,chytrid,6135.736264,prior-exposure
+8,unshaded,16.8,chytrid,0,prior-exposure
+8,unshaded,21.8,chytrid,704.8498793,prior-exposure
+8,shaded,15.4,chytrid,3118.269446,prior-exposure
+8,unshaded,23.1,chytrid,0,prior-exposure
+8,shaded,14.9,chytrid,101023.7921,prior-exposure
+8,shaded,15.5,chytrid,1224.290283,prior-exposure
+8,unshaded,23.8,chytrid,1408.366992,prior-exposure
+8,shaded,17.7,chytrid,1190.095559,prior-exposure
+8,shaded,14.3,chytrid,1065.46155,prior-exposure
+8,shaded,19.2,chytrid,109610.0977,prior-exposure
+8,unshaded,18,chytrid,0,prior-exposure
+8,unshaded,13.9,chytrid,64069.59924,prior-exposure
+8,shaded,17.1,chytrid,11800.10485,prior-exposure
+8,shaded,19,chytrid,12509.37308,prior-exposure
+8,shaded,12.6,chytrid,161662.6961,prior-exposure
+8,shaded,13,chytrid,153352.5082,prior-exposure
+8,unshaded,12.7,chytrid,0,prior-exposure
+8,shaded,15.5,chytrid,1564676.6,prior-exposure
+8,unshaded,20.8,chytrid,0,prior-exposure
+8,unshaded,18.4,chytrid,869.6060481,prior-exposure
+8,unshaded,14.9,chytrid,754.2903978,prior-exposure
+8,unshaded,21.1,chytrid,0,prior-exposure
+8,shaded,20.6,chytrid,2029.404842,prior-exposure
+1,unshaded,12.4,control,0,naive
+1,unshaded,10.5,control,0,naive
+1,unshaded,15.9,control,0,naive
+1,unshaded,17.2,control,0,naive
+1,shaded,12.6,control,0,naive
+1,shaded,7.5,control,0,naive
+1,unshaded,17.9,control,0,naive
+1,unshaded,15.6,control,0,naive
+1,unshaded,16.7,control,0,naive
+1,shaded,10.9,control,0,naive
+1,shaded,8.7,control,0,naive
+1,shaded,11.3,control,0,naive
+1,shaded,7.5,control,0,naive
+1,unshaded,13.2,control,0,naive
+1,unshaded,11.3,control,0,naive
+1,shaded,12.8,control,0,naive
+1,unshaded,13.6,control,0,naive
+1,shaded,12.5,control,0,naive
+1,unshaded,12.8,control,0,naive
+1,unshaded,12.9,control,0,naive
+1,shaded,11.2,control,0,naive
+1,unshaded,14.8,control,0,naive
+1,shaded,12,control,0,naive
+1,shaded,10.8,control,0,naive
+1,unshaded,17,control,0,naive
+1,shaded,10.5,control,0,naive
+1,unshaded,17.2,control,0,naive
+1,unshaded,17.3,control,0,naive
+1,unshaded,12.6,control,0,naive
+1,shaded,11.4,control,0,naive
+1,unshaded,13.2,control,0,naive
+1,unshaded,14.5,control,0,naive
+1,shaded,10.8,control,0,naive
+1,shaded,13.5,control,0,previous infection
+1,unshaded,25.7,control,0,previous infection
+1,shaded,15.2,control,0,previous infection
+1,shaded,12.6,control,0,previous infection
+1,shaded,12.6,control,0,previous infection
+1,shaded,20.4,control,0,previous infection
+1,unshaded,18.2,control,0,previous infection
+1,shaded,12.7,control,0,previous infection
+1,shaded,13.5,control,0,previous infection
+1,shaded,12.6,control,0,previous infection
+1,shaded,11.7,control,0,previous infection
+1,shaded,19,control,0,previous infection
+1,unshaded,18.4,control,0,previous infection
+1,unshaded,23.8,control,0,previous infection
+1,shaded,15.7,control,0,previous infection
+1,unshaded,18.6,control,0,previous infection
+1,unshaded,18.1,control,0,previous infection
+1,shaded,13.5,control,0,previous infection
+1,unshaded,26.1,control,0,previous infection
+1,unshaded,18.7,control,0,previous infection
+1,unshaded,20.6,control,0,previous infection
+1,shaded,10.1,control,0,previous infection
+1,unshaded,16.8,control,0,previous infection
+1,shaded,13.1,control,0,previous infection
+1,unshaded,29.3,control,0,previous infection
+1,shaded,15,control,0,previous infection
+1,shaded,17.6,control,0,previous infection
+1,unshaded,20.2,control,0,previous infection
+1,shaded,17.9,control,0,previous infection
+2,unshaded,19,control,0,naive
+2,unshaded,14.6,control,0,naive
+2,unshaded,29.9,control,0,naive
+2,shaded,15.2,control,0,naive
+2,unshaded,15.1,control,0,naive
+2,shaded,14.9,control,0,naive
+2,shaded,15,control,0,naive
+2,unshaded,23.2,control,0,naive
+2,unshaded,23,control,0,naive
+2,unshaded,15,control,0,naive
+2,shaded,17.7,control,0,naive
+2,shaded,15.2,control,0,naive
+2,shaded,18.6,control,0,naive
+2,shaded,15.1,control,0,naive
+2,unshaded,25.6,control,0,naive
+2,unshaded,15.4,control,0,naive
+2,shaded,15,control,0,naive
+2,unshaded,26.8,control,0,naive
+2,shaded,18,control,0,naive
+2,unshaded,25.9,control,0,naive
+2,unshaded,15.4,control,0,naive
+2,shaded,15.9,control,0,naive
+2,unshaded,24.6,control,0,naive
+2,shaded,19.2,control,0,naive
+2,shaded,15.1,control,0,naive
+2,unshaded,26.7,control,0,naive
+2,shaded,15.9,control,0,naive
+2,unshaded,23,control,0,naive
+2,unshaded,22,control,0,naive
+2,unshaded,27.9,control,0,naive
+2,shaded,17.3,control,0,naive
+2,unshaded,15,control,0,naive
+2,unshaded,24.6,control,0,naive
+2,shaded,14.6,control,0,naive
+2,shaded,25.3,control,0,previous infection
+2,unshaded,19.9,control,0,previous infection
+2,shaded,16.5,control,0,previous infection
+2,shaded,25.4,control,0,previous infection
+2,shaded,19.9,control,0,previous infection
+2,shaded,23.3,control,0,previous infection
+2,unshaded,17.5,control,0,previous infection
+2,shaded,21.9,control,0,previous infection
+2,shaded,22.5,control,0,previous infection
+2,shaded,16.2,control,0,previous infection
+2,shaded,14.8,control,0,previous infection
+2,shaded,20,control,0,previous infection
+2,unshaded,28.1,control,0,previous infection
+2,unshaded,33.7,control,0,previous infection
+2,shaded,21.7,control,0,previous infection
+2,unshaded,19.9,control,0,previous infection
+2,unshaded,28.5,control,0,previous infection
+2,shaded,18.5,control,0,previous infection
+2,unshaded,33,control,0,previous infection
+2,unshaded,31.7,control,0,previous infection
+2,shaded,22,control,0,previous infection
+2,unshaded,18.2,control,0,previous infection
+2,shaded,22.6,control,0,previous infection
+2,unshaded,27.4,control,0,previous infection
+2,shaded,18.5,control,0,previous infection
+2,unshaded,23.6,control,0,previous infection
+2,shaded,18.7,control,0,previous infection
+4,unshaded,12.7,control,0,naive
+4,unshaded,15,control,0,naive
+4,unshaded,21.8,control,0,naive
+4,shaded,15.1,control,0,naive
+4,unshaded,14.8,control,0,naive
+4,shaded,14.4,control,0,naive
+4,unshaded,20.4,control,0,naive
+4,unshaded,12.7,control,0,naive
+4,unshaded,25.8,control,0,naive
+4,shaded,20.5,control,0,naive
+4,shaded,13.7,control,0,naive
+4,shaded,15.9,control,0,naive
+4,shaded,15.3,control,0,naive
+4,unshaded,16.2,control,0,naive
+4,shaded,15.7,control,0,naive
+4,unshaded,22.1,control,0,naive
+4,shaded,14.8,control,0,naive
+4,unshaded,24.2,control,0,naive
+4,shaded,16.2,control,0,naive
+4,unshaded,27.1,control,0,naive
+4,shaded,15.8,control,0,naive
+4,shaded,11.9,control,0,naive
+4,unshaded,25.1,control,0,naive
+4,shaded,12.4,control,0,naive
+4,unshaded,27.7,control,0,naive
+4,unshaded,18.8,control,0,naive
+4,unshaded,21.4,control,0,naive
+4,shaded,22.9,control,0,naive
+4,unshaded,23.2,control,0,naive
+4,unshaded,28.8,control,0,naive
+4,shaded,15.8,control,0,naive
+4,shaded,21,control,0,previous infection
+4,unshaded,22.3,control,0,previous infection
+4,shaded,17.6,control,0,previous infection
+4,shaded,21,control,0,previous infection
+4,shaded,21.6,control,0,previous infection
+4,shaded,18.1,control,0,previous infection
+4,unshaded,32,control,0,previous infection
+4,shaded,16.5,control,0,previous infection
+4,shaded,12.7,control,0,previous infection
+4,shaded,20.7,control,0,previous infection
+4,shaded,20.5,control,0,previous infection
+4,shaded,26.5,control,0,previous infection
+4,unshaded,30.3,control,0,previous infection
+4,unshaded,31.6,control,0,previous infection
+4,shaded,22,control,0,previous infection
+4,unshaded,23.8,control,0,previous infection
+4,unshaded,25.4,control,0,previous infection
+4,shaded,22,control,0,previous infection
+4,unshaded,34,control,0,previous infection
+4,unshaded,22.9,control,0,previous infection
+4,shaded,15.9,control,0,previous infection
+4,unshaded,22.8,control,0,previous infection
+4,shaded,14.5,control,0,previous infection
+4,shaded,12.1,control,0,previous infection
+4,unshaded,23.1,control,0,previous infection
+4,shaded,17.7,control,0,previous infection
+6,unshaded,20.3,control,0,naive
+6,unshaded,23.2,control,0,naive
+6,unshaded,21.8,control,0,naive
+6,shaded,13.25,control,0,naive
+6,unshaded,25.6,control,0,naive
+6,shaded,13.7,control,0,naive
+6,shaded,12.7,control,0,naive
+6,unshaded,21,control,0,naive
+6,unshaded,21,control,0,naive
+6,unshaded,14.2,control,0,naive
+6,shaded,13.3,control,0,naive
+6,shaded,15.8,control,0,naive
+6,unshaded,19.5,control,0,naive
+6,unshaded,17.8,control,0,naive
+6,shaded,12.5,control,0,naive
+6,unshaded,22.4,control,0,naive
+6,shaded,15.2,control,0,naive
+6,unshaded,18.4,control,0,naive
+6,unshaded,13.6,control,0,naive
+6,shaded,13.8,control,0,naive
+6,unshaded,23.9,control,0,naive
+6,shaded,14.2,control,0,naive
+6,unshaded,23.6,control,0,naive
+6,shaded,11.6,control,0,naive
+6,unshaded,14.8,control,0,naive
+6,unshaded,20.7,control,0,naive
+6,unshaded,26.7,control,0,naive
+6,shaded,12,control,0,naive
+6,unshaded,17.9,control,0,naive
+6,unshaded,23.2,control,0,naive
+6,shaded,16.5,control,0,previous infection
+6,unshaded,28.2,control,0,previous infection
+6,shaded,22.1,control,0,previous infection
+6,shaded,17.5,control,0,previous infection
+6,shaded,15.4,control,0,previous infection
+6,shaded,18.2,control,0,previous infection
+6,unshaded,27.7,control,0,previous infection
+6,shaded,21,control,0,previous infection
+6,shaded,17.4,control,0,previous infection
+6,shaded,18.5,control,0,previous infection
+6,shaded,16.2,control,0,previous infection
+6,shaded,19.8,control,0,previous infection
+6,unshaded,25.2,control,0,previous infection
+6,unshaded,28,control,0,previous infection
+6,shaded,15,control,0,previous infection
+6,unshaded,25.1,control,0,previous infection
+6,unshaded,24.2,control,0,previous infection
+6,shaded,15.9,control,0,previous infection
+6,unshaded,24,control,0,previous infection
+6,unshaded,24.2,control,0,previous infection
+6,shaded,15.2,control,0,previous infection
+6,unshaded,28.8,control,0,previous infection
+6,shaded,16.4,control,0,previous infection
+6,shaded,16.6,control,0,previous infection
+6,unshaded,27.5,control,0,previous infection
+6,shaded,15.6,control,0,previous infection
+10,unshaded,12.2,control,0,naive
+10,unshaded,13.2,control,0,naive
+10,unshaded,14.5,control,0,naive
+10,shaded,15.2,control,0,naive
+10,unshaded,12.7,control,0,naive
+10,shaded,16.6,control,0,naive
+10,shaded,17.4,control,0,naive
+10,unshaded,13.2,control,0,naive
+10,unshaded,14.8,control,0,naive
+10,unshaded,14.8,control,0,naive
+10,shaded,16,control,0,naive
+10,shaded,16.9,control,0,naive
+10,unshaded,15.1,control,0,naive
+10,unshaded,12,control,0,naive
+10,shaded,16.4,control,0,naive
+10,unshaded,14.7,control,0,naive
+10,shaded,15.7,control,0,naive
+10,unshaded,12.6,control,0,naive
+10,shaded,14.8,control,0,naive
+10,unshaded,13.3,control,0,naive
+10,shaded,15.1,control,0,naive
+10,unshaded,14.4,control,0,naive
+10,shaded,15.2,control,0,naive
+10,unshaded,12.6,control,0,naive
+10,unshaded,13.4,control,0,naive
+10,unshaded,14.5,control,0,naive
+10,shaded,17.7,control,0,naive
+10,unshaded,15.2,control,0,naive
+10,unshaded,14.1,control,0,naive
+10,shaded,15.6,control,0,naive
+10,shaded,14,control,0,previous infection
+10,unshaded,14.5,control,0,previous infection
+10,shaded,14.1,control,0,previous infection
+10,shaded,12.7,control,0,previous infection
+10,shaded,15.5,control,0,previous infection
+10,shaded,13.2,control,0,previous infection
+10,unshaded,13.5,control,0,previous infection
+10,shaded,13.2,control,0,previous infection
+10,shaded,12.1,control,0,previous infection
+10,shaded,13,control,0,previous infection
+10,shaded,12.6,control,0,previous infection
+10,shaded,12.6,control,0,previous infection
+10,unshaded,15.6,control,0,previous infection
+10,unshaded,11.8,control,0,previous infection
+10,shaded,12.3,control,0,previous infection
+10,unshaded,15.4,control,0,previous infection
+10,unshaded,14.1,control,0,previous infection
+10,shaded,12.8,control,0,previous infection
+10,unshaded,14.3,control,0,previous infection
+10,unshaded,14.2,control,0,previous infection
+10,shaded,12.8,control,0,previous infection
+10,unshaded,14.3,control,0,previous infection
+10,shaded,14.8,control,0,previous infection
+10,shaded,13.2,control,0,previous infection
+10,unshaded,14.8,control,0,previous infection
+10,shaded,13.9,control,0,previous infection
+15,unshaded,20.4,control,0,naive
+15,unshaded,19.4,control,0,naive
+15,unshaded,21.2,control,0,naive
+15,shaded,19.3,control,0,naive
+15,unshaded,19.9,control,0,naive
+15,shaded,18.9,control,0,naive
+15,shaded,19.3,control,0,naive
+15,unshaded,19.4,control,0,naive
+15,shaded,19.1,control,0,naive
+15,shaded,19.9,control,0,naive
+15,unshaded,19.4,control,0,naive
+15,unshaded,20.7,control,0,naive
+15,shaded,19.1,control,0,naive
+15,unshaded,20.4,control,0,naive
+15,shaded,19.3,control,0,naive
+15,unshaded,19.4,control,0,naive
+15,unshaded,20,control,0,naive
+15,shaded,19.3,control,0,naive
+15,unshaded,19.4,control,0,naive
+15,shaded,18.8,control,0,naive
+15,unshaded,20.5,control,0,naive
+15,unshaded,19.4,control,0,naive
+15,shaded,18.5,control,0,naive
+15,unshaded,19.4,control,0,naive
+15,unshaded,19.5,control,0,naive
+15,shaded,18.4,control,0,naive
+15,shaded,19.5,control,0,previous infection
+15,unshaded,19.9,control,0,previous infection
+15,shaded,18.6,control,0,previous infection
+15,shaded,19,control,0,previous infection
+15,shaded,19.1,control,0,previous infection
+15,shaded,19.5,control,0,previous infection
+15,unshaded,21.8,control,0,previous infection
+15,shaded,19.1,control,0,previous infection
+15,shaded,19.5,control,0,previous infection
+15,shaded,18.9,control,0,previous infection
+15,shaded,19.1,control,0,previous infection
+15,unshaded,21.8,control,0,previous infection
+15,unshaded,21.9,control,0,previous infection
+15,shaded,19.5,control,0,previous infection
+15,unshaded,22.4,control,0,previous infection
+15,shaded,18.1,control,0,previous infection
+15,unshaded,19.9,control,0,previous infection
+15,shaded,20.9,control,0,previous infection
+15,unshaded,21.5,control,0,previous infection
+15,shaded,19.5,control,0,previous infection
+15,shaded,22.3,control,0,previous infection
+15,unshaded,20.9,control,0,previous infection
+15,shaded,19.3,control,0,previous infection
+15,shaded,19.3,control,0,prior-exposure
+8,unshaded,25.8,control,0,naive
+8,unshaded,27.3,control,0,naive
+8,unshaded,28,control,0,naive
+8,unshaded,29.2,control,0,naive
+8,shaded,19.5,control,0,naive
+8,shaded,17,control,0,naive
+8,unshaded,25.5,control,0,naive
+8,unshaded,26,control,0,naive
+8,unshaded,24,control,0,naive
+8,shaded,23.6,control,0,naive
+8,unshaded,24.6,control,0,naive
+8,unshaded,31.7,control,0,naive
+8,shaded,23.9,control,0,naive
+8,shaded,30.6,control,0,naive
+8,unshaded,35,control,0,naive
+8,shaded,23.9,control,0,naive
+8,unshaded,25.5,control,0,naive
+8,shaded,17,control,0,naive
+8,unshaded,34.3,control,0,naive
+8,unshaded,29.2,control,0,naive
+8,unshaded,28.1,control,0,naive
+8,unshaded,25,control,0,naive
+8,shaded,17,control,0,naive
+8,unshaded,30.2,control,0,naive
+8,unshaded,24.5,control,0,naive
+8,shaded,22.8,control,0,naive
+8,shaded,20.6,control,0,previous infection
+8,unshaded,15.8,control,0,previous infection
+8,shaded,16.2,control,0,previous infection
+8,shaded,19.8,control,0,previous infection
+8,shaded,14.5,control,0,previous infection
+8,shaded,15.8,control,0,previous infection
+8,unshaded,17.2,control,0,previous infection
+8,shaded,15.1,control,0,previous infection
+8,shaded,18.3,control,0,previous infection
+8,shaded,17.4,control,0,previous infection
+8,shaded,15.3,control,0,previous infection
+8,shaded,14.9,control,0,previous infection
+8,unshaded,13.8,control,0,previous infection
+8,unshaded,14.6,control,0,previous infection
+8,shaded,18.9,control,0,previous infection
+8,unshaded,19.1,control,0,previous infection
+8,unshaded,18.3,control,0,previous infection
+8,shaded,17.1,control,0,previous infection
+8,unshaded,17.1,control,0,previous infection
+8,unshaded,17.9,control,0,previous infection
+8,shaded,16.5,control,0,previous infection
+8,unshaded,16.7,control,0,previous infection
+8,shaded,15.4,control,0,previous infection
+8,shaded,16.7,control,0,previous infection
+8,unshaded,14.3,control,0,previous infection
+8,shaded,23.1,control,0,previous infection

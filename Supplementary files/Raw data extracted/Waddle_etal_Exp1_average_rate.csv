@@ -1,0 +1,1243 @@
+FrogID,Treatment,Frog.Mass..grams.,SVL..millimeters.,week,its
+1,NA,1.74,31.5,1,0
+1,NA,1.74,31.5,2,69.07510336
+1,NA,1.74,31.5,3,0
+1,NA,1.74,31.5,4,0
+1,NA,1.74,31.5,5,0
+1,NA,1.74,31.5,6,0
+1,NA,1.74,31.5,7,0
+1,NA,1.74,31.5,8,0
+1,NA,1.74,31.5,9,0
+1,NA,1.74,31.5,10,0
+1,NA,1.74,31.5,11,0
+1,NA,1.74,31.5,12,0
+1,NA,1.74,31.5,13,0
+2,NA,1.9,36,1,0
+2,NA,1.9,36,2,0
+2,NA,1.9,36,3,0
+2,NA,1.9,36,4,0
+2,NA,1.9,36,5,0
+2,NA,1.9,36,6,0
+2,NA,1.9,36,7,0
+2,NA,1.9,36,8,0
+2,NA,1.9,36,9,0
+2,NA,1.9,36,10,0
+2,NA,1.9,36,11,0
+2,NA,1.9,36,12,0
+2,NA,1.9,36,13,0
+3,NA,2.2,34,1,197.0634148
+3,NA,2.2,34,2,0
+3,NA,2.2,34,3,0
+3,NA,2.2,34,4,0
+3,NA,2.2,34,5,0
+3,NA,2.2,34,6,0
+3,NA,2.2,34,7,0
+3,NA,2.2,34,8,0
+3,NA,2.2,34,9,0
+3,NA,2.2,34,10,0
+3,NA,2.2,34,11,0
+3,NA,2.2,34,12,0
+3,NA,2.2,34,13,0
+4,NA,8.02,53,1,NA
+4,NA,8.02,53,2,NA
+4,NA,8.02,53,3,NA
+4,NA,8.02,53,4,NA
+4,NA,8.02,53,5,NA
+4,NA,8.02,53,6,NA
+4,NA,8.02,53,7,NA
+4,NA,8.02,53,8,NA
+4,NA,8.02,53,9,NA
+4,NA,8.02,53,10,NA
+4,NA,8.02,53,11,NA
+4,NA,8.02,53,12,NA
+4,NA,8.02,53,13,NA
+5,NA,3.2,38,1,1241.274907
+5,NA,3.2,38,2,63.34719256
+5,NA,3.2,38,3,1690.063132
+5,NA,3.2,38,4,2501.398337
+5,NA,3.2,38,5,2621.338295
+5,NA,3.2,38,6,830.6531451
+5,NA,3.2,38,7,631.7269767
+5,NA,3.2,38,8,0
+5,NA,3.2,38,9,0
+5,NA,3.2,38,10,0
+5,NA,3.2,38,11,0
+5,NA,3.2,38,12,100.4517167
+5,NA,3.2,38,13,60.47883151
+6,NA,7.39,54.5,1,NA
+6,NA,7.39,54.5,2,NA
+6,NA,7.39,54.5,3,NA
+6,NA,7.39,54.5,4,NA
+6,NA,7.39,54.5,5,NA
+6,NA,7.39,54.5,6,NA
+6,NA,7.39,54.5,7,NA
+6,NA,7.39,54.5,8,NA
+6,NA,7.39,54.5,9,NA
+6,NA,7.39,54.5,10,NA
+6,NA,7.39,54.5,11,NA
+6,NA,7.39,54.5,12,NA
+6,NA,7.39,54.5,13,NA
+7,NA,8.73,56,1,224.2749072
+7,NA,8.73,56,2,0
+7,NA,8.73,56,3,0
+7,NA,8.73,56,4,0
+7,NA,8.73,56,5,0
+7,NA,8.73,56,6,0
+7,NA,8.73,56,7,0
+7,NA,8.73,56,8,0
+7,NA,8.73,56,9,0
+7,NA,8.73,56,10,0
+7,NA,8.73,56,11,0
+7,NA,8.73,56,12,0
+7,NA,8.73,56,13,0
+8,NA,7.22,48,1,3168.251316
+8,NA,7.22,48,2,1024.733508
+8,NA,7.22,48,3,482.1826872
+8,NA,7.22,48,4,9963.682449
+8,NA,7.22,48,5,1525.201432
+8,NA,7.22,48,6,17240.32056
+8,NA,7.22,48,7,1072.711227
+8,NA,7.22,48,8,217.40677
+8,NA,7.22,48,9,0
+8,NA,7.22,48,10,0
+8,NA,7.22,48,11,0
+8,NA,7.22,48,12,0
+8,NA,7.22,48,13,0
+9,NA,8.3,51,1,0
+9,NA,8.3,51,2,142.5515208
+9,NA,8.3,51,3,0
+9,NA,8.3,51,4,0
+9,NA,8.3,51,5,0
+9,NA,8.3,51,6,0
+9,NA,8.3,51,7,0
+9,NA,8.3,51,8,0
+9,NA,8.3,51,9,0
+9,NA,8.3,51,10,0
+9,NA,8.3,51,11,0
+9,NA,8.3,51,12,0
+9,NA,8.3,51,13,0
+10,NA,7.53,51,1,NA
+10,NA,7.53,51,2,NA
+10,NA,7.53,51,3,NA
+10,NA,7.53,51,4,NA
+10,NA,7.53,51,5,NA
+10,NA,7.53,51,6,NA
+10,NA,7.53,51,7,NA
+10,NA,7.53,51,8,NA
+10,NA,7.53,51,9,NA
+10,NA,7.53,51,10,NA
+10,NA,7.53,51,11,NA
+10,NA,7.53,51,12,NA
+10,NA,7.53,51,13,NA
+11,NA,8.99,51,1,0
+11,NA,8.99,51,2,0
+11,NA,8.99,51,3,0
+11,NA,8.99,51,4,0
+11,NA,8.99,51,5,0
+11,NA,8.99,51,6,0
+11,NA,8.99,51,7,0
+11,NA,8.99,51,8,0
+11,NA,8.99,51,9,0
+11,NA,8.99,51,10,0
+11,NA,8.99,51,11,0
+11,NA,8.99,51,12,0
+11,NA,8.99,51,13,0
+12,NA,13.55,62,1,690.474398
+12,NA,13.55,62,2,0
+12,NA,13.55,62,3,0
+12,NA,13.55,62,4,328.4762563
+12,NA,13.55,62,5,0
+12,NA,13.55,62,6,0
+12,NA,13.55,62,7,0
+12,NA,13.55,62,8,0
+12,NA,13.55,62,9,0
+12,NA,13.55,62,10,0
+12,NA,13.55,62,11,0
+12,NA,13.55,62,12,0
+12,NA,13.55,62,13,0
+13,NA,14.23,62,1,207.2707639
+13,NA,14.23,62,2,72.23936256
+13,NA,14.23,62,3,0
+13,NA,14.23,62,4,0
+13,NA,14.23,62,5,0
+13,NA,14.23,62,6,0
+13,NA,14.23,62,7,0
+13,NA,14.23,62,8,0
+13,NA,14.23,62,9,0
+13,NA,14.23,62,10,0
+13,NA,14.23,62,11,0
+13,NA,14.23,62,12,0
+13,NA,14.23,62,13,0
+14,NA,3.65,38,1,1499.767404
+14,NA,3.65,38,2,149.1082803
+14,NA,3.65,38,3,11647.02007
+14,NA,3.65,38,4,2989.62027
+14,NA,3.65,38,5,4473.976533
+14,NA,3.65,38,6,13623.6543
+14,NA,3.65,38,7,405.3500475
+14,NA,3.65,38,8,888.59512
+14,NA,3.65,38,9,2173.360387
+14,NA,3.65,38,10,1288.57727
+14,NA,3.65,38,11,839.7935741
+14,NA,3.65,38,12,637.9117748
+14,NA,3.65,38,13,995.353615
+15,NA,6.23,46,1,0
+15,NA,6.23,46,2,0
+15,NA,6.23,46,3,1437.5343
+15,NA,6.23,46,4,0
+15,NA,6.23,46,5,17671.24975
+15,NA,6.23,46,6,13113.80807
+15,NA,6.23,46,7,13066.23954
+15,NA,6.23,46,8,65015.02997
+15,NA,6.23,46,9,14043.62013
+15,NA,6.23,46,10,1545.030892
+15,NA,6.23,46,11,2202.358164
+15,NA,6.23,46,12,40480.91932
+15,NA,6.23,46,13,8282.365567
+16,NA,8.18,50.75,1,315.2022103
+16,NA,8.18,50.75,2,0
+16,NA,8.18,50.75,3,0
+16,NA,8.18,50.75,4,0
+16,NA,8.18,50.75,5,0
+16,NA,8.18,50.75,6,0
+16,NA,8.18,50.75,7,0
+16,NA,8.18,50.75,8,0
+16,NA,8.18,50.75,9,0
+16,NA,8.18,50.75,10,0
+16,NA,8.18,50.75,11,0
+16,NA,8.18,50.75,12,0
+16,NA,8.18,50.75,13,0
+17,NA,6.62,44.25,1,9298.100864
+17,NA,6.62,44.25,2,2024.218117
+17,NA,6.62,44.25,3,14445.53279
+17,NA,6.62,44.25,4,49004.816
+17,NA,6.62,44.25,5,83046.3882
+17,NA,6.62,44.25,6,29930.58063
+17,NA,6.62,44.25,7,7789.885614
+17,NA,6.62,44.25,8,55315.31497
+17,NA,6.62,44.25,9,54316.10295
+17,NA,6.62,44.25,10,17952.48897
+17,NA,6.62,44.25,11,6556.324319
+17,NA,6.62,44.25,12,51475.83363
+17,NA,6.62,44.25,13,28080.34358
+18,NA,7.31,47.5,1,NA
+18,NA,7.31,47.5,2,NA
+18,NA,7.31,47.5,3,NA
+18,NA,7.31,47.5,4,NA
+18,NA,7.31,47.5,5,NA
+18,NA,7.31,47.5,6,NA
+18,NA,7.31,47.5,7,NA
+18,NA,7.31,47.5,8,NA
+18,NA,7.31,47.5,9,NA
+18,NA,7.31,47.5,10,NA
+18,NA,7.31,47.5,11,NA
+18,NA,7.31,47.5,12,NA
+18,NA,7.31,47.5,13,NA
+19,NA,6.1,45.5,1,274.5772087
+19,NA,6.1,45.5,2,0
+19,NA,6.1,45.5,3,400.5208079
+19,NA,6.1,45.5,4,0
+19,NA,6.1,45.5,5,0
+19,NA,6.1,45.5,6,0
+19,NA,6.1,45.5,7,0
+19,NA,6.1,45.5,8,0
+19,NA,6.1,45.5,9,0
+19,NA,6.1,45.5,10,0
+19,NA,6.1,45.5,11,0
+19,NA,6.1,45.5,12,0
+19,NA,6.1,45.5,13,0
+20,NA,5.73,44,1,8.865917131
+20,NA,5.73,44,2,222.6339239
+20,NA,5.73,44,3,0
+20,NA,5.73,44,4,0
+20,NA,5.73,44,5,0
+20,NA,5.73,44,6,0
+20,NA,5.73,44,7,0
+20,NA,5.73,44,8,0
+20,NA,5.73,44,9,0
+20,NA,5.73,44,10,0
+20,NA,5.73,44,11,0
+20,NA,5.73,44,12,0
+20,NA,5.73,44,13,0
+21,NA,4.09,43.5,1,0
+21,NA,4.09,43.5,2,0
+21,NA,4.09,43.5,3,0
+21,NA,4.09,43.5,4,2810.283304
+21,NA,4.09,43.5,5,5004.372366
+21,NA,4.09,43.5,6,7446.683661
+21,NA,4.09,43.5,7,18350.72152
+21,NA,4.09,43.5,8,16916.38745
+21,NA,4.09,43.5,9,65587.96624
+21,NA,4.09,43.5,10,33263.26716
+21,NA,4.09,43.5,11,65438.35633
+21,NA,4.09,43.5,12,13723.32692
+21,NA,4.09,43.5,13,7374.777307
+22,NA,2.43,33,1,17547.26297
+22,NA,2.43,33,2,8.667733333
+22,NA,2.43,33,3,2.021931129
+22,NA,2.43,33,4,0
+22,NA,2.43,33,5,0
+22,NA,2.43,33,6,0
+22,NA,2.43,33,7,0
+22,NA,2.43,33,8,0
+22,NA,2.43,33,9,0
+22,NA,2.43,33,10,0
+22,NA,2.43,33,11,0
+22,NA,2.43,33,12,0
+22,NA,2.43,33,13,0
+23,NA,2.51,35,1,0
+23,NA,2.51,35,2,0
+23,NA,2.51,35,3,3061.922912
+23,NA,2.51,35,4,0
+23,NA,2.51,35,5,2041.697497
+23,NA,2.51,35,6,19057.002
+23,NA,2.51,35,7,24292.30936
+23,NA,2.51,35,8,6466.263907
+23,NA,2.51,35,9,5718.286422
+23,NA,2.51,35,10,5834.928074
+23,NA,2.51,35,11,15447.07002
+23,NA,2.51,35,12,9554.666868
+23,NA,2.51,35,13,8663.73211
+24,prior exposure heat,1.84,31,0,0
+24,prior exposure heat,1.84,31,1,3533.362766
+24,prior exposure heat,1.84,31,2,6961.932615
+24,prior exposure heat,1.84,31,3,17309.48745
+24,prior exposure heat,1.84,31,4,7165.174717
+24,prior exposure heat,1.84,31,5,16412.01066
+24,prior exposure heat,1.84,31,6,79805.67771
+24,prior exposure heat,1.84,31,7,28429.013
+24,prior exposure heat,1.84,31,8,4666.583308
+24,prior exposure heat,1.84,31,9,312462.6099
+24,prior exposure heat,1.84,31,10,10669865.71
+24,prior exposure heat,1.84,31,11,NA
+24,prior exposure heat,1.84,31,12,NA
+24,prior exposure heat,1.84,31,13,NA
+25,prior exposure heat,1.98,33,0,0
+25,prior exposure heat,1.98,33,1,0
+25,prior exposure heat,1.98,33,2,69.49689304
+25,prior exposure heat,1.98,33,3,1203.550951
+25,prior exposure heat,1.98,33,4,14470.81326
+25,prior exposure heat,1.98,33,5,2912.676875
+25,prior exposure heat,1.98,33,6,83892.71745
+25,prior exposure heat,1.98,33,7,60142.5468
+25,prior exposure heat,1.98,33,8,15354.04044
+25,prior exposure heat,1.98,33,9,6030.592848
+25,prior exposure heat,1.98,33,10,15575.7635
+25,prior exposure heat,1.98,33,11,11619.3228
+25,prior exposure heat,1.98,33,12,40765.29062
+25,prior exposure heat,1.98,33,13,10074.13849
+26,prior exposure heat,1.99,34,0,0
+26,prior exposure heat,1.99,34,1,203.2037878
+26,prior exposure heat,1.99,34,2,121.3152352
+26,prior exposure heat,1.99,34,3,5779.933647
+26,prior exposure heat,1.99,34,4,4120.362097
+26,prior exposure heat,1.99,34,5,3463.788161
+26,prior exposure heat,1.99,34,6,15115.72225
+26,prior exposure heat,1.99,34,7,4380.557641
+26,prior exposure heat,1.99,34,8,6341.262566
+26,prior exposure heat,1.99,34,9,492.918712
+26,prior exposure heat,1.99,34,10,0
+26,prior exposure heat,1.99,34,11,0
+26,prior exposure heat,1.99,34,12,0
+26,prior exposure heat,1.99,34,13,0
+27,prior exposure heat,5.95,46,0,0
+27,prior exposure heat,5.95,46,1,NA
+27,prior exposure heat,5.95,46,2,NA
+27,prior exposure heat,5.95,46,3,NA
+27,prior exposure heat,5.95,46,4,NA
+27,prior exposure heat,5.95,46,5,NA
+27,prior exposure heat,5.95,46,6,NA
+27,prior exposure heat,5.95,46,7,NA
+27,prior exposure heat,5.95,46,8,NA
+27,prior exposure heat,5.95,46,9,NA
+27,prior exposure heat,5.95,46,10,NA
+27,prior exposure heat,5.95,46,11,NA
+27,prior exposure heat,5.95,46,12,NA
+27,prior exposure heat,5.95,46,13,NA
+28,prior exposure heat,8.87,55,0,0
+28,prior exposure heat,8.87,55,1,0
+28,prior exposure heat,8.87,55,2,1906.095854
+28,prior exposure heat,8.87,55,3,28763.14087
+28,prior exposure heat,8.87,55,4,13384.82739
+28,prior exposure heat,8.87,55,5,13984.84331
+28,prior exposure heat,8.87,55,6,36672.74683
+28,prior exposure heat,8.87,55,7,20146.59301
+28,prior exposure heat,8.87,55,8,0
+28,prior exposure heat,8.87,55,9,83.93166174
+28,prior exposure heat,8.87,55,10,0
+28,prior exposure heat,8.87,55,11,0
+28,prior exposure heat,8.87,55,12,37.50045541
+28,prior exposure heat,8.87,55,13,0
+29,prior exposure heat,4,40,0,0
+29,prior exposure heat,4,40,1,290.1731195
+29,prior exposure heat,4,40,2,1132.516289
+29,prior exposure heat,4,40,3,5644.142725
+29,prior exposure heat,4,40,4,417.6362658
+29,prior exposure heat,4,40,5,6589.643463
+29,prior exposure heat,4,40,6,3362.409885
+29,prior exposure heat,4,40,7,7053.115739
+29,prior exposure heat,4,40,8,8308.173123
+29,prior exposure heat,4,40,9,2331.755717
+29,prior exposure heat,4,40,10,1222.692117
+29,prior exposure heat,4,40,11,17919.27422
+29,prior exposure heat,4,40,12,12951.98266
+29,prior exposure heat,4,40,13,18809.6409
+30,prior exposure heat,7.13,50,0,0
+30,prior exposure heat,7.13,50,1,210.6816146
+30,prior exposure heat,7.13,50,2,88.76134067
+30,prior exposure heat,7.13,50,3,5173.958714
+30,prior exposure heat,7.13,50,4,2906.486504
+30,prior exposure heat,7.13,50,5,20953.36605
+30,prior exposure heat,7.13,50,6,17886.64714
+30,prior exposure heat,7.13,50,7,2292.023039
+30,prior exposure heat,7.13,50,8,2020.260879
+30,prior exposure heat,7.13,50,9,5074.320344
+30,prior exposure heat,7.13,50,10,1416.813859
+30,prior exposure heat,7.13,50,11,903.831317
+30,prior exposure heat,7.13,50,12,13589.63819
+30,prior exposure heat,7.13,50,13,11832.62597
+31,prior exposure heat,7.62,49,0,0
+31,prior exposure heat,7.62,49,1,2896.391597
+31,prior exposure heat,7.62,49,2,641.694202
+31,prior exposure heat,7.62,49,3,368.9451075
+31,prior exposure heat,7.62,49,4,0
+31,prior exposure heat,7.62,49,5,0
+31,prior exposure heat,7.62,49,6,11.2830977
+31,prior exposure heat,7.62,49,7,0
+31,prior exposure heat,7.62,49,8,0
+31,prior exposure heat,7.62,49,9,0
+31,prior exposure heat,7.62,49,10,0
+31,prior exposure heat,7.62,49,11,0
+31,prior exposure heat,7.62,49,12,0
+31,prior exposure heat,7.62,49,13,0
+32,prior exposure heat,5.53,45,0,0
+32,prior exposure heat,5.53,45,1,10888.85894
+32,prior exposure heat,5.53,45,2,3949.007515
+32,prior exposure heat,5.53,45,3,25073.62367
+32,prior exposure heat,5.53,45,4,7599.831882
+32,prior exposure heat,5.53,45,5,1087.012755
+32,prior exposure heat,5.53,45,6,509.6847958
+32,prior exposure heat,5.53,45,7,0
+32,prior exposure heat,5.53,45,8,0
+32,prior exposure heat,5.53,45,9,0
+32,prior exposure heat,5.53,45,10,1019.303073
+32,prior exposure heat,5.53,45,11,0
+32,prior exposure heat,5.53,45,12,0
+32,prior exposure heat,5.53,45,13,0
+33,prior exposure heat,5.17,42.5,0,0
+33,prior exposure heat,5.17,42.5,1,1427.15699
+33,prior exposure heat,5.17,42.5,2,12915.72696
+33,prior exposure heat,5.17,42.5,3,59930.09239
+33,prior exposure heat,5.17,42.5,4,59330.31911
+33,prior exposure heat,5.17,42.5,5,124925.4865
+33,prior exposure heat,5.17,42.5,6,58219.63586
+33,prior exposure heat,5.17,42.5,7,13293.9309
+33,prior exposure heat,5.17,42.5,8,375188.6287
+33,prior exposure heat,5.17,42.5,9,859277.6553
+33,prior exposure heat,5.17,42.5,10,1133564.461
+33,prior exposure heat,5.17,42.5,11,NA
+33,prior exposure heat,5.17,42.5,12,NA
+33,prior exposure heat,5.17,42.5,13,NA
+34,prior exposure heat,6.75,48,0,0
+34,prior exposure heat,6.75,48,1,1886.625582
+34,prior exposure heat,6.75,48,2,1892.414919
+34,prior exposure heat,6.75,48,3,9673.922941
+34,prior exposure heat,6.75,48,4,1971.338775
+34,prior exposure heat,6.75,48,5,8098.785666
+34,prior exposure heat,6.75,48,6,11940.18112
+34,prior exposure heat,6.75,48,7,10426.19201
+34,prior exposure heat,6.75,48,8,0
+34,prior exposure heat,6.75,48,9,0
+34,prior exposure heat,6.75,48,10,0
+34,prior exposure heat,6.75,48,11,0
+34,prior exposure heat,6.75,48,12,0
+34,prior exposure heat,6.75,48,13,0
+35,prior exposure heat,7.28,50.5,0,0
+35,prior exposure heat,7.28,50.5,1,907.6138847
+35,prior exposure heat,7.28,50.5,2,422.910846
+35,prior exposure heat,7.28,50.5,3,187.3720225
+35,prior exposure heat,7.28,50.5,4,8670.156372
+35,prior exposure heat,7.28,50.5,5,13227.19274
+35,prior exposure heat,7.28,50.5,6,7984.733151
+35,prior exposure heat,7.28,50.5,7,3551.25035
+35,prior exposure heat,7.28,50.5,8,2611.673691
+35,prior exposure heat,7.28,50.5,9,207.4969007
+35,prior exposure heat,7.28,50.5,10,460.7100733
+35,prior exposure heat,7.28,50.5,11,0
+35,prior exposure heat,7.28,50.5,12,0
+35,prior exposure heat,7.28,50.5,13,0
+36,prior exposure heat,5.91,47,0,0
+36,prior exposure heat,5.91,47,1,1675.877005
+36,prior exposure heat,5.91,47,2,849.4413457
+36,prior exposure heat,5.91,47,3,18440.56888
+36,prior exposure heat,5.91,47,4,2500.210091
+36,prior exposure heat,5.91,47,5,9162.693158
+36,prior exposure heat,5.91,47,6,530.1120532
+36,prior exposure heat,5.91,47,7,0
+36,prior exposure heat,5.91,47,8,71.49594586
+36,prior exposure heat,5.91,47,9,0
+36,prior exposure heat,5.91,47,10,0
+36,prior exposure heat,5.91,47,11,0
+36,prior exposure heat,5.91,47,12,0
+36,prior exposure heat,5.91,47,13,0
+37,prior exposure heat,7.25,49,0,0
+37,prior exposure heat,7.25,49,1,4314.702051
+37,prior exposure heat,7.25,49,2,503.2438312
+37,prior exposure heat,7.25,49,3,11644.16897
+37,prior exposure heat,7.25,49,4,1179.756408
+37,prior exposure heat,7.25,49,5,13461.05123
+37,prior exposure heat,7.25,49,6,4723.822536
+37,prior exposure heat,7.25,49,7,7125.876647
+37,prior exposure heat,7.25,49,8,19472.50123
+37,prior exposure heat,7.25,49,9,13298.3423
+37,prior exposure heat,7.25,49,10,108064.4083
+37,prior exposure heat,7.25,49,11,14203.44983
+37,prior exposure heat,7.25,49,12,17033.09304
+37,prior exposure heat,7.25,49,13,1022.10088
+38,prior exposure heat,5.6,44,0,0
+38,prior exposure heat,5.6,44,1,0
+38,prior exposure heat,5.6,44,2,71.69009424
+38,prior exposure heat,5.6,44,3,180.7234161
+38,prior exposure heat,5.6,44,4,1229.172916
+38,prior exposure heat,5.6,44,5,31490.05135
+38,prior exposure heat,5.6,44,6,13496.4923
+38,prior exposure heat,5.6,44,7,NA
+38,prior exposure heat,5.6,44,8,NA
+38,prior exposure heat,5.6,44,9,NA
+38,prior exposure heat,5.6,44,10,NA
+38,prior exposure heat,5.6,44,11,NA
+38,prior exposure heat,5.6,44,12,NA
+38,prior exposure heat,5.6,44,13,NA
+39,prior exposure heat,9.18,51,0,0
+39,prior exposure heat,9.18,51,1,22129.36443
+39,prior exposure heat,9.18,51,2,18592.00206
+39,prior exposure heat,9.18,51,3,237894.6602
+39,prior exposure heat,9.18,51,4,43669.58949
+39,prior exposure heat,9.18,51,5,515141.0863
+39,prior exposure heat,9.18,51,6,194701.9066
+39,prior exposure heat,9.18,51,7,10232.20287
+39,prior exposure heat,9.18,51,8,91153.38176
+39,prior exposure heat,9.18,51,9,975635.9943
+39,prior exposure heat,9.18,51,10,66246.61683
+39,prior exposure heat,9.18,51,11,493918.4219
+39,prior exposure heat,9.18,51,12,90699.7196
+39,prior exposure heat,9.18,51,13,54993.52243
+40,prior exposure heat,7.41,51,0,0
+40,prior exposure heat,7.41,51,1,7550.741228
+40,prior exposure heat,7.41,51,2,439.489765
+40,prior exposure heat,7.41,51,3,5834.026244
+40,prior exposure heat,7.41,51,4,1653.020797
+40,prior exposure heat,7.41,51,5,39371.81385
+40,prior exposure heat,7.41,51,6,19320.72731
+40,prior exposure heat,7.41,51,7,8618.332551
+40,prior exposure heat,7.41,51,8,7426.22744
+40,prior exposure heat,7.41,51,9,14447.91822
+40,prior exposure heat,7.41,51,10,2041.974987
+40,prior exposure heat,7.41,51,11,14790.96347
+40,prior exposure heat,7.41,51,12,16774.74807
+40,prior exposure heat,7.41,51,13,14898.61651
+41,prior exposure heat,9.84,58,0,0
+41,prior exposure heat,9.84,58,1,2342.91206
+41,prior exposure heat,9.84,58,2,11375.07136
+41,prior exposure heat,9.84,58,3,21386.02931
+41,prior exposure heat,9.84,58,4,46656.20101
+41,prior exposure heat,9.84,58,5,58354.60154
+41,prior exposure heat,9.84,58,6,38506.38055
+41,prior exposure heat,9.84,58,7,13265.40285
+41,prior exposure heat,9.84,58,8,11981.30669
+41,prior exposure heat,9.84,58,9,104661.021
+41,prior exposure heat,9.84,58,10,516.6542698
+41,prior exposure heat,9.84,58,11,8530.419619
+41,prior exposure heat,9.84,58,12,13543.23471
+41,prior exposure heat,9.84,58,13,5484.526063
+42,prior exposure heat,7.09,49.5,0,0
+42,prior exposure heat,7.09,49.5,1,1963.369601
+42,prior exposure heat,7.09,49.5,2,6504.414655
+42,prior exposure heat,7.09,49.5,3,20935.23739
+42,prior exposure heat,7.09,49.5,4,2496.468248
+42,prior exposure heat,7.09,49.5,5,10673.93845
+42,prior exposure heat,7.09,49.5,6,12100.59562
+42,prior exposure heat,7.09,49.5,7,3179.596678
+42,prior exposure heat,7.09,49.5,8,1376.503623
+42,prior exposure heat,7.09,49.5,9,2012.173155
+42,prior exposure heat,7.09,49.5,10,2105.418467
+42,prior exposure heat,7.09,49.5,11,1174.875786
+42,prior exposure heat,7.09,49.5,12,0
+42,prior exposure heat,7.09,49.5,13,484.9849647
+43,prior exposure heat,3.66,39,0,0
+43,prior exposure heat,3.66,39,1,1512.714621
+43,prior exposure heat,3.66,39,2,9440.42554
+43,prior exposure heat,3.66,39,3,2356.671108
+43,prior exposure heat,3.66,39,4,3459.635554
+43,prior exposure heat,3.66,39,5,5197.610168
+43,prior exposure heat,3.66,39,6,6779.456901
+43,prior exposure heat,3.66,39,7,3577.288873
+43,prior exposure heat,3.66,39,8,7082.24617
+43,prior exposure heat,3.66,39,9,2688.334805
+43,prior exposure heat,3.66,39,10,295.6432938
+43,prior exposure heat,3.66,39,11,1769.302299
+43,prior exposure heat,3.66,39,12,42.35320467
+43,prior exposure heat,3.66,39,13,1030.164397
+44,prior exposure heat,7.74,50.5,0,0
+44,prior exposure heat,7.74,50.5,1,0
+44,prior exposure heat,7.74,50.5,2,5357.484564
+44,prior exposure heat,7.74,50.5,3,23986.83362
+44,prior exposure heat,7.74,50.5,4,19766.8451
+44,prior exposure heat,7.74,50.5,5,16377.9883
+44,prior exposure heat,7.74,50.5,6,6906.652144
+44,prior exposure heat,7.74,50.5,7,1166.341891
+44,prior exposure heat,7.74,50.5,8,491.6887759
+44,prior exposure heat,7.74,50.5,9,827.2703665
+44,prior exposure heat,7.74,50.5,10,779.49544
+44,prior exposure heat,7.74,50.5,11,0
+44,prior exposure heat,7.74,50.5,12,0
+44,prior exposure heat,7.74,50.5,13,0
+45,prior exposure heat,6.6,48,0,0
+45,prior exposure heat,6.6,48,1,3893.616393
+45,prior exposure heat,6.6,48,2,4495.016098
+45,prior exposure heat,6.6,48,3,3003.372604
+45,prior exposure heat,6.6,48,4,4400.251873
+45,prior exposure heat,6.6,48,5,3201.827584
+45,prior exposure heat,6.6,48,6,5441.037357
+45,prior exposure heat,6.6,48,7,1830.58666
+45,prior exposure heat,6.6,48,8,59.37057319
+45,prior exposure heat,6.6,48,9,59.44345952
+45,prior exposure heat,6.6,48,10,1241.781597
+45,prior exposure heat,6.6,48,11,0
+45,prior exposure heat,6.6,48,12,0
+45,prior exposure heat,6.6,48,13,0
+46,prior exposure heat,6,46,0,0
+46,prior exposure heat,6,46,1,955.9995236
+46,prior exposure heat,6,46,2,5118.150453
+46,prior exposure heat,6,46,3,19408.53189
+46,prior exposure heat,6,46,4,1082.720283
+46,prior exposure heat,6,46,5,1047.046195
+46,prior exposure heat,6,46,6,139.4525562
+46,prior exposure heat,6,46,7,0
+46,prior exposure heat,6,46,8,259.9728318
+46,prior exposure heat,6,46,9,0
+46,prior exposure heat,6,46,10,1686.645501
+46,prior exposure heat,6,46,11,0
+46,prior exposure heat,6,46,12,0
+46,prior exposure heat,6,46,13,0
+70,heat control,1.87,33,0,0
+70,heat control,1.87,33,1,57495.83718
+70,heat control,1.87,33,2,112810.3822
+70,heat control,1.87,33,3,294401.4729
+70,heat control,1.87,33,4,75763.47395
+70,heat control,1.87,33,5,70396.26405
+70,heat control,1.87,33,6,11011.67171
+70,heat control,1.87,33,7,NA
+70,heat control,1.87,33,8,NA
+70,heat control,1.87,33,9,NA
+70,heat control,1.87,33,10,NA
+70,heat control,1.87,33,11,NA
+70,heat control,1.87,33,12,NA
+70,heat control,1.87,33,13,NA
+71,heat control,1.8,33,0,0
+71,heat control,1.8,33,1,0
+71,heat control,1.8,33,2,284.9093617
+71,heat control,1.8,33,3,94106.05197
+71,heat control,1.8,33,4,28433.9007
+71,heat control,1.8,33,5,128034.0629
+71,heat control,1.8,33,6,45656.12594
+71,heat control,1.8,33,7,34050.84992
+71,heat control,1.8,33,8,444769.7025
+71,heat control,1.8,33,9,NA
+71,heat control,1.8,33,10,NA
+71,heat control,1.8,33,11,NA
+71,heat control,1.8,33,12,NA
+71,heat control,1.8,33,13,NA
+72,heat control,1.69,33,0,0
+72,heat control,1.69,33,1,237.6210414
+72,heat control,1.69,33,2,1135.621865
+72,heat control,1.69,33,3,4172.528393
+72,heat control,1.69,33,4,40460.76768
+72,heat control,1.69,33,5,61643.86914
+72,heat control,1.69,33,6,114361.2412
+72,heat control,1.69,33,7,20522.89917
+72,heat control,1.69,33,8,101314.0887
+72,heat control,1.69,33,9,58367.78337
+72,heat control,1.69,33,10,548195.603
+72,heat control,1.69,33,11,232860.7398
+72,heat control,1.69,33,12,360072.8184
+72,heat control,1.69,33,13,NA
+73,heat control,9.03,56.5,0,0
+73,heat control,9.03,56.5,1,40355.10705
+73,heat control,9.03,56.5,2,46543.95411
+73,heat control,9.03,56.5,3,266376.3988
+73,heat control,9.03,56.5,4,137887.7114
+73,heat control,9.03,56.5,5,188399.7456
+73,heat control,9.03,56.5,6,48708.66868
+73,heat control,9.03,56.5,7,98205.69156
+73,heat control,9.03,56.5,8,12805.83416
+73,heat control,9.03,56.5,9,546834.8765
+73,heat control,9.03,56.5,10,823030.6146
+73,heat control,9.03,56.5,11,1580876.564
+73,heat control,9.03,56.5,12,2411548.184
+73,heat control,9.03,56.5,13,NA
+74,heat control,4.78,47,0,0
+74,heat control,4.78,47,1,20730.03566
+74,heat control,4.78,47,2,558121.5057
+74,heat control,4.78,47,3,229143.3343
+74,heat control,4.78,47,4,46461.38057
+74,heat control,4.78,47,5,198546.2958
+74,heat control,4.78,47,6,976188.2463
+74,heat control,4.78,47,7,220816.0198
+74,heat control,4.78,47,8,945193.4749
+74,heat control,4.78,47,9,NA
+74,heat control,4.78,47,10,NA
+74,heat control,4.78,47,11,NA
+74,heat control,4.78,47,12,NA
+74,heat control,4.78,47,13,NA
+75,heat control,7.45,51,0,0
+75,heat control,7.45,51,1,6148.763654
+75,heat control,7.45,51,2,3420.39077
+75,heat control,7.45,51,3,94242.91091
+75,heat control,7.45,51,4,1035156.674
+75,heat control,7.45,51,5,1348927.849
+75,heat control,7.45,51,6,NA
+75,heat control,7.45,51,7,NA
+75,heat control,7.45,51,8,NA
+75,heat control,7.45,51,9,NA
+75,heat control,7.45,51,10,NA
+75,heat control,7.45,51,11,NA
+75,heat control,7.45,51,12,NA
+75,heat control,7.45,51,13,NA
+76,heat control,6.94,50,0,0
+76,heat control,6.94,50,1,17124.03238
+76,heat control,6.94,50,2,45268.73103
+76,heat control,6.94,50,3,286555.4433
+76,heat control,6.94,50,4,79689.84048
+76,heat control,6.94,50,5,244261.5737
+76,heat control,6.94,50,6,1019847.313
+76,heat control,6.94,50,7,784494.6261
+76,heat control,6.94,50,8,830572.5081
+76,heat control,6.94,50,9,NA
+76,heat control,6.94,50,10,NA
+76,heat control,6.94,50,11,NA
+76,heat control,6.94,50,12,NA
+76,heat control,6.94,50,13,NA
+77,heat control,9.16,54.5,0,0
+77,heat control,9.16,54.5,1,52815.28922
+77,heat control,9.16,54.5,2,431209.6107
+77,heat control,9.16,54.5,3,71918.96826
+77,heat control,9.16,54.5,4,289702.2272
+77,heat control,9.16,54.5,5,932454.7853
+77,heat control,9.16,54.5,6,4746955.274
+77,heat control,9.16,54.5,7,NA
+77,heat control,9.16,54.5,8,NA
+77,heat control,9.16,54.5,9,NA
+77,heat control,9.16,54.5,10,NA
+77,heat control,9.16,54.5,11,NA
+77,heat control,9.16,54.5,12,NA
+77,heat control,9.16,54.5,13,NA
+78,heat control,7.39,52,0,0
+78,heat control,7.39,52,1,2993.255103
+78,heat control,7.39,52,2,75331.75712
+78,heat control,7.39,52,3,109388.3273
+78,heat control,7.39,52,4,57341.77805
+78,heat control,7.39,52,5,163044.6313
+78,heat control,7.39,52,6,494231.9223
+78,heat control,7.39,52,7,23250.23272
+78,heat control,7.39,52,8,26238.67138
+78,heat control,7.39,52,9,3938.829765
+78,heat control,7.39,52,10,1408.049852
+78,heat control,7.39,52,11,3012.837754
+78,heat control,7.39,52,12,374.8177887
+78,heat control,7.39,52,13,0
+79,heat control,8.93,54,0,0
+79,heat control,8.93,54,1,9847.023173
+79,heat control,8.93,54,2,79740.02084
+79,heat control,8.93,54,3,181398.265
+79,heat control,8.93,54,4,106562.7152
+79,heat control,8.93,54,5,411853.2923
+79,heat control,8.93,54,6,168918.8424
+79,heat control,8.93,54,7,109619.9297
+79,heat control,8.93,54,8,754057.028
+79,heat control,8.93,54,9,282198.3131
+79,heat control,8.93,54,10,NA
+79,heat control,8.93,54,11,NA
+79,heat control,8.93,54,12,NA
+79,heat control,8.93,54,13,NA
+80,heat control,7.58,53,0,0
+80,heat control,7.58,53,1,767.4864338
+80,heat control,7.58,53,2,25142.48372
+80,heat control,7.58,53,3,0
+80,heat control,7.58,53,4,23554.92017
+80,heat control,7.58,53,5,89390.49317
+80,heat control,7.58,53,6,18747.98228
+80,heat control,7.58,53,7,18889.60024
+80,heat control,7.58,53,8,14320.42465
+80,heat control,7.58,53,9,12295.94833
+80,heat control,7.58,53,10,658.0834577
+80,heat control,7.58,53,11,0
+80,heat control,7.58,53,12,47.53078234
+80,heat control,7.58,53,13,0
+81,heat control,6.83,51,0,0
+81,heat control,6.83,51,1,0
+81,heat control,6.83,51,2,2365.105915
+81,heat control,6.83,51,3,80958.59526
+81,heat control,6.83,51,4,1212611.042
+81,heat control,6.83,51,5,249285.3544
+81,heat control,6.83,51,6,2390901.075
+81,heat control,6.83,51,7,1338925.413
+81,heat control,6.83,51,8,NA
+81,heat control,6.83,51,9,NA
+81,heat control,6.83,51,10,NA
+81,heat control,6.83,51,11,NA
+81,heat control,6.83,51,12,NA
+81,heat control,6.83,51,13,NA
+82,heat control,6.27,50,0,0
+82,heat control,6.27,50,1,40970.58475
+82,heat control,6.27,50,2,104905.0059
+82,heat control,6.27,50,3,133202.8346
+82,heat control,6.27,50,4,422332.9138
+82,heat control,6.27,50,5,376455.6036
+82,heat control,6.27,50,6,2826174.981
+82,heat control,6.27,50,7,1769213.478
+82,heat control,6.27,50,8,8561559.562
+82,heat control,6.27,50,9,2854209.965
+82,heat control,6.27,50,10,NA
+82,heat control,6.27,50,11,NA
+82,heat control,6.27,50,12,NA
+82,heat control,6.27,50,13,NA
+83,heat control,7.98,54,0,0
+83,heat control,7.98,54,1,17210.68495
+83,heat control,7.98,54,2,89512.62743
+83,heat control,7.98,54,3,329689.8075
+83,heat control,7.98,54,4,258010.9335
+83,heat control,7.98,54,5,88245.80097
+83,heat control,7.98,54,6,NA
+83,heat control,7.98,54,7,NA
+83,heat control,7.98,54,8,NA
+83,heat control,7.98,54,9,NA
+83,heat control,7.98,54,10,NA
+83,heat control,7.98,54,11,NA
+83,heat control,7.98,54,12,NA
+83,heat control,7.98,54,13,NA
+84,heat control,6.49,45,0,0
+84,heat control,6.49,45,1,16679.39743
+84,heat control,6.49,45,2,51553.75102
+84,heat control,6.49,45,3,368224.954
+84,heat control,6.49,45,4,771160.4605
+84,heat control,6.49,45,5,759979.2186
+84,heat control,6.49,45,6,1654651.58
+84,heat control,6.49,45,7,1842200.869
+84,heat control,6.49,45,8,63076.34943
+84,heat control,6.49,45,9,298051.8891
+84,heat control,6.49,45,10,794175.9511
+84,heat control,6.49,45,11,717391.2668
+84,heat control,6.49,45,12,1660621.465
+84,heat control,6.49,45,13,144802.0724
+85,heat control,5.57,48,0,0
+85,heat control,5.57,48,1,10242.19694
+85,heat control,5.57,48,2,662254.5724
+85,heat control,5.57,48,3,313923.8719
+85,heat control,5.57,48,4,79657.84057
+85,heat control,5.57,48,5,243892.5982
+85,heat control,5.57,48,6,935968.6496
+85,heat control,5.57,48,7,432093.5417
+85,heat control,5.57,48,8,70143.03313
+85,heat control,5.57,48,9,1183237.438
+85,heat control,5.57,48,10,17660559.84
+85,heat control,5.57,48,11,NA
+85,heat control,5.57,48,12,NA
+85,heat control,5.57,48,13,NA
+86,heat control,7.97,51.5,0,0
+86,heat control,7.97,51.5,1,57701.92101
+86,heat control,7.97,51.5,2,84259.4179
+86,heat control,7.97,51.5,3,78993.61561
+86,heat control,7.97,51.5,4,205436.7632
+86,heat control,7.97,51.5,5,243188.1556
+86,heat control,7.97,51.5,6,230929.5534
+86,heat control,7.97,51.5,7,60052.27033
+86,heat control,7.97,51.5,8,328473.2633
+86,heat control,7.97,51.5,9,261473.2031
+86,heat control,7.97,51.5,10,5427666.675
+86,heat control,7.97,51.5,11,NA
+86,heat control,7.97,51.5,12,NA
+86,heat control,7.97,51.5,13,NA
+87,heat control,6.68,46,0,0
+87,heat control,6.68,46,1,882.9130331
+87,heat control,6.68,46,2,77915.42667
+87,heat control,6.68,46,3,168269.7408
+87,heat control,6.68,46,4,68589.81918
+87,heat control,6.68,46,5,226728.1451
+87,heat control,6.68,46,6,263913.44
+87,heat control,6.68,46,7,85033.01343
+87,heat control,6.68,46,8,27161.73643
+87,heat control,6.68,46,9,2578.050573
+87,heat control,6.68,46,10,5860.393553
+87,heat control,6.68,46,11,24958.38107
+87,heat control,6.68,46,12,14229.19263
+87,heat control,6.68,46,13,12877.11495
+88,heat control,1.58,30,0,0
+88,heat control,1.58,30,1,3936.261491
+88,heat control,1.58,30,2,22884.60581
+88,heat control,1.58,30,3,400905.2232
+88,heat control,1.58,30,4,0
+88,heat control,1.58,30,5,191992.0692
+88,heat control,1.58,30,6,135897.9344
+88,heat control,1.58,30,7,55505.92346
+88,heat control,1.58,30,8,15498.20397
+88,heat control,1.58,30,9,NA
+88,heat control,1.58,30,10,NA
+88,heat control,1.58,30,11,NA
+88,heat control,1.58,30,12,NA
+88,heat control,1.58,30,13,NA
+89,heat control,1.47,31,0,0
+89,heat control,1.47,31,1,4882.129823
+89,heat control,1.47,31,2,188276.0219
+89,heat control,1.47,31,3,121316.6279
+89,heat control,1.47,31,4,20842.46295
+89,heat control,1.47,31,5,161700.3292
+89,heat control,1.47,31,6,2010286.933
+89,heat control,1.47,31,7,816082.9969
+89,heat control,1.47,31,8,NA
+89,heat control,1.47,31,9,NA
+89,heat control,1.47,31,10,NA
+89,heat control,1.47,31,11,NA
+89,heat control,1.47,31,12,NA
+89,heat control,1.47,31,13,NA
+90,heat control,7.39,52,0,0
+90,heat control,7.39,52,1,38729.70328
+90,heat control,7.39,52,2,131867.4432
+90,heat control,7.39,52,3,54163.75682
+90,heat control,7.39,52,4,0
+90,heat control,7.39,52,5,45251.59291
+90,heat control,7.39,52,6,125832.466
+90,heat control,7.39,52,7,26408.50693
+90,heat control,7.39,52,8,43025.18365
+90,heat control,7.39,52,9,2368982.217
+90,heat control,7.39,52,10,NA
+90,heat control,7.39,52,11,NA
+90,heat control,7.39,52,12,NA
+90,heat control,7.39,52,13,NA
+91,heat control,4.95,43,0,0
+91,heat control,4.95,43,1,38477.31434
+91,heat control,4.95,43,2,99475.66337
+91,heat control,4.95,43,3,1116982.651
+91,heat control,4.95,43,4,35807.91792
+91,heat control,4.95,43,5,152749.9106
+91,heat control,4.95,43,6,1545338.328
+91,heat control,4.95,43,7,10471.35738
+91,heat control,4.95,43,8,3002.473538
+91,heat control,4.95,43,9,13559.85157
+91,heat control,4.95,43,10,32726.14472
+91,heat control,4.95,43,11,21193.49017
+91,heat control,4.95,43,12,11098.89504
+91,heat control,4.95,43,13,6347.957253
+92,heat control,5.03,46,0,0
+92,heat control,5.03,46,1,6211.994161
+92,heat control,5.03,46,2,35859.66056
+92,heat control,5.03,46,3,189656.5399
+92,heat control,5.03,46,4,371421.7289
+92,heat control,5.03,46,5,300508.8047
+92,heat control,5.03,46,6,1782634.437
+92,heat control,5.03,46,7,112931.6376
+92,heat control,5.03,46,8,2849.37663
+92,heat control,5.03,46,9,NA
+92,heat control,5.03,46,10,NA
+92,heat control,5.03,46,11,NA
+92,heat control,5.03,46,12,NA
+92,heat control,5.03,46,13,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA

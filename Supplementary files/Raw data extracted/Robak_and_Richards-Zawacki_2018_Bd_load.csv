@@ -1,0 +1,5 @@
+temperature,treatment,N_Bd_load,average_infection_rate,SE_infection_rate,average_Bd_load_including_uninfected,SE_Bd_load_including_uninfected
+14,treat_SMA,11,93.88185654,5.274261603,4.756,0.16
+14,control_BCR,10,91.13924051,7.172995781,4.349,0.256
+26,treat_SMA,11,25.94936709,8.64978903,0.762,0.19
+26,control_BCR,10,20.46413502,9.493670886,0.625,0.276

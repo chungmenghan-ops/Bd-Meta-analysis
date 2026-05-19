@@ -1,0 +1,4 @@
+treatment,day_associated_with_peak_Bd_load,N_all_survivors_thisday,average_Bd_load_all_survivors,prevalence_thisday
+no_no_bd,42,21,5.354304636,1
+no_itra_bd,42,23,2.82781457,0.605882353
+bd_itra_bd,7,19,1.831125828,0.611764706

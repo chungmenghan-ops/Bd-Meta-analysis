@@ -1,0 +1,1006 @@
+---
+title: "Meta-analysis_plot"
+output: html_document
+date: "2025-09-30"
+---
+## load package
+```{r}
+library(dplyr)
+library(tidyr)   
+library(ggplot2)
+library(sf)
+
+install.packages("remotes")
+install.packages("rnaturalearth")
+
+# Then install orchaRd from the developers
+remotes::install_github("daniel1noble/orchaRd")
+library(orchaRd)
+
+# --- CRAN packages ---
+cran_pkgs <- c("ape", "dplyr", "forcats", "scales", "ggplot2")
+install.packages(setdiff(cran_pkgs, rownames(installed.packages())))
+
+# --- Bioconductor core (needed by ggtree) ---
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+BiocManager::install(c("ggtree", "treeio", "tidytree"), update = FALSE, ask = FALSE)
+
+# --- ggtreeExtra (Bioc; fall back to GitHub if needed) ---
+if (!requireNamespace("ggtreeExtra", quietly = TRUE)) {
+  try(BiocManager::install("ggtreeExtra", update = FALSE, ask = FALSE), silent = TRUE)
+  if (!requireNamespace("ggtreeExtra", quietly = TRUE)) {
+    if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
+    remotes::install_github("YuLab-SMU/ggtreeExtra")
+  }}
+
+library(ape); library(ggtree); library(ggtreeExtra); library(dplyr); library(forcats); library(scales); library (ggnewscale); library(rnaturalearth)
+
+```
+
+#######################
+## Figure - MAP #######
+#######################
+```{r}
+meta <- read.csv("study_info_map.csv")
+
+world <- ne_countries(scale = "medium", returnclass = "sf")
+
+# Prepare data
+meta_count2 <- meta %>%
+  mutate(
+    lon_r = round(longitude, 2),
+    lat_r = round(latitude, 2)
+  ) %>%
+  group_by(lon_r, lat_r, life_stage_tested) %>%
+  summarise(n_obs = n(), .groups = "drop") %>%
+  arrange(factor(life_stage_tested, 
+                 levels = c("adult","juvenile","larva")))
+
+# Plot
+ggplot(data = world) +
+  geom_sf(fill = "grey92", colour = "grey92") +  
+  geom_text(
+    data = meta_count2,
+    aes(x = lon_r, y = lat_r, label = n_obs, colour = "black"),
+    size = 2.4, fontface = "bold", vjust = 0.4, alpha = 0.8
+  ) +
+  geom_point(
+    data = dplyr::filter(meta_count2, life_stage_tested != "larva"),
+    aes(x = lon_r, y = lat_r, shape = life_stage_tested,
+        fill = life_stage_tested, size = n_obs),
+    colour = "black", stroke = 0.6
+  ) +
+  geom_point(
+    data = dplyr::filter(meta_count2, life_stage_tested == "larva"),
+    aes(x = lon_r, y = lat_r, shape = life_stage_tested,
+        fill = life_stage_tested, size = n_obs),
+    colour = "black", stroke = 0.6
+  ) +
+  scale_colour_manual(
+    values = c(larva = "#0077B6", juvenile = "#E69F00", adult = "#D62828"),
+    guide = "none"
+  ) +
+  scale_size_area(
+    name = "No. of Exp",
+    max_size = 10,
+    breaks = c(1, 3, 5),guide = "none"
+  ) +
+  scale_shape_manual(
+    name = "Life Stage",
+    values = c(larva = 21, juvenile = 21, adult = 21)
+  ) +
+  scale_fill_manual(
+    name = "Life Stage",
+    values = scales::alpha(c(larva = "#0077B6", juvenile = "#E69F00", adult = "#D62828"), 0.5)
+  ) +
+  coord_sf(ylim = c(-90, 100), expand = FALSE) +
+  theme_minimal() +
+  theme(
+    panel.background = element_rect(fill = "white"),
+    panel.grid = element_line(colour = "gray90", linetype = "dotted"),
+    legend.title = element_text(size = 10, face = "bold"),
+    legend.text = element_text(size = 9),
+    legend.position = c(0.93,0.85),
+    legend.background = element_rect(fill = scales::alpha("white", 0.7), colour = NA),
+    legend.key = element_rect(fill = NA, colour = NA)
+  ) +
+  labs(x = NULL, y = NULL, title = NULL) +
+  geom_rect(aes(xmin = -180, xmax = 180, ymin = -90, ymax = 100),
+            fill = NA, colour = "black", linewidth = 0.3)
+
+## output: 9 * 4 ## 5.61 * 1.9 inches (landscape)
+```
+
+#######################################################
+## Main figure - MAP histogram count (per continent) ##
+#######################################################
+```{r}
+histo <- read.csv("study_info_map.csv")
+
+## Study and experiment count per continent
+histo %>% group_by(continent) %>%summarise(n_study = n_distinct(study_id), .groups = "drop") 
+
+# Step 0: create a count table
+country_count <- histo %>% group_by(continent,treatment) %>%
+  summarise(n_obs = n(), .groups = "drop") 
+
+# Step 1: ensure all combinations exist (fill missing with 0)
+df_complete <- country_count %>%
+  tidyr::complete(continent, treatment, fill = list(n_obs = 0)) %>%
+  mutate(
+    treatment = factor(treatment,
+      levels = c("Other", "Probiotics", "SynChem","NatChem","DeadFungi","LiveFungi")
+    )
+  ) %>%
+  arrange(treatment)
+
+# Split by continent
+df_AU  <- df_complete %>% filter(continent == "AU")
+df_EU  <- df_complete %>% filter(continent == "EU")
+df_USA <- df_complete %>% filter(continent == "USA")
+
+# Colour palette
+treat_cols <- c(
+  LiveFungi  = "#08306B",  # darkest blue
+  DeadFungi  = "#08519C",
+  NatChem    = "#2171B5",
+  SynChem    = "#4292C6",
+  Probiotics = "#6BAED6",
+  Other      = "#C6DBEF"   # lightest blue
+)
+# ggplot style template
+base_plot <- function(data, title) {
+  ggplot(data, aes(y = treatment, x = n_obs, fill = treatment)) +   # swapped axes
+    geom_col(colour = "black", width = 0.7) +
+    scale_fill_manual(values = treat_cols) +scale_y_discrete(
+      labels = c(
+        LiveFungi  = "Live pathogen",
+        DeadFungi  = "Dead pathogen",
+        NatChem    = "Natural chemical",
+        SynChem    = "Synthetic antiparasitics",
+        Probiotics = "Probiotics",
+        Other      = "Other"
+      ))+
+    coord_cartesian(xlim = c(0, 15)) +    # fixed x-axis range (was ylim)
+    labs(title = title,
+         x = "",
+         y = "") +
+    theme_minimal() +
+    theme(
+      axis.text.y = element_text(size = 12),          # clearer y-axis text
+      axis.text.x = element_text(size = 12),
+      legend.position = "none",
+      panel.grid.minor = element_blank(),
+      panel.grid.major = element_blank(),
+      panel.background = element_rect(fill = NA, colour = "black", linewidth = 0.5),
+      plot.background  = element_rect(fill = NA, colour = NA)
+      )}
+
+# Individual plots (output size: 5.18 * 1.92)
+base_plot(df_AU,  "Oceania (n = 5 exp from 3 studies)")
+base_plot(df_EU,  "Europe (n = 5 exp from 2 studies)")
+base_plot(df_USA, "North America (n = 49 exp from 33 studies)")
+
+## 5.61 * 1.9 inches (landscape)
+```
+
+#########################################################
+## Main figure - main phylogeny tree (with 23 species) ##
+#########################################################
+```{r}
+# Load the tree
+tree <- read.tree("tree_for_imputation.tre")
+amphib_tax <- read.csv("metadata.csv")
+
+# Species set from my metadata
+sp_data <- unique(trimws(gsub("\\s+", " ", amphib_tax$host_species)))
+sp_data_treefmt <- gsub(" ", "_", sp_data)  # match typical tree tip style
+
+# Check the mismatch between species in my metadata and species in existing tree
+sp_tree_spaces <- gsub("_", " ", tree$tip.label)
+setdiff(sp_data, sp_tree_spaces) # In data but not in tree
+
+# Prune the tree: only keep species present in BOTH tree and my metadata
+tips_to_keep <- intersect(tree$tip.label, sp_data_treefmt)
+tree_pruned0 <- keep.tip(tree, tips_to_keep) 
+
+# Force the tree to be binary
+tree_pruned <- multi2di(tree_pruned0)
+is.binary (tree_pruned) 
+
+# Create a column in metadata that matches the tree’s tip-label format
+amphib_tax$species <- gsub(" ", "_", trimws(amphib_tax$host_species))
+
+# tidy ordering (optional)
+tree_clado <- ape::ladderize(tree_pruned)
+
+# Replace underscores in species names
+tree_pruned$tip.label <- gsub("_", " ", tree_pruned$tip.label)
+
+##########################
+#### A Basic tree (p) ####
+##########################
+
+p <- ggtree( tree_pruned, layout = "circular", branch.length = "none", open.angle = 90) + geom_tree(linewidth = 0.4) + theme( plot.margin = margin(2, 2, 2, 2), legend.position = "right") + xlim (-2, 20)
+p 
+
+###################################
+### Tree (p) + family nodes = p1 ##
+###################################
+
+# Match the family nodes and phylogeny tree
+
+tip_df <- tibble(label = tree_pruned$tip.label) %>%
+  left_join(
+    amphib_tax %>%
+      mutate(species_space = gsub("_", " ", species)),  # convert join key to spaces
+    by = c("label" = "species_space")
+  ) %>%
+  mutate(family = fct_infreq(fct_na_value_to_level(family, level = "Unknown")))
+
+# Colour palette (distinct blues/greens/purples)
+n_fam <- nlevels(tip_df$family)
+fam_cols <- setNames(hcl.colors(n_fam, palette = "Dynamic"), levels(tip_df$family))
+
+# Draw coloured tip nodes by family
+p1 <- p %<+% tip_df + new_scale_fill() + geom_tippoint (aes(fill = family), shape = 21, size = 3.5, colour = "black", stroke = 0.6) + scale_fill_manual(values = fam_cols, na.value = "grey80", name = "Family")
+p1
+
+#######################################################
+### Tree with family nodes (p1) + species name = p2 ###
+#######################################################
+p2 <- p1 +
+  geom_tiplab(aes(label = label), size = 2, offset = 0.85, align = FALSE, family = "sans") +
+  theme(plot.margin = margin(50, 50, 50, 50))
+p2
+
+#################################################
+######## Basic tree (p) + Treatment count = p3 ##
+#################################################
+treat_levels <- c("live_pathogen","dead_pathogen","natural_chem","synthetic_antiparastics","probiotic","other")
+
+counts_treat <- amphib_tax %>%
+  distinct(species, treatment, study_exp_id) %>%          # unique experiments
+  mutate(treatment = factor(treatment, levels = treat_levels)) %>%
+  count(species, treatment, name = "n") %>%
+  tidyr::complete(species = tree_pruned$tip.label,
+                  treatment = treat_levels, fill = list(n = 0)) %>%
+  rename(label = species)
+
+# colours for treatments
+treat_cols <- c(
+  live_pathogen           = "#E69F00",  # orange
+  dead_pathogen           = "#56B4E9",  # sky blue
+  natural_chem            = "#009E73",  # bluish green
+  synthetic_antiparastics = "#F0E442",  # yellow
+  probiotic               = "#0072B2",  # blue
+  other                   = "#D55E00"   # vermillion / reddish-orange
+)
+
+# ensure label format
+counts_treat <- counts_treat %>%
+  dplyr::mutate(
+    label = gsub("_", " ", label),
+    treatment = factor(treatment, levels = treat_levels))
+
+p3 <- p  + 
+  new_scale_fill() + geom_fruit(
+    data = counts_treat,
+    geom = geom_bar,
+    mapping = aes(y = label, x = n, fill = treatment, group = treatment),
+    colour = "black",
+    linewidth = 0.6,
+    stat = "identity",
+    width  = 0.06,
+    offset = 0.05) + scale_fill_manual(values = treat_cols, name = "Treatment") 
+p3
+
+#######################################################
+## Tree with treatment type (p3) + count number = p4 ##
+#######################################################
+
+## create a count table
+totals <- counts_treat %>%
+  dplyr::group_by(label) %>%
+  dplyr::summarise(n_total = sum(n), .groups = "drop")
+
+## adding numeric total counts
+p4 <- p3 + geom_fruit(
+    inherit.aes = FALSE,
+    data = totals,
+    geom = geom_text,
+    mapping = aes(y = label, x = n_total, label = n_total),
+    offset  = -0.18,    # same as the bar offset
+    nudge_x = 0,     # small push outward so text clears bar ends
+    color = "black",
+    size    = 0.2,
+    fontface = "bold"
+  )
+p4
+```
+
+#################################################################
+## Effect size figures - Overall effect (supplementary figure) ##
+#################################################################
+```{r}
+# Note that all models using here are all from the R script 'Meta_analyis_code'. You should ran that script before making figures here.
+
+###################
+## (1) mortality ##
+###################
+Mor_all_plot <- orchard_plot(
+  M3_mor,
+  group = "study_exp_id",
+  xlab  = "Log risk ratio",
+  angle = 0,
+  branch.size = 1.3,
+  trunk.size = 0.7,
+  twig.size = 0, cb = FALSE, colour = FALSE, fill = TRUE, alpha = 0.7)
+
+# grey points, no jitter, larger min size
+idx <- which(vapply(Mor_all_plot$layers, \(x) inherits(x$geom, "GeomPoint"), logical(1)))[1]
+if (!is.na(idx)) Mor_all_plot$layers[[idx]]$aes_params[c("colour","fill","alpha")] <- list("grey80","grey60",0.2)
+
+# move "k = ..." text down to same line as intercept
+k_idx <- which(vapply(Mor_all_plot$layers, \(x) inherits(x$geom, "GeomText"), logical(1)))[1]
+if (!is.na(k_idx))
+  Mor_all_plot$layers[[k_idx]]$position <- position_nudge(x = -0.3, y = 0.5)  # adjust as needed
+
+Mor_all_plot + scale_x_discrete(labels = NULL) + scale_size_continuous(range = c(4, 8)) + guides(fill = "none", colour = "none", size = "none") + theme(legend.position = c(0.57, 0.82),panel.grid.minor = element_blank(), panel.grid.major = element_blank()) + geom_hline(yintercept = 0, linetype = "dashed", color = "grey50")
+
+## output: 5.67 * 1.84 inches (landscape)
+
+####################
+## (2) prevalence ##
+####################
+
+Preval_all_plot <- orchard_plot(
+  M3_preval,
+  group = "study_exp_id",
+  xlab  = "Log risk ratio",
+  angle = 0,
+  branch.size = 1.3,
+  trunk.size = 0.7,
+  twig.size = 0, cb = FALSE, colour = FALSE, fill = TRUE, alpha = 0.7)
+
+Preval_all_plot
+
+# grey points, no jitter, larger min size
+idx <- which(vapply(Preval_all_plot$layers, \(x) inherits(x$geom, "GeomPoint"), logical(1)))[1]
+if (!is.na(idx)) Preval_all_plot$layers[[idx]]$aes_params[c("colour","fill","alpha")] <- list("grey80","grey60",0.2)
+
+# move "k = ..." text down to same line as intercept
+k_idx <- which(vapply(Preval_all_plot$layers, \(x) inherits(x$geom, "GeomText"), logical(1)))[1]
+if (!is.na(k_idx))
+  Preval_all_plot$layers[[k_idx]]$position <- position_nudge(x = -0.3, y = 0.08)  # adjust as needed
+
+Preval_all_plot + scale_x_discrete(labels = NULL) + scale_size_continuous(range = c(4, 8)) + guides(fill = "none", colour = "none", size = "none") + theme(legend.position = c(0.57, 0.82),panel.grid.minor = element_blank(), panel.grid.major = element_blank()) + geom_hline(yintercept = 0, linetype = "dashed", color = "grey50")
+
+###################
+## (3) intensity ##
+###################
+
+LOAD_all_plot <- orchard_plot(
+  M3_INC,
+  group = "study_exp_id",
+  xlab  = "Log response ratio",
+  angle = 0,
+  branch.size = 1.3,
+  trunk.size = 0.7,
+  twig.size = 0, cb = FALSE, colour = FALSE, fill = TRUE, alpha = 0.7)
+
+LOAD_all_plot
+
+# grey points, no jitter, larger min size
+idx <- which(vapply(LOAD_all_plot$layers, \(x) inherits(x$geom, "GeomPoint"), logical(1)))[1]
+if (!is.na(idx)) LOAD_all_plot$layers[[idx]]$aes_params[c("colour","fill","alpha")] <- list("grey80","grey60",0.2)
+
+# move "k = ..." text down to same line as intercept
+k_idx <- which(vapply(LOAD_all_plot$layers, \(x) inherits(x$geom, "GeomText"), logical(1)))[1]
+if (!is.na(k_idx))
+  LOAD_all_plot$layers[[k_idx]]$position <- position_nudge(x = -0.3, y = 0.8)  # adjust as needed
+
+LOAD_all_plot + scale_x_discrete(labels = NULL) + scale_size_continuous(range = c(4, 8)) + guides(fill = "none", colour = "none", size = "none") + theme(legend.position = c(0.57, 0.82),panel.grid.minor = element_blank(), panel.grid.major = element_blank()) + geom_hline(yintercept = 0, linetype = "dashed", color = "grey50")
+```
+
+##########################################################################
+## Effect size figures - Moderating effect of treatment type (Figure 3) ##
+##########################################################################
+```{r}
+# Note that all models using here are all from the R script 'Meta_analyis_code'. You should ran that script before making figures here.
+
+# Set colours for treatment types
+
+treat_cols <- c(
+  "Live_pathogen"            = "#E69F00",
+  "Dead_pathogen"            = "#56B4E9",
+  "Natural_chem"             = "#009E73",
+  "Synthetic_antiparastics"  = "#F0E442",
+  "Probiotic"                = "#0072B2",
+  "Other"                    = "#D55E00"
+)
+
+###################
+## (1) Mortality ##
+###################
+
+Mor_T_plot <- orchard_plot(
+  M_treat_dead1,
+  mod = "treatment",
+  group = "study_exp_id",
+  xlab  = "",
+  angle = 0,
+  twig.size = 0, 
+  branch.size = 1.3,
+  trunk.size = 0.7,
+  cb = FALSE, colour = FALSE, fill = TRUE, alpha = 0.1)
+Mor_T_plot
+# move "k = ..." text down to same line as intercept
+k_idx <- which(vapply(Mor_T_plot$layers, \(x) inherits(x$geom, "GeomText"), logical(1)))[1]
+if (!is.na(k_idx))
+  Mor_T_plot$layers[[k_idx]]$position <- position_nudge(x = -0.3, y = 0.9)  # adjust as needed
+
+Mor_T_plot + geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+  scale_fill_manual(values = treat_cols, name = "Treatment", drop = FALSE) +
+  scale_colour_manual(values = treat_cols, name = "Treatment", drop = FALSE) +
+  scale_size_continuous(range = c(4.5, 8)) +
+  guides(colour = "none", fill ="none") +                           # keep only one legend if you like
+  theme(legend.position = c(-1, 0.20),panel.grid.minor = element_blank(), panel.grid.major = element_blank(),) + scale_x_discrete(labels = NULL)
+
+## 5 * 3 inches
+
+##############################
+## (2) Infection prevalence ##
+##############################
+
+prev_T_plot <- orchard_plot(
+  M_treat_infected,
+  mod = "treatment",
+  group = "study_exp_id",
+  xlab  = "",
+  angle = 0,
+  twig.size = 0, 
+  branch.size = 1.3,
+  trunk.size = 0.7,
+  cb = FALSE, colour = FALSE, fill = TRUE, alpha = 0.1)
+
+prev_T_plot
+
+# move "k = ..." text down to same line as intercept
+k_idx <- which(vapply(prev_T_plot$layers, \(x) inherits(x$geom, "GeomText"), logical(1)))[1]
+if (!is.na(k_idx))
+  prev_T_plot$layers[[k_idx]]$position <- position_nudge(x = -0.3, y = 0.9)  # adjust as needed
+
+prev_T_plot + geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+  scale_fill_manual(values = treat_cols, name = "Treatment", drop = FALSE) +
+  scale_colour_manual(values = treat_cols, name = "Treatment", drop = FALSE) +
+  scale_size_continuous(range = c(4.5, 8)) +
+  guides(colour = "none", size = "none", fill ="none") +                           # keep only one legend if you like
+  theme(legend.position = c(0.57, 0.82),panel.grid.minor = element_blank(), panel.grid.major = element_blank(),) + scale_x_discrete(labels = NULL)
+
+## 6.01 * 3 inches
+
+#############################
+## (3) Infection intensity ##
+#############################
+
+Load_T_plot <- orchard_plot(
+  M_T_INC,
+  mod = "treatment",
+  group = "study_exp_id",
+  xlab  = "",
+  angle = 0,
+  twig.size = 0, 
+  branch.size = 1.3,
+  trunk.size = 0.7,
+  cb = FALSE, colour = FALSE, fill = TRUE, alpha = 0.1)
+
+Load_T_plot
+
+# move "k = ..." text down to same line as intercept
+k_idx <- which(vapply(Load_T_plot$layers, \(x) inherits(x$geom, "GeomText"), logical(1)))[1]
+if (!is.na(k_idx))
+  Load_T_plot$layers[[k_idx]]$position <- position_nudge(x = -0.3, y = 0.9)  # adjust as needed
+
+Load_T_plot + geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+  scale_fill_manual(values = treat_cols, name = "Treatment", drop = FALSE) +
+  scale_colour_manual(values = treat_cols, name = "Treatment", drop = FALSE) +
+  scale_size_continuous(range = c(4.5, 8)) +
+  guides(colour = "none", size = "none", fill ="none") +                           # keep only one legend if you like
+  theme(legend.position = c(0.57, 0.82),panel.grid.minor = element_blank(), panel.grid.major = element_blank(),) + scale_x_discrete(labels = NULL)
+
+## 6.01 * 3 inches
+```
+
+#######################################################################
+## Effect size figures - Moderating effect of life stage (Figure 4) ###
+#######################################################################
+```{r}
+# Note that all models using here are all from the R script 'Meta_analyis_code'. You should ran that script before making figures here.
+
+
+# Set Colours for life stage
+stage_cols <- c(
+  "Adult"       = "#D62828",
+  "Juvenile"    = "#FFB703",
+  "Larva"        = "#0077B6")
+
+###################
+## (1) mortality ##
+###################
+
+Mor_S_plot <- orchard_plot(
+  M_stage_dead,
+  mod = "life_stage_tested",
+  group = "study_exp_id",
+  xlab  = "Log risk ratio",
+  angle = 0,
+  twig.size = 0, 
+  branch.size = 1.3,
+  trunk.size = 0.7,
+  cb = FALSE, colour = FALSE, fill = TRUE, alpha = 0.1)
+Mor_S_plot
+# move "k = ..." text down to same line as intercept
+k_idx <- which(vapply(Mor_S_plot$layers, \(x) inherits(x$geom, "GeomText"), logical(1)))[1]
+if (!is.na(k_idx))
+  Mor_S_plot$layers[[k_idx]]$position <- position_nudge(x = -0.3, y = 5.6)  # adjust as needed
+
+Mor_S_plot + geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+  scale_fill_manual(values = stage_cols, name = "life_stage_tested", drop = FALSE) +
+  scale_colour_manual(values = stage_cols, name = "life_stage_tested", drop = FALSE) +
+  scale_size_continuous(range = c(2, 8)) +
+  guides(colour = "none", fill ="none", size = "none") +                           # keep only one legend if you like
+  theme(legend.position = c(0.5, 0.20),panel.grid.minor = element_blank(), panel.grid.major = element_blank(),) + scale_x_discrete(labels = NULL)+ylim (-3.5, 8)
+
+## 3.2 * 3 inches (protrait)
+
+##############################
+## (2) Infection prevalence ##
+##############################
+
+prev_S_plot <- orchard_plot(
+  M_stage_infected,
+  mod = "life_stage_tested",
+  group = "study_exp_id",
+  xlab  = "Log risk ratio",
+  angle = 0,
+  twig.size = 0, 
+  branch.size = 1.3,
+  trunk.size = 0.7,
+  cb = FALSE, colour = FALSE, fill = TRUE, alpha = 0.1)
+
+prev_S_plot
+# move "k = ..." text down to same line as intercept
+k_idx <- which(vapply(prev_S_plot$layers, \(x) inherits(x$geom, "GeomText"), logical(1)))[1]
+if (!is.na(k_idx))
+  prev_S_plot$layers[[k_idx]]$position <- position_nudge(x = -0.3, y = 0.7)  # adjust as needed
+
+prev_S_plot + geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+  scale_fill_manual(values = stage_cols, name = "life_stage_tested", drop = FALSE) +
+  scale_colour_manual(values = stage_cols, name = "life_stage_tested", drop = FALSE) +
+  scale_size_continuous(range = c(2, 8)) +
+  guides(colour = "none", fill ="none", size = "none") +                           # keep only one legend if you like
+  theme(legend.position = c(0.5, 0.20),panel.grid.minor = element_blank(), panel.grid.major = element_blank(),) + scale_x_discrete(labels = NULL) + ylim (-3.1,3.1)
+
+## 3.2 * 3 inches (protrait)
+
+#############################
+## (3) Infection intensity ##
+#############################
+
+Load_S_plot <- orchard_plot(
+  M_LS_INC,
+  mod = "life_stage_tested",
+  group = "study_exp_id",
+  xlab  = "Log response ratio",
+  angle = 0,
+  twig.size = 0, 
+  branch.size = 1.3,
+  trunk.size = 0.7,
+  cb = FALSE, colour = FALSE, fill = TRUE, alpha = 0.1)
+
+Load_S_plot
+# move "k = ..." text down to same line as intercept
+k_idx <- which(vapply(Load_S_plot$layers, \(x) inherits(x$geom, "GeomText"), logical(1)))[1]
+if (!is.na(k_idx))
+  Load_S_plot$layers[[k_idx]]$position <- position_nudge(x = -0.3, y = 2) # adjust as needed
+
+Load_S_plot + geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+  scale_fill_manual(values = stage_cols, name = "life_stage_tested", drop = FALSE) +
+  scale_colour_manual(values = stage_cols, name = "life_stage_tested", drop = FALSE) +
+  scale_size_continuous(range = c(2, 8)) +
+  guides(colour = "none", fill ="none", size = "none") +                           # keep only one legend if you like
+  theme(legend.position = c(0.5, 0.20),panel.grid.minor = element_blank(), panel.grid.major = element_blank(),) + scale_x_discrete(labels = NULL) + ylim(-8.1,8.1)
+
+## 3.2 * 3 inches (protrait)
+
+```
+#######################################################################
+## Effect size figures - Moderating effect of host origin (Figure 4) ##
+#######################################################################
+```{r}
+# Note that all models using here are all from the R script 'Meta_analyis_code'. You should rUn that script before making figures here.
+
+
+
+# Set colours for host origins
+origin_cols <- c(
+  "Captive"     = "#6A4C93",
+  "Wild"  = "#2A9D8F")
+
+###################
+## (1) mortality ##
+###################
+
+Mor_O_plot <- orchard_plot(
+  M_host_dead1,
+  mod = "host_origin",
+  group = "study_exp_id",
+  xlab  = "Log risk ratio",
+  angle = 0,
+  twig.size = 0, 
+  branch.size = 1.3,
+  trunk.size = 0.7,
+  cb = FALSE, colour = FALSE, fill = TRUE, alpha = 0.1)
+Mor_O_plot
+
+# move "k = ..." text down to same line as intercept
+k_idx <- which(vapply(Mor_O_plot$layers, \(x) inherits(x$geom, "GeomText"), logical(1)))[1]
+if (!is.na(k_idx))
+  Mor_O_plot$layers[[k_idx]]$position <- position_nudge(x = -0.3, y = 3)  # adjust as needed
+
+Mor_O_plot + geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+  scale_fill_manual(values = origin_cols, name = "life_stage_tested", drop = FALSE) +
+  scale_colour_manual(values = origin_cols, name = "life_stage_tested", drop = FALSE) +
+  scale_size_continuous(range = c(2, 6)) +
+  guides(colour = "none", fill ="none", size = "none") +                           # keep only one legend if you like
+  theme(legend.position = c(0.5, 0.20),panel.grid.minor = element_blank(), panel.grid.major = element_blank(),) + scale_x_discrete(labels = NULL) + ylim(-3.5, 5.4)
+
+## 3.2 * 2 inches (landscape)
+
+####################
+## (2) prevalence ##
+####################
+
+Preval_O_plot <- orchard_plot(
+  M_host_infected,
+  mod = "host_origin",
+  group = "study_exp_id",
+  xlab  = "Log risk ratio",
+  angle = 0,
+  twig.size = 0, 
+  branch.size = 1.3,
+  trunk.size = 0.7,
+  cb = FALSE, colour = FALSE, fill = TRUE, alpha = 0.1)
+Preval_O_plot
+# move "k = ..." text down to same line as intercept
+k_idx <- which(vapply(Preval_O_plot$layers, \(x) inherits(x$geom, "GeomText"), logical(1)))[1]
+if (!is.na(k_idx))
+  Preval_O_plot$layers[[k_idx]]$position <- position_nudge(x = -0.3, y = 0.5)  # adjust as needed
+
+Preval_O_plot + geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+  scale_fill_manual(values = origin_cols, name = "life_stage_tested", drop = FALSE) +
+  scale_colour_manual(values = origin_cols, name = "life_stage_tested", drop = FALSE) +
+  scale_size_continuous(range = c(2, 6)) +
+  guides(colour = "none", fill ="none", size = "none") +                           # keep only one legend if you like
+  theme(legend.position = c(0.5, 0.20),panel.grid.minor = element_blank(), panel.grid.major = element_blank(),) + scale_x_discrete(labels = NULL)
+
+## 3.2 * 2 inches (landscape)
+
+###################
+## (3) intensity ##
+###################
+
+Load_O_plot <- orchard_plot(
+  M_origin_juv_INC,
+  mod = "host_origin",
+  group = "study_exp_id",
+  xlab  = "Log response ratio",
+  angle = 0,
+  twig.size = 0, 
+  branch.size = 1.3,
+  trunk.size = 0.7,
+  cb = FALSE, colour = FALSE, fill = TRUE, alpha = 0.1)
+Load_O_plot
+# move "k = ..." text down to same line as intercept
+k_idx <- which(vapply(Load_O_plot$layers, \(x) inherits(x$geom, "GeomText"), logical(1)))[1]
+if (!is.na(k_idx))
+  Load_O_plot$layers[[k_idx]]$position <- position_nudge(x = -0.3, y = 4.4)  # adjust as needed
+
+Load_O_plot + geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+  scale_fill_manual(values = origin_cols, name = "life_stage_tested", drop = FALSE) +
+  scale_colour_manual(values = origin_cols, name = "life_stage_tested", drop = FALSE) +
+  scale_size_continuous(range = c(2, 6)) +
+  guides(colour = "none", fill ="none", size = "none") +                           # keep only one legend if you like
+  theme(legend.position = c(0.5, 0.20),panel.grid.minor = element_blank(), panel.grid.major = element_blank(),) + scale_x_discrete(labels = NULL) + ylim (-8.1, 8.1)
+
+## 3.2 * 2 inches (landscape)
+```
+#########################################################################
+## Effect size figures - Moderating effect of host taxonomy (Figure 4) ##
+#########################################################################
+
+# Note that all models using here are all from the R script 'Meta_analyis_code'. You should rUn that script before making figures here.
+
+
+# Set colours for host taxonomy (we only present three families with sufficient sample sizes)
+
+family_cols <- c(
+  "Bufonidae" = "#A7BE76",
+  "Hylidae"   = "#E49E88",
+  "Ranidae"   = "#CCA280")
+
+###################
+## (1) mortality ##
+###################
+
+Mor_t_plot <- orchard_plot(
+  M_taxa_dead1,
+  mod = "family",
+  group = "study_exp_id",
+  xlab  = "Log risk ratio",
+  angle = 0,
+  twig.size = 0, 
+  branch.size = 1.3,
+  trunk.size = 0.7,
+  cb = FALSE, colour = FALSE, fill = TRUE, alpha = 0.1)
+Mor_t_plot
+
+# move "k = ..." text down to same line as intercept
+k_idx <- which(vapply(Mor_t_plot$layers, \(x) inherits(x$geom, "GeomText"), logical(1)))[1]
+if (!is.na(k_idx))
+  Mor_t_plot$layers[[k_idx]]$position <- position_nudge(x = -0.3, y = 3)  # adjust as needed
+
+Mor_t_plot + geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+  scale_fill_manual(values = family_cols, name = "life_stage_tested", drop = FALSE) +
+  scale_colour_manual(values = family_cols, name = "life_stage_tested", drop = FALSE) +
+  scale_size_continuous(range = c(2, 6)) +
+  guides(colour = "none", fill ="none", size = "none") +                           # keep only one legend if you like
+  theme(legend.position = c(0.5, 0.20),panel.grid.minor = element_blank(), panel.grid.major = element_blank(),) + scale_x_discrete(labels = NULL) + ylim(-3.5,5.4)
+  
+### 3.2 *7 inches (protrait) >> 7 because each family (n = 7) took 1 space 
+
+####################
+## (2) prevalence ##
+####################
+
+prev_t_plot <- orchard_plot(
+  M_taxa_infected,
+  mod = "family",
+  group = "study_exp_id",
+  xlab  = "Log risk ratio",
+  angle = 0,
+  twig.size = 0, 
+  branch.size = 1.3,
+  trunk.size = 0.7,
+  cb = FALSE, colour = FALSE, fill = TRUE, alpha = 0.1)
+prev_t_plot
+
+# move "k = ..." text down to same line as intercept
+k_idx <- which(vapply(prev_t_plot$layers, \(x) inherits(x$geom, "GeomText"), logical(1)))[1]
+if (!is.na(k_idx))
+  prev_t_plot$layers[[k_idx]]$position <- position_nudge(x = -0.3, y = 0.7)  # adjust as needed
+
+prev_t_plot + geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+  scale_fill_manual(values = family_cols, name = "life_stage_tested", drop = FALSE) +
+  scale_colour_manual(values = family_cols, name = "life_stage_tested", drop = FALSE) +
+  scale_size_continuous(range = c(2, 6)) +
+  guides(colour = "none", fill ="none", size = "none") +                           # keep only one legend if you like
+  theme(legend.position = c(0.5, 0.20),panel.grid.minor = element_blank(), panel.grid.major = element_blank(),) + scale_x_discrete(labels = NULL) + ylim (-3.1,3.1)
+
+### 3.2 *7 inches (protrait) >> 7 because each family (n = 7) took 1 space 
+
+###################
+## (3) intensity ##
+###################
+
+Load_t_plot <- orchard_plot(
+  M_taxa_INC,
+  mod = "family",
+  group = "study_exp_id",
+  xlab  = "Log response ratio",
+  angle = 0,
+  twig.size = 0, 
+  branch.size = 1.3,
+  trunk.size = 0.7,
+  cb = FALSE, colour = FALSE, fill = TRUE, alpha = 0.1)
+Load_t_plot
+
+# move "k = ..." text down to same line as intercept
+k_idx <- which(vapply(Load_t_plot$layers, \(x) inherits(x$geom, "GeomText"), logical(1)))[1]
+if (!is.na(k_idx))
+  Load_t_plot$layers[[k_idx]]$position <- position_nudge(x = -0.3, y = 6) # adjust as needed
+
+Load_t_plot + geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+  scale_fill_manual(values = family_cols, name = "life_stage_tested", drop = FALSE) +
+  scale_colour_manual(values = family_cols, name = "life_stage_tested", drop = FALSE) +
+  scale_size_continuous(range = c(2, 6)) +
+  guides(colour = "none", fill ="none", size = "none") +                           # keep only one legend if you like
+  theme(legend.position = c(0.5, 0.20),panel.grid.minor = element_blank(), panel.grid.major = element_blank(),) + scale_x_discrete(labels = NULL) + ylim(-12,12)
+
+
+### 3.2 *9 inches (protrait) >> 7 because each family (n = 9) took 1 space 
+
+```
+
+##########################################################
+## Absolute levels of prevalence (supplementary figure) ##
+##########################################################
+```{r}
+### Absolute level for prevalence per group per treatment
+
+## read.table
+metadata <- read.csv("metadata.csv")
+prevalence <- metadata %>% filter(trait == "prevalence")
+
+df_long <- prevalence %>%
+  mutate(row_id = row_number()) %>%   # if you don't already have an ID
+  pivot_longer(
+    cols = c(mean_C_trait_initial, mean_T_trait_initial),
+    names_to = "group",
+    values_to = "prevalence"
+  ) %>%
+  mutate(group = recode(group,
+                        "mean_C_trait_initial" = "Untreated",
+                        "mean_T_trait_initial" = "Treated"))
+
+df_long$treatment <- factor(
+  df_long$treatment,
+  levels = c(
+    "live_pathogen",
+    "natural_chem",
+    "synthetic_antiparastics",
+    "dead_pathogen",
+    "probiotic",
+    "other"
+  )
+)
+
+df_summary <- df_long %>%
+  group_by(treatment, group) %>%
+  summarise(
+    mean_prev = mean(prevalence, na.rm = TRUE),
+    se_prev = sd(prevalence, na.rm = TRUE) / sqrt(n()),
+    .groups = "drop"
+  )
+
+
+
+df_long$group <- factor(df_long$group,
+                        levels = c("Untreated", "Treated"))
+
+ggplot(df_long,
+       aes(x = group, y = prevalence,
+           group = row_id)) +
+  
+  # raw paired lines + points
+  geom_line(alpha = 0.3, colour = "grey40") +
+  geom_point(size = 2, alpha = 0.7, position = position_jitter(width = 0.03, height = 0), colour = "black") +
+  
+  # --- NEW: treatment-specific mean + SE ---
+  geom_point(data = df_summary,
+             aes(x = group, y = mean_prev),
+             size = 4,
+             colour = "red",
+             inherit.aes = FALSE) +
+  
+  geom_errorbar(data = df_summary,
+                aes(x = group,
+                    ymin = mean_prev - se_prev,
+                    ymax = mean_prev + se_prev),
+                width = 0.15,
+                colour = "red",
+                inherit.aes = FALSE) +
+  # -----------------------------------------
+
+facet_wrap(~ treatment, nrow = 1,
+           labeller = as_labeller(c(
+             live_pathogen = "Live pathogen",
+             dead_pathogen = "Dead pathogen",
+             natural_chem = "Natural chemical",
+             synthetic_antiparastics = "Syn antiparasitic",
+             probiotic = "Probiotic",
+             other = "Other"
+           ))) +
+  labs(
+    x = "",
+    y = "Prevalence (%)"
+  ) +
+  theme_bw() +
+  theme(
+    strip.text = element_text(size = 12, face = "bold"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_line(colour = "aliceblue", linewidth = 0.02)
+  )
+```
+
+
+#########################################################
+## Absolute levels of mortality (supplementary figure) ##
+#########################################################
+
+```{r}
+## read.table
+metadata <- read.csv("metadata.csv")
+mortality <- metadata %>% filter(trait == "mortality")
+
+df_long <- mortality %>%
+  mutate(row_id = row_number()) %>%   # if you don't already have an ID
+  pivot_longer(
+    cols = c(mean_C_trait_initial, mean_T_trait_initial),
+    names_to = "group",
+    values_to = "mortality"
+  ) %>%
+  mutate(group = recode(group,
+                        "mean_C_trait_initial" = "Untreated",
+                        "mean_T_trait_initial" = "Treated"))
+
+df_long$treatment <- factor(
+  df_long$treatment,
+  levels = c(
+    "live_pathogen",
+    "natural_chem",
+    "synthetic_antiparastics",
+    "dead_pathogen",
+    "probiotic",
+    "other"
+  )
+)
+
+df_summary <- df_long %>%
+  group_by(treatment, group) %>%
+  summarise(
+    mean_mor = mean(mortality, na.rm = TRUE),
+    se_mor = sd(mortality, na.rm = TRUE) / sqrt(n()),
+    .groups = "drop"
+  )
+
+
+
+df_long$group <- factor(df_long$group,
+                        levels = c("Untreated", "Treated"))
+
+ggplot(df_long,
+       aes(x = group, y = mortality,
+           group = row_id)) +
+  
+  # raw paired lines + points
+  geom_line(alpha = 0.3, colour = "grey40") +
+  geom_point(size = 2, alpha = 0.7, position = position_jitter(width = 0.03, height = 0), colour = "black") +
+  
+  # --- NEW: treatment-specific mean + SE ---
+  geom_point(data = df_summary,
+             aes(x = group, y = mean_mor),
+             size = 4,
+             colour = "red",
+             inherit.aes = FALSE) +
+  
+  geom_errorbar(data = df_summary,
+                aes(x = group,
+                    ymin = mean_mor - se_mor,
+                    ymax = mean_mor + se_mor),
+                width = 0.15,
+                colour = "red",
+                inherit.aes = FALSE) +
+  # -----------------------------------------
+
+facet_wrap(~ treatment, nrow = 1,
+           labeller = as_labeller(c(
+             live_pathogen = "Live pathogen",
+             dead_pathogen = "Dead pathogen",
+             natural_chem = "Natural chemical",
+             synthetic_antiparastics = "Syn antiparasitic",
+             probiotic = "Probiotic",
+             other = "Other"
+           ))) +
+  labs(
+    x = "",
+    y = "Mortality rate (%)"
+  ) +
+  theme_bw() +
+  theme(
+    strip.text = element_text(size = 12, face = "bold"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_line(colour = "aliceblue", linewidth = 0.02)
+  )
+```

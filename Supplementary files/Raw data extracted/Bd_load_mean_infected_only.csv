@@ -1,0 +1,5 @@
+temperature,treatment,average_infection_rate,mean_log10_infected_only
+14,treat_SMA,93.88185654,5.065941573038262
+14,control_BCR,91.13924051,4.771819444252246
+26,treat_SMA,25.94936709,2.9364878047204814
+26,control_BCR,20.46413502,3.0541237115039324

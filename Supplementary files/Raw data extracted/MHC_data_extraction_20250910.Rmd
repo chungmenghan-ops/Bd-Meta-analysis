@@ -1,0 +1,1152 @@
+---
+title: "MHC_data_extraction"
+author: "Joe Chung"
+output: html_document
+---
+## shinyDigitise ## For figure extraction ##
+```{r}
+devtools::install_github("EIvimeyCook/ShinyDigitise", force=TRUE, dependencies=TRUE)
+devtools::install_github("daniel1noble/metaDigitise", force=TRUE, dependencies=TRUE)
+library(metaDigitise)
+
+fig <- metaDigitise("./new") ## using metaDigitise
+
+library(shinyDigitise)
+df <- shinyDigitise() ## extracting using the browser
+```
+# Load package
+library(dplyr)
+library(tidyr)
+library(readr)
+pacman::p_load(tidyverse)
+
+## Adams_et_al_2022
+```{r}
+##############
+## peak prevalence for Experiment 1 and Experiment 2
+##############
+
+## Read table
+Adamsdata = read.table (file = "Adams_etal_2022_Frog_Lab_Data.csv", header = TRUE, sep = ",")
+
+# Group by Treatment (treatgp, treatgp2) and date
+summary_nonzero <- Adamsdata %>%
+  group_by(treatgp, treatgp2, date) %>%
+  summarise(
+    Non_Zero = sum(!is.na(ZE) & ZE != 0),
+    Total = sum(!is.na(ZE)),
+    Proportion = Non_Zero / Total,
+    .groups = "drop"
+  )
+
+## Experiment 1 => date = 2017 => control = "treatgp = 1x, treatgp2 = naive"; treatment = "treatgp = 2x, treatgp = reinfected"
+## Experiment 2 => date = 2018 => control = "treatgp = 1x, treatgp2 = naive"; treatment = "treatgp = 2x or 3x, treatgp = reinfected"
+
+##############
+## peak loads for Experiment 1 and Experiment 2
+##############
+
+### Before running the code. I made a few changes for the dataset "Adams_etal_2022_Frog_Lab_Data"
+# (1) Create a column called "experiment_ID" => "1" = Experiment 1 in 2017; "2" = Experiment 2 in 2018
+# (2) Remove all the rows with ZE = 0 because the frogs were uninfected at the time of measure, which was not considered for Bd load calculation by our definition
+# (3) Select the largest ZE for each Frog ID per experiment_ID as their peak Bd load (and remove all the smaller ZE for each FrogID in each experiment)
+# (4) Create a column called "post_time_Bd", which calculate the time difference (in days) between date of Bd measure and date of Bd exposure.
+
+## Read table
+labdata=read.table(file="Adams_et_al_peakload.csv",header = TRUE,sep=",") 
+
+
+# Calculate mean and SD of Bd loads and time elapsed after the start of post-treatment Bd exposure
+labdata %>%
+group_by(experiment_ID, treatgp) %>% # Group by the relevant categories
+summarise(mean = mean(ZE),
+sd_ZE = sd(ZE),
+post_time_Bd = mean (post_time_Bd),
+n =n()) 
+
+
+```
+## Waddle_et_al_2024
+```{r}
+##########################################################################
+## Experiment 1: Pathogen-experienced frogs are resistant
+##########################################################################
+
+# Read table
+Wad_EXP1=read.table(file="Waddle_etal_Exp1_average_rate.csv",header = TRUE,sep=",") 
+
+###########################
+### Peak infection rate ###
+###########################
+
+# Calculate weekly infection rate per treatment
+weekly_infection_rate <- Wad_EXP1 %>%
+  filter(!is.na(its), week !=0) %>%  # exclude dead frogs (NA in 'its') and Week 0 data because the animals have not started being infected yet.
+  group_by(Treatment, week) %>%
+  summarise(
+    n_alive = n(),
+    n_infected = sum(its != 0),  # infected if its ≠ 0
+    infection_rate = n_infected / n_alive,
+    .groups = "drop"
+  )
+
+###########################
+### peak infection load ###
+###########################
+
+# Filter out dead frogs (NA) and uninfected values (its == 0), then find peak per frog
+frog_peaks <- Wad_EXP1 %>%
+  filter(!is.na(its), its != 0) %>%  # exclude dead and uninfected records
+  group_by(FrogID) %>%
+  slice_max(order_by = its, n = 1, with_ties = FALSE) %>%  # peak its per frog
+  ungroup()
+
+# Summarise by treatment
+treatment_peaks <- frog_peaks %>%
+  group_by(Treatment) %>%
+  summarise(
+    avg_peak_its = mean(its),
+    sd_peak_its = sd(its),
+    avg_week_of_peak = mean(week),
+    n_frogs = n(),
+    .groups = "drop"
+  )
+
+print(treatment_peaks)
+
+##########################################################################
+## Experiment 2 and 3: Semi-natural experiment
+##########################################################################
+
+# Read table
+Wad_Semi=read.table(file="Waddle_etal_2024_Semi.csv",header = TRUE,sep=",") 
+
+# Filter for treatment with post-treatment Bd exposure => Bd_exposure = "chytrid"
+data_chytrid <- Wad_Semi %>%
+  filter(Bd_exposure == "chytrid")
+
+####################
+## mortality rate ##
+####################
+
+# Calculate total number of ITS measurements (= the total number of survivors) at Week 15
+Porp_dead <- data_chytrid %>%
+  filter(week == 15) %>%
+  group_by(greenhouse, treatment) %>%
+  summarise(
+    total_N = n())
+
+## total N = 40 per treatment group
+## n at week 15 => N of survivors
+
+##############################
+### peak infection rate ###
+##############################
+
+# Calculate infection rate per week-treatment-greenhouse
+infection_rate_summary <- data_chytrid %>%
+  filter(!is.na(ITS)) %>% ## remove dead individuals
+  group_by(greenhouse, treatment, week) %>%
+  summarise(
+    n_total = n(),
+    n_infected = sum(ITS > 0),
+    infection_rate = n_infected / n_total,
+    .groups = "drop"
+  )
+
+##############################
+### peak of mean Bd load  ###
+##############################
+
+# Calculate peak values of the Mean ITS (excluding 0 and NA) per week-treatment-greenhouse
+mean_ITS_values <- data_chytrid %>%
+  filter(!is.na(ITS) & ITS > 0) %>%
+  group_by(week, treatment, greenhouse) %>%
+  summarise(mean_ITS = mean(ITS), sd_ITS = sd(ITS), n_ITS = n(), .groups = "drop")
+
+print("Mean ITS per week-treatment-greenhouse (excluding 0 and NA, chytrid only):")
+print(mean_ITS_values)
+
+
+# Calculate peak mean_ITS value and associated week for each treatment × greenhouse
+peak_mean_ITS <- mean_ITS_values %>%
+  group_by(treatment, greenhouse) %>%
+  filter(mean_ITS == max(mean_ITS)) %>%
+  ungroup()
+
+print("Peak mean_ITS and associated week (chytrid only):")
+print(peak_mean_ITS)
+```
+## Waddle_et_al_2021
+```{r}
+##############
+## peak loads for Experiment 1 (SLL inoculation)
+##############
+
+## Read table
+SLL=read.table(file="Waddle_etal_2021_EXP1.csv",header = TRUE,sep=",") 
+
+# Calculate mean and SD of Bd loads and time elapsed after the start of post-treatment Bd exposure
+SLL %>%
+group_by(treatment) %>% # Group by the relevant categories
+summarise(mean = mean(peak_ZE),
+sd_ZE = sd(peak_ZE),
+post_time_Bd = mean (associated_week)*7,
+n =n()) 
+
+##############
+## peak loads for Experiment 2 (infect_clear: Rana onca)
+##############
+
+## Read table
+RO_INFECT=read.table(file="Waddle_etal_2021_EXP2.csv",header = TRUE,sep=",") 
+
+pacman::p_load(tidyverse)
+
+# Calculate mean and SD of Bd loads and time elapsed after the start of post-treatment Bd exposure
+RO_INFECT %>%
+group_by(treatment) %>% # Group by the relevant categories
+summarise(mean = mean(peak_ZE),
+sd_ZE = sd(peak_ZE),
+post_time_Bd = mean (week)*7,
+n =n()) 
+
+##############
+## peak loads for Experiment 3 (infect_clear: Rana pipiens)
+##############
+
+## Read table
+RP_INFECT=read.table(file="Waddle_etal_2021_EXP3.csv",header = TRUE,sep=",") 
+
+pacman::p_load(tidyverse)
+
+# Calculate mean and SD of Bd loads and time elapsed after the start of post-treatment Bd exposure
+RP_INFECT %>%
+group_by(treatment) %>% # Group by the relevant categories
+summarise(mean = mean(peak_ZE),
+sd_ZE = sd(peak_ZE),
+post_time_Bd = mean (week)*7,
+n =n()) 
+```
+## Greener_et_al_2020
+```{r}
+##############
+## Figure 3a
+##############
+
+## Read table
+data=read.table(file="Greener_etal_2020_Fig3a_reinfection_data.csv",header = TRUE,sep=",") 
+
+# Filter for infected_at_beginning == "focal_animals"
+filtered_data <- data %>%
+  filter(infected_at_beginning == "focal_animals")
+
+###############
+## mortality ##
+###############
+
+# Group by Isolate and summarise
+result <- filtered_data %>%
+  group_by(Isolate) %>%
+  summarise(
+    total_unique_ID = n_distinct(Ind_ID),
+    unique_ID_not_84 = n_distinct(Ind_ID[Death != 84]),
+    mortality_rate = (unique_ID_not_84/total_unique_ID)*100
+  )
+
+##########################
+## peak infection rate ###
+##########################
+
+infection_rate_by_time <- filtered_data %>%
+  group_by(Isolate, Time) %>%
+  summarise(
+    total = n(),
+    infected = sum(Load_dec > 0, na.rm = TRUE),
+    infection_rate = infected / total
+  ) %>%
+  ungroup()
+
+print(infection_rate_by_time)
+
+################
+## peak loads ##
+################
+
+# For each individual, find the row with max Load_dec (keep associated Time and Isolate)
+peak_data <- filtered_data %>%
+  group_by(Ind_ID) %>%
+  slice_max(Load_dec, n = 1, with_ties = FALSE) %>%
+  ungroup()
+
+# For each Isolate, compute mean peak Load_dec and associated Time
+summary_result <- peak_data %>%
+  group_by(Isolate) %>%
+  summarise(
+    mean_peak_Load_dec = mean(Load_dec, na.rm = TRUE),
+    sd_peak_Load_dec = sd(Load_dec, na.rm = TRUE),
+    mean_Time_at_peak = mean(Time, na.rm = TRUE),
+    n_individuals = n()
+  )
+
+print(summary_result)
+
+```
+## Nordheim et al. 2022
+```{r}
+## Read table
+data=read.table(file="Nordheim_et_al_2022.csv",header = TRUE,sep=",") 
+
+#####################
+## infection rate ###
+#####################
+
+infection_rate <- data %>%
+  group_by(treatment) %>%
+  summarise(
+    total = n(),
+    infected = sum(bd > 0, na.rm = TRUE),
+    infection_rate = infected / total
+  ) %>%
+  ungroup()
+
+print(infection_rate)
+
+###########################################
+## Bd loads (infected individual only) ####
+###########################################
+
+# Exclude uninfected individuals
+frog_bd <- data %>%
+  filter(bd != 0) 
+
+# Summarise by treatment
+treatment_bd <- frog_bd %>%
+  group_by(treatment) %>%
+  summarise(
+    avg_bd = mean(bd),
+    sd_bd = sd(bd),
+    n_frogs = n(),
+ )
+
+print(treatment_bd)
+```
+
+## Madison_et_al_2019
+```{r}
+### Before running the code. I made a few changes:
+# (1) rename the Treatment level (based on Fig S7 (B) information): 1=No-Sm Control, Unwashed; 2=No-Sm Control+Bd, Unwashed; 3=No-Sm Control, Washed; 4= No-Sm Control+Bd, Washed; 5=ΔpigM-Sm, Unwashed; 6=ΔpigM-Sm+Bd, Unwashed; 7=ΔpigM-Sm, Washed; 8= ΔpigM-Sm+Bd, Washed; 9=WT-Sm, Unwashed; 10=WT-Sm+Bd, Unwashed; 11=WT-Sm, Washed; 12=WT-Sm+Bd, Washed. 
+# (2) remove all the rows when "post_treatment_Bd" = "no". 
+# (3) remove a row (i.e. data from a frog) if their "Bd_status" = "infected" when their "Time_post_Bd" = "1" (i.e., they were infected on the first day of post-treatment Bd exposure. Such infection was due to pre-treatment infection instead of post-treatment Bd exposure) ## see main text in the paper: "day 1 for all results herein correspond to this convention, with the exception of Bd day 1 which was taken on the day of A. blanchardi collection prior to Sm exposure" & "A small amount of Bd detection was recorded before the introduction of Bd (JEL 423), indicating a low level of Bd prevalence in the environment from which individuals were collected."
+
+######################
+### Mortality rate ###
+######################
+
+## Read data
+data <- read.csv("Madison_et_al_2019.csv")
+
+## Calculate mortality rate
+mortality_summary <- data %>%
+  filter(Time_post_Bd == 36) %>% ## This is the final measure of mortality
+  group_by(exp_id, probiotic) %>% ## exp_id = washed, unwashed ## probiotic = sham, mutant bacteria, wild-type bacteria
+  summarise(
+    Dead_Count = sum(Mortality == "dead"),
+    Total_Count = n(),
+    .groups = "drop"
+  )
+
+print(mortality_summary) ## FLAG: this result is different from Fig 3 survival curve
+
+## To decide whether I should follow raw data or figure 3 in the main text. Below I re-analysed the raw data without removing frogs that were infected at Day 1 of experiment (i.e., initially infected individuals) to re-generate the survival plot in fig 3.
+
+######################
+
+# Read data
+rawdata <- read.csv("rspb20191833supp5.csv")
+
+## using Treatment information (1 to 12) based on suupplementary information to generate three new columns: "wash_or_not", "probiotic" and "post_treatment_Bd"
+
+rawdata <- rawdata %>%
+  mutate(
+    Wash_or_not = ifelse(Treatment %in% c(1, 2, 5, 6, 9, 10), "unwashed", "washed"),
+    probiotic = case_when(
+      Treatment %in% c(1, 2, 3, 4) ~ "sham",
+      Treatment %in% c(5, 6, 7, 8) ~ "mutant_sm",
+      Treatment %in% c(9, 10, 11, 12) ~ "WT_sm"
+    ),
+    post_treatment_Bd = ifelse(Treatment %in% c(1, 3, 5, 7, 9, 11), "no", "yes")
+  )
+
+head(rawdata[, c("Treatment", "Wash_or_not", "probiotic", "post_treatment_Bd")], 15)
+
+## Calculate survival probability as Figure 3
+
+survivor_summary <- rawdata %>%
+  group_by(Wash_or_not, post_treatment_Bd, probiotic, Experiment_Day) %>%
+  summarise(
+    survival_Count = sum(Mortality == "alive"),
+    Total_Count = n(),
+    prop_survival = (survival_Count/Total_Count)*100,
+    .groups = "drop"
+  )
+
+print(survivor_summary)
+
+# Make plots as figure 3
+
+library(ggplot2)
+
+# Summarise survival
+survivor_summary <- rawdata %>%
+  group_by(Wash_or_not, post_treatment_Bd, probiotic, Experiment_Day) %>%
+  summarise(
+    survival_Count = sum(Mortality == "alive"),
+    Total_Count = n(),
+    prop_survival = (survival_Count/Total_Count) * 100,
+    .groups = "drop"
+  )
+
+# Set custom colours (matching your attached figure)
+custom_colors <- c(
+  "mutant_sm" = "#8B0000",  # dark red
+  "sham" = "grey50",        # grey
+  "WT_sm" = "#FFA500"       # orange
+)
+
+# Plot
+ggplot(survivor_summary, aes(x = Experiment_Day, y = prop_survival, 
+                             colour = probiotic, group = probiotic)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  scale_colour_manual(values = custom_colors,
+                      labels = c("mutant_Sm", "no_Sm", "WT_Sm")) +
+  labs(x = "Experiment Day", y = "Survival Probability (%)", colour = "Bacteria") +
+  facet_grid(post_treatment_Bd ~ Wash_or_not) +   # one plot for each combination
+  theme_bw() +
+  theme(
+    legend.position = "top",
+    legend.title = element_text(face = "bold"),
+    strip.text = element_text(face = "bold")
+  )
+
+## The figure looks different from Fig 3! I decided to use the raw data but not Figure 3
+
+#########################
+## peak infection rate ##
+#########################
+
+# (1) For each Time_post_Bd, calculate number of "Bd_status" = "infected" in relative to total number of "Bd_status" per "experiment_id (wash or not)" and "probiotic (sham, mutant_SM or wild-type SM"
+result <- data %>%
+  filter(Time_post_Bd %in% c(1, 8, 22)) %>% ## Bd status was only estimated in these three days
+  group_by(exp_id, probiotic, Time_post_Bd) %>%
+  summarise(
+    total_animals = n(),
+    total_infected = sum(Bd_status == "infected")
+  ) %>%
+  mutate(proportion_percent = (total_infected / total_animals) * 100)
+
+```
+## Kaganer_etal_2023
+```{r}
+######################
+### Mortality rate ###
+######################
+
+## There were two deaths in overall - one on Day 111, one on Day 84 
+## I count the number of "NA" relative to the number of "total count" at the end of the experiment (Day 135)
+
+# Read the CSV file
+df <- read_csv("Kaganer_etal_2023.csv")
+
+# Filter out rows where Dosage is "Control" and summarise Day.135
+summary_day135 <- df %>%
+  filter(Dosage != "Control") %>%
+  group_by(Treatment, Dosage) %>%
+  summarise(
+    Number_death = sum(is.na(Day.135)),
+    Number_Total = n(),
+    Proportion_death = Number_death / Number_Total,
+    .groups = "drop"
+  )
+
+# View the result
+print(summary_day135)
+
+###########################
+### Peak infection rate ###
+###########################
+
+# Read the CSV file
+df <- read_csv("Kaganer_etal_2023.csv")
+
+# Filter out rows where Dosage is "Control"
+df_filtered <- df %>% filter(Dosage != "Control")
+
+# Identify Day.* columns
+day_cols <- grep("^Day\\.", names(df_filtered), value = TRUE)
+
+# Pivot longer to reshape the data
+long_df <- df_filtered %>%
+  pivot_longer(
+    cols = all_of(day_cols),
+    names_to = "Day",
+    values_to = "Value"
+  )
+
+# Group by Treatment, Dosage, and Day and summarise
+summary_nonzero <- long_df %>%
+  group_by(Treatment, Dosage, Day) %>%
+  summarise(
+    Non_Zero = sum(!is.na(Value) & Value != 0),
+    Total = sum(!is.na(Value)),
+    Proportion = Non_Zero / Total,
+    .groups = "drop"
+  )
+
+print(summary_nonzero)
+
+# Rename Day column by removing "Day." prefix
+summary_nonzero <- summary_nonzero %>%
+  mutate(Day = sub("^Day\\.", "", Day))
+
+# View updated result
+print(summary_nonzero)
+
+# Ensure Day is numeric (assumes summary_nonzero already has Day without "Day." prefix)
+summary_nonzero <- summary_nonzero %>%
+  mutate(Day = as.numeric(Day))
+
+# Apply custom ranking logic per Treatment and Dosage group
+highest_proportion <- summary_nonzero %>%
+  group_by(Treatment, Dosage) %>%
+  arrange(desc(Proportion), desc(Total), Day) %>%
+  slice(1) %>%
+  ungroup()
+
+print(highest_proportion)
+
+#####################
+### peak Bd loads ###
+#####################
+
+# Load data
+df <- read_csv("Kaganer_etal_2023.csv")
+df_filtered <- df %>% filter(Dosage != "Control") ## removing samples without post-treatment Bd exposure
+
+# Pivot longer and clean Day column
+long_df <- df_filtered %>%
+  pivot_longer(cols = starts_with("Day."), names_to = "Day", values_to = "Value") %>%
+  mutate(Day = as.numeric(sub("^Day\\.", "", Day)))
+
+# Find the highest Value and associated Day per Animal.ID
+peak_values <- long_df %>%
+  group_by(Animal.ID) %>%
+  filter(!is.na(Value)) %>%
+  slice_max(order_by = Value, n = 1, with_ties = FALSE) %>%
+  ungroup()
+
+# Summarise per Treatment and Dosage
+summary_peaks <- peak_values %>%
+  group_by(Treatment, Dosage) %>%
+  summarise(
+    Mean_Peak_Value = mean(Value),
+    SD_Peak_Value = sd(Value),
+    Mean_Peak_Day = mean(Day),
+    n = n(),
+    .groups = "drop"
+  )
+
+print(summary_peaks)
+
+```
+## McMahon et al 2024
+```{r}
+
+##################################
+## Tadpole experiment (5*5)
+##################################
+
+## Before input into R, I made the following edits to the CSV file:
+# (1) Removed the column "duration" but kept the column "duration2" (which coded the control as a 0-week duration)
+# (2) Replaced death status: "0" -> survived; "1" -> died.
+# (3) The mortality was recorded over 50 days (i.e., the maximum death.day for survivors). It is known vaccination period was 5 weeks and post-treatment Bd exposure was 2 weeks (see main text). Therefore, I assumed Bd exposure started on Day 36 (one day after the 35-day (= 5 weeks*7) vaccination period), so death_time_post_Bd = death.day − 36, representing the period in which death occurred after Bd exposure.
+
+#################
+### mortality ### tadpole
+#################
+
+# Load data
+df <- read_csv("McMahon_et_al_2024_tadpole.csv")
+
+# Run analysis
+summary_df <- df %>%
+  filter(death_time_post_Bd >= 0) %>%                 # (1) drop death before post-treatment Bd exposure
+  group_by(conc, duration2) %>%
+  summarise(
+    died  = sum(death_status == "died", na.rm = TRUE),     # (2) count deaths
+    total = n(),                                      # total = died + survived
+    mortality_rate = died / total
+  ) %>%
+  ungroup()
+
+print(summary_df)
+
+######################
+### infection rate ### tadpole
+######################
+
+# Load data
+df <- read_csv("McMahon_et_al_2024_tadpole.csv")
+
+# Run analysis
+summary_prev <- df %>%
+  filter(death_status == "survive") %>%                       # keep survivors only
+  group_by(conc, duration2) %>%
+  summarise(
+    prevalence_1 = sum(prevalence == 1, na.rm = TRUE), # number with prevalence = 1
+    total = n(),                                       # total survivors in group
+    prevalence_rate = prevalence_1 / total
+  ) %>%
+  ungroup()
+
+print(summary_prev)
+
+###############
+### Bd load ### tadpole
+###############
+
+# Load data
+df <- read_csv("McMahon_et_al_2024_tadpole.csv")
+
+# Run analysis
+summary_bd <- df %>%
+  filter(prevalence == 1) %>%                         # only prevalence = 1 (infected individuals)
+  group_by(conc, duration2) %>%
+  summarise(
+    mean_Bd_GE = mean(Bd_GE, na.rm = TRUE),           # average
+    sd_Bd_GE   = sd(Bd_GE, na.rm = TRUE),             # standard deviation
+    n          = n()                                  # sample size
+  ) %>%
+  ungroup()
+
+print(summary_bd)
+
+##################################
+## METAMORPHS experiment (3*3)
+##################################
+
+# Before input into R, I made the following edits to the CSV file:
+# (1) Replaced death status: "0"-> survived; "1" -> died.
+# (3) The total death count was recorded for 46 days (i.e. the max of death_day for survivors). It was stated that vaccination period was 3 weeks & the post-treatment Bd exposure was 2 weeks. Therefore, I assumed Bd exposure started on Day 22 (one day after the 21-day vaccination period), so death_time_post_Bd = death_day − 22, representing the period in which death occurred after Bd exposure.
+
+#################
+### mortality ### metamorphs
+#################
+
+# Load data
+df <- read_csv("McMahon_et_al_2024_metamorph_mortality.csv")
+
+# Run analysis
+summary_df <- df %>%
+  filter(death_time_post_Bd >= 0) %>%                 # (1) drop death before post-treatment Bd exposure
+  group_by(conc, duration) %>%
+  summarise(
+    died  = sum(death_status == "died", na.rm = TRUE),     # (2) count deaths
+    total = n(),                                      # total = died + survived
+    mortality_rate = died / total
+  ) %>%
+  ungroup()
+
+print(summary_df)
+
+######################
+### infection rate ### metamorphs
+######################
+
+## Here I only considered the survivors (manually remove ID: 6, 23, 56, 64,78, 88, 90, 92, 102, as those were dead in the mortality datasheet)
+
+# Load data
+df <- read_csv("McMahon_et_al_2024_metamorph.csv") ## dead individuals have been removed from the file
+
+# Run analysis
+summary_prev <- df %>%
+  group_by(conc, duration) %>%
+  summarise(
+    prevalence_1 = sum(prevalence == 1, na.rm = TRUE), # number with prevalence = 1
+    total = n(),                                       # total survivors in group
+    prevalence_rate = prevalence_1 / total
+  ) %>%
+  ungroup()
+
+print(summary_prev)
+
+###############
+### Bd load ### metamorphs
+###############
+
+# Load data
+df <- read_csv("McMahon_et_al_2024_metamorph.csv") ## dead individuals have been removed from the file
+
+# Run analysis
+summary_bd <- df %>%
+  filter(prevalence == 1) %>%                         # only prevalence = 1 (infected survivors)
+  group_by(conc, duration) %>%
+  summarise(
+    mean_Bd_GE = mean(Bd_GE, na.rm = TRUE),           # average
+    sd_Bd_GE   = sd(Bd_GE, na.rm = TRUE),             # standard deviation
+    n          = n()                                  # sample size
+  ) %>%
+  ungroup()
+
+print(summary_bd)
+
+```
+## McMahon et al 2021
+```{r}
+# Load data
+df <- read.csv("McMahon_et_al_2021_Fig3and4.csv")
+
+######################
+### infection rate ###
+######################
+
+# Count non-zero Bd_GE and total per "Ivermectin_Dosed"
+A <- df %>%
+  group_by(Ivermectin_Dosed) %>%
+  summarise(
+    n_nonzero = sum(Bd_GE > 0, na.rm = TRUE),
+    total_n = sum(!is.na(Bd_GE))
+  )
+
+print(A)
+
+###############
+### Bd load ###
+###############
+
+# Exclude rows with Bd_GE = 0, then calculate mean, n, and sd per "Ivermectin_Dosed"
+B <- df %>%
+  filter(Bd_GE > 0) %>%
+  group_by(Ivermectin_Dosed) %>%
+  summarise(
+    mean_Bd_GE = mean(Bd_GE, na.rm = TRUE),
+    sd_Bd_GE = sd(Bd_GE, na.rm = TRUE),
+    n = n()
+  )
+
+print (B)
+
+```
+## Rohr et al 2017
+```{r}
+##########################################################
+### Metamorphs Bd exposure without tadpole Bd exposure ### (delayed exposure) for the effect of synthetic pesticide
+##########################################################
+## This experiment = delayed exposure = after fungicide treatments
+## Before running in R, I made the following edits to the file named "Fungal load on frogs 1":
+## Removed "Bd" = "tadpole", as I am not interested in cases where Bd exposure and fungicide exposure occurred simultaneously in the tadpole stage. (i.e. Bd exposure must occur after drug treatment for our meta-analysis)
+## For the column "Mortality" ==> Indicates whether the swab was taken from a live or dead frog ==> Replaced "B" with "died" and "A" with "alive". The author did not state the meaning of A and B, but the highest Bd loads were all from B (so I assume they were very sick at time of death), while the Bd loads = 0 were all from A (so I assume they were very healthy and alive).
+
+#####################################################
+## Infection rate at the mid-survey day (Day 155) ### (delayed exposure) for the effect of synthetic pesticide
+#####################################################
+
+# Read data
+df <- read_csv("Rohr_et_al_2017_metamorph_Bd_exposure.csv",
+               show_col_types = FALSE)
+
+# Make sure Bd_load is numeric
+df <- df %>% mutate(Bd_load = suppressWarnings(as.numeric(Bd_load)))
+
+# For each Treatment: count non-zero Bd_load and total Bd_load (non-NA)
+summary_counts <- df %>%
+    filter(Mortality == "alive") %>%
+  group_by(Treatment) %>%
+  summarise(
+    n_nonzero_Bd_load = sum(!is.na(Bd_load) & Bd_load != 0),
+    n_total_Bd_load   = sum(!is.na(Bd_load)),
+    .groups = "drop"
+  ) %>%
+  arrange(Treatment)
+
+print (summary_counts)
+
+############################################
+### Bd load at mid-survey swab (Day 155) ### (delayed exposure) for the effect of synthetic pesticide
+############################################
+
+# Exclude rows with Bd_load = 0, then calculate mean, n, and sd per "Treatment"
+B <- df %>%
+  filter(Bd_load > 0) %>% ## infected individuals only
+  filter(Mortality == "alive") %>% ## survivors only
+  group_by(Treatment) %>%
+  summarise(
+    mean_Bd_load = mean(Bd_load, na.rm = TRUE),
+    sd_Bd_load = sd(Bd_load, na.rm = TRUE),
+    n = n()
+  )
+print (B)
+
+##################################################################
+### Metamorphs Bd exposure with vs without tadpole Bd exposure ### 
+##################################################################
+
+## for the effect of live pathogen: no drug at double exposure vs. no drug at delayed exposure  
+
+## Here I am interested in whether prior Bd exposure (at the tadpole stage) affects subsequent Bd susceptibility (as metamorphs). I first excluded the animals that remained infected (due to tadpole Bd exposure) before the second exposure (i.e., removing those whose Bd load at "Swab Time" = "Pre Expo 2" is a non-zero value) => Tadpole_ID = 7, 11, 51, 153.
+
+# Read data
+df_raw <- read_csv("Rohr_et_al_2017_double_exposure.csv",
+               show_col_types = FALSE)
+df_all <- df_raw[!df_raw$Tadpole %in% c(7, 11, 51, 153), ] ## "Double exposure" dataset with animals that were uninfected before the second/post-metamorphosis Bd exposure
+
+## I only considered data from cases without fungicides during the tadpole period, because in those cases, both fungicides and Bd occurred during the tadpole stage. We are not sure whether the two types of interventions acted interactively or additively. In other words, I am only interested in the results between:
+
+# (1) Tadpole Bd exposure without fungicide → uninfected at metamorphosis → frog Bd exposure
+df <- df_all %>% filter(Fungicide == "Control")
+
+# and
+# (2) No tadpole Bd exposure without fungicide → uninfected at metamorphosis → frog Bd exposure (this result can be found in the "dalayed exposure- control"; see above)
+
+#####################################################
+## Infection rate at the mid-survey day (Day 155) ### (double exposure dataset)
+#####################################################
+
+## for the effect of live pathogen: no drug at double exposure vs. no drug at delayed exposure  
+
+# Make sure Bd_load is numeric
+df <- df %>% mutate(Bd_load = suppressWarnings(as.numeric(Bd_load)))
+
+# For each Treatment: count non-zero Bd_load and total Bd_load (non-NA)
+summary_counts <- df %>%
+    filter(Swab_Time == "Mid_Survey") %>%
+  summarise(
+    n_nonzero_Bd_load = sum(!is.na(Bd_load) & Bd_load != 0),
+    n_total_Bd_load   = sum(!is.na(Bd_load)),
+    .groups = "drop"
+  ) 
+
+print (summary_counts)
+
+############################################
+### Bd load at mid-survey swab (Day 155) ### (double exposure)
+############################################
+
+# Exclude rows with Bd_load = 0, then calculate mean, n, and sd per "Treatment"
+B_double <- df %>%
+  filter(Bd_load > 0) %>%
+  filter(Swab_Time == "Mid_Survey") %>%
+  summarise(
+    mean_Bd_load = mean(Bd_load, na.rm = TRUE),
+    sd_Bd_load = sd(Bd_load, na.rm = TRUE),
+    n = n()
+  )
+print (B_double)
+
+#################
+### mortality ### (double exposure)
+#################
+
+mortality <- df %>%
+    filter(Swab_Time == "Metamorphosis") %>% ## I counted the number of animals at metamorphosis because this indicates the total number of animals that were assigned into "double exposure" group (note that this dataset only considered animals that were uninfected at metamorphosis)
+  summarise(
+    n_death = sum(`Last_Day_in_Expt` != 213), ## Day 213 was the last day of the experiment. If an animal's last day is less than 213, then it died before the end of the experiment.
+    n = n(),
+    .groups = "drop"
+  ) 
+
+print (mortality) ## The only dead animal was Tadpole ID = 41. Notably, its Swab_Time = "Mortality" was associated with "Infection Stage at time of swab" = "Exposed 2" (i.e. after the second exposure as metamorph). This indicates that this animal died after the second exposure.
+
+```
+## Barnett et al 2021
+```{r}
+######################
+### Mortality rate ###
+######################
+
+# Read the CSV file
+df <- read_csv("Barnett_etal_2021_survival_only.csv")
+
+summary_mortality <- df %>%
+  group_by(livebd_strain, vaccine_strain) %>%
+  summarise(
+    died  = sum(mortality_status == "1", na.rm = TRUE),
+    No_Total = n(),
+    Proportion_NA = died / No_Total,
+    .groups = "drop"
+  )
+
+print(summary_mortality)
+
+#######################
+### Infection rate  ###
+#######################
+
+# Read data
+df <- read_csv("Barnett_etal_2021_infection.csv",
+               show_col_types = FALSE)
+
+# For each Treatment, count the number of infected and total number of count
+summary_infected <- df %>%
+    filter(Survival == "alive") %>% ## survivors only
+  group_by(Live_Bd_Strain, Metabolite_strain) %>%
+  summarise(
+    n_infected  = sum(Infected == "1", na.rm = TRUE),
+    total_n  = n(),
+    Proportion_NA = n_infected / total_n,
+    .groups = "drop"
+  )
+
+print (summary_infected)
+
+###############
+### Bd load ###
+###############
+
+# Only consider survivors ("Survival = alive") and infected individuals ("Final_Bd_Load > 0"), then calculate mean, n, and sd per "Treatment"
+## dataset = "Barnett_etal_2021_infection.csv"
+Infection_intensity <- df %>%
+  filter(Final_Bd_Load > 0) %>%
+  filter(Survival == "alive") %>%
+  group_by(Live_Bd_Strain, Metabolite_strain) %>%
+  summarise(
+    mean_n_zoospores = mean(Final_Bd_Load, na.rm = TRUE),
+    sd_n_zoospores = sd(Final_Bd_Load, na.rm = TRUE),
+    n = n()
+  )
+
+print (Infection_intensity)
+```
+## Knutie et al. 2018
+```{r}
+
+#######################
+### Infection rate  ### tadpole
+#######################
+
+# Read data
+df <- read_csv("Knutie_etal_2018_Summary_Final.csv",
+               show_col_types = FALSE)
+
+# For each Treatment, count the number of infected and total number of count
+summary_infected <- df %>%
+    filter(Bd_Treatment_Exp == "Bd") %>% ## only consider tanks that were assigned to Bd exposure treatment
+  group_by(Atrazine_or_not, Metyrapone_or_not) %>%
+  summarise(
+    n_infected = sum(!is.na(Tadpole_BdAbundance) & Tadpole_BdAbundance != 0),
+    total_n  = n(),
+    Proportion_NA = n_infected / total_n,
+    .groups = "drop"
+  )
+
+print (summary_infected)
+
+###############
+### Bd load ### tadpole
+###############
+
+# Only consider infected individuals ("Tadpole_BdAbundance > 0"), then calculate mean, n, and sd per "Treatment"
+Infection_intensity <- df %>%
+  filter(Tadpole_BdAbundance > 0) %>%  ## remove uninfected
+  filter(!is.na(Tadpole_BdAbundance)) %>% ## removed NA
+  group_by(Atrazine_or_not, Metyrapone_or_not) %>%
+  summarise(
+    mean_GE = mean(Tadpole_BdAbundance, na.rm = TRUE),
+    sd_GE = sd(Tadpole_BdAbundance, na.rm = TRUE),
+    n = n()
+  )
+print (Infection_intensity)
+
+#######################
+### Infection rate  ### adult
+#######################
+
+# Read data
+df <- read.csv("Knutie_etal_2018_AllAdults_Final.csv")
+
+# For each treatment, count the number of infected and total number of count
+summary_infected_AD <- df %>%
+    filter(BD_Treatment == "Bd") %>% ## only consider Bd exposure treatment
+  group_by(Atrazine_or_not, Metyrapone_or_not) %>%
+  summarise(
+    n_infected = sum(BD_abundance != 0),
+    total_n = n (),
+    replicate_n  = n_distinct(Tub),
+    Proportion_NA = n_infected / total_n,
+    .groups = "drop"
+  )
+
+print (summary_infected_AD)
+
+###############
+### Bd load ### adult
+###############
+
+# Only consider infected individuals ("BD_abundance > 0"), then calculate mean, n, and sd per "Atrazine_or_not" and "Metyrapone_or_not"
+Infection_intensity <- df %>%
+  filter(BD_abundance > 0) %>%  ## remove uninfected
+  group_by(Atrazine_or_not, Metyrapone_or_not) %>%
+  summarise(
+    mean_GE = mean(BD_abundance, na.rm = TRUE),
+    sd_GE = sd(BD_abundance, na.rm = TRUE),
+    n = n(),
+    replicate_n = n_distinct(Tub),
+  )
+
+print (Infection_intensity)
+```
+## Sauer et al. 2018
+```{r}
+## Before running in R, I made the following edits to the file named "All Cuban load data":
+## (1) Remove "Treatment =  NR" (Bd-exposed non-regulating treatment), because the animals were held at different temperatures during the post-treatment Bd exposure period, so there was no common garden environment
+## (2) Rename "E/N" ==> "immunisation_or_not", "EXP" ==> "immunised" and "NAIVE" ==> "control", "Actual_Quanitiy" ==> "Bd_load", "Week" ==> "Week_post_Bd"
+
+#######################
+### Infection rate  ###
+#######################
+
+# Read data
+df <- read_csv("Sauer_et_al_2018_Bd_load.csv",
+               show_col_types = FALSE)
+
+# check the sample size for each week_post_Bd exposure
+sample_size <- df %>%
+ group_by(Week_post_Bd, immunisation_or_not) %>%
+  summarise(
+    total_n  = n(),
+    .groups = "drop"
+  )
+
+### NOTE: There are many more Bd swab measures at Week 2 (treated = 15, control = 9) than Week 1 (treated = 8, control = 4) or Week 3 (treated = 3, control = 0)
+### NOTE 2: Therefore, instead of finding the peak values per individual (which is impossible for most individuals as their infection status was only tested at Week 2), I only considered data at week 2.
+
+# For each treatment (immunised versus control), count the number of infected and total number of count at week 2
+Infected_WEEK2 <- df %>%
+    filter(Week_post_Bd == "W2") %>% ## only consider Week 2
+  group_by(immunisation_or_not) %>%
+  summarise(
+    n_infected = sum(Bd_load != 0),
+    total_n = n (),
+    Proportion_NA = n_infected / total_n,
+    .groups = "drop"
+  )
+
+print (Infected_WEEK2) ## None of the animals were infected, so did not test for Bd loads
+
+```
+## Greener et al 2020 (Bsal experiment)
+```{r}
+## Before running in R, I made the following edits to the excel sheet named "Figure 4"
+## This experiment used prior exposure to low-virulence BdGPL as a resistance-enhancing treatment for later Bsal exposure, so I only kept rows with "Group" = "Bsal" (i.e. control) or "Bd-Bsal" (i.e. treated).
+## I only considered the result of post-treatment Bsal exposure, so I removed rows when "Pathogen" = "Bd"
+
+#####################
+##### mortality #####
+#####################
+
+# Load data
+df <- read.csv("Greener_et_al_2020_Fig4.csv")
+
+# Summarise counts by Species and Group
+
+summary <- df %>%
+  group_by(Species, Group) %>% ## Group is "treatment"
+  summarise(
+    Total = n(),
+    Dead = sum(Status == "Dead", na.rm = TRUE),
+    .groups = "drop"
+  )
+
+print(summary)
+
+### restructure the code for infection rate and infection loads
+
+df_long <- df %>%
+  pivot_longer(
+    cols = starts_with("day_"),                # all columns that start with "day_"
+    names_to = "day_post_exposure",            # new column name
+    names_prefix = "day_",                     # remove "day_" prefix
+    names_transform = list(day_post_exposure = as.integer), # convert to integer
+    values_to = "Bsal_load"                    # new column for values
+  )
+
+
+###########################
+### peak infection rate ###
+###########################
+
+# Calculate infection rate per day_post_exposure × Species × Group (ignoring NA Bsal_load)
+daily_rates <- df_long %>%
+  group_by(Species, Group, day_post_exposure) %>%
+  summarise(
+    nonzero_n = sum(Bsal_load > 0, na.rm = TRUE),   # count of non-zero loads
+    total_n   = sum(!is.na(Bsal_load)),             # count of non-NA loads
+    .groups = "drop"
+  ) %>%
+  filter(total_n > 0) %>%                           # ignore days with no data
+  mutate(infection_rate = nonzero_n / total_n,
+         infection_rate_pct = 100 * infection_rate)
+
+# For each Species × Group:
+# 1) keep the largest infection_rate
+# 2) if tied, keep the largest total_n
+# 3) if still tied, choose the earliest day_post_exposure
+peak_by_species_group <- daily_rates %>%
+  filter(!is.na(infection_rate)) %>%                 # ignore NA rates
+  group_by(Species, Group) %>%
+  arrange(desc(infection_rate), desc(total_n), day_post_exposure) %>%
+  slice(1) %>%
+  ungroup() %>%
+  select(Species, Group, day_post_exposure, infection_rate, infection_rate_pct,
+         nonzero_n, total_n)
+
+print(peak_by_species_group)
+
+
+#######################
+### peak Bsal loads ###
+#######################
+
+# Find largest Bsal_load and its day for each individual (Code)
+max_per_code <- df_long %>%
+  filter(!is.na(Bsal_load)) %>%  # ignore NAs
+  group_by(Species, Group, Code) %>%
+  arrange(desc(Bsal_load), day_post_exposure) %>% # in case of ties: keep earliest day
+  slice(1) %>%  
+  ungroup() %>%
+  select(Species, Group, Code, max_Bsal_load = Bsal_load, peak_day_post_exposure = day_post_exposure)
+
+# Average per Species × Group
+summary_by_group <- max_per_code %>%
+  group_by(Species, Group) %>%
+  summarise(
+    avg_max_Bsal_load = mean(max_Bsal_load, na.rm = TRUE),
+    sd_max_Bsal_load = sd(max_Bsal_load, na.rm = TRUE),
+    avg_peak_day_post_exposure = mean(peak_day_post_exposure, na.rm = TRUE),
+    n_individuals = n(),
+    .groups = "drop"
+  )
+
+print (summary_by_group)
+```
+## Waddle_PhD_thesis
+```{r}
+
+##############################################
+## Peak Bd load for infected survivors only ##
+##############################################
+
+# Load CSV (the data in this file were extracted from Figure 2 in the main text using ShinyDigitise)
+df <- read.csv("Waddle_PhD_peak_intensity.csv")
+
+# Calculate number of infected animals
+df$N_infected <- df$prevalence_thisday * df$N_all_survivors_thisday
+
+# Calculate the sum of intensity (total Bd load across all survivors)
+df$sum_intensity <- df$average_Bd_load_all_survivors * df$N_all_survivors_thisday
+
+# Calculate the average Bd load for infected survivors only
+df$average_Bd_load_infected <- df$sum_intensity / df$N_infected
+
+```
