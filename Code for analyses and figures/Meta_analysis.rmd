@@ -28,7 +28,7 @@ remotes::install_github("daniel1noble/orchaRd")
 library(orchaRd)
 ```
 
-### Prevalence (log risk ratio) ###
+### Prevalence (natural log of risk ratio) ###
 ### Main analysis ###
 ```{r}
 ## read.table
@@ -270,6 +270,45 @@ sum(M_stage_infected$sigma2)
 ## Estimate relative heterogeneity: I^2 (orchaRd)
 orchaRd::i2_ml(M_stage_infected)
 
+############################################################
+## Prevalence — immunisation type within JUVENILES only ####
+############################################################
+
+## for potential interaction between immunisation method and life stage
+
+# Keep only juvenile rows
+keep_juv <- preval_es$life_stage_tested == "juvenile"
+
+# Subset the data and the matching variance-covariance matrix
+data_juv <- preval_es[keep_juv, ]
+V_juv    <- V_preval[keep_juv, keep_juv]
+
+# Drop treatment levels not present in juveniles
+data_juv$treatment <- droplevels(factor(data_juv$treatment))
+
+## ANALYSIS: test for the effect of individual treatment within juveniles
+M_treat_juv <- rma.mv(yi = yi, V = V_juv,
+  mods = ~ -1 + treatment,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor_preval), data = data_juv,
+  method = "REML", test = "t",
+  control = list(optimizer = "bobyqa"))
+
+summary(M_treat_juv)
+
+## Prediction intervals
+levs <- levels(data_juv$treatment)
+out_juv <- cbind(treatment = levs,
+                 round(as.data.frame(predict(M_treat_juv,
+                   newmods = model.matrix(~ -1 + treatment,
+                     data = data.frame(treatment = levs)))), 3))
+out_juv
+
+# Check k per treatment type within juveniles
+data_juv %>%
+  group_by(treatment) %>%
+  summarise(total_k = n(), .groups = "drop")
+
 #######################################
 ## categorical variable: host origin ##
 #######################################
@@ -343,7 +382,8 @@ preval_es %>%
   group_by(family) %>%
   summarise(total_k = n(),
             .groups = "drop")  
-          
+
+
 ```
 ## Prevalence ##
 ## checking for publication bias ##
@@ -685,6 +725,44 @@ count <- intensity_data_INC %>%
             .groups = "drop")  
 count
 
+###################################################################
+## Infection intensity — immunisation type within JUVENILES only ##
+###################################################################
+
+# Keep only juvenile rows
+keep_juv_INC <- intensity_data_INC$life_stage_tested == "juvenile"
+
+# Subset the data and the matching variance-covariance matrix
+data_juv_INC <- intensity_data_INC[keep_juv_INC, ]
+V_juv_INC    <- V[keep_juv_INC, keep_juv_INC]
+
+# Drop treatment levels not present in juveniles
+data_juv_INC$treatment <- droplevels(factor(data_juv_INC$treatment))
+
+## Analysis: test for individual effect of each treatment within juveniles
+M_T_juv_INC <- rma.mv(yi = yi, V = V_juv_INC,
+  mods = ~ -1 + treatment,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor_INC),
+  data = data_juv_INC,
+  method = "REML", test = "t")
+
+summary(M_T_juv_INC)
+
+## Prediction intervals
+levs <- levels(data_juv_INC$treatment)
+Xnew <- model.matrix(~ -1 + treatment,
+                     data = data.frame(treatment = factor(levs, levels = levs)))
+pred <- predict(M_T_juv_INC, newmods = Xnew)
+out_M_T_juv_INC <- data.frame(treatment = levs, as.data.frame(pred))
+out_M_T_juv_INC[-1] <- round(out_M_T_juv_INC[-1], 4)
+out_M_T_juv_INC
+
+# Check k per treatment type within juveniles
+count <- data_juv_INC %>% group_by(treatment) %>%
+  summarise(total_k = n(), .groups = "drop")
+count
+
 ###################################
 ### Moderating effect: Taxonomy ###
 ###################################
@@ -825,6 +903,192 @@ abline(v = 0, lty = 2)
 ## output = 4 * 7 (portrait)
 ```
 
+## Sensitivity analysis for infection intensity ##
+## The funnel plot identify and exclude the Hauser et al. 2024 - 21 dpi contrast (a very high-precision effect size)
+```{r}
+## build the sensitivity dataset & V matrix
+
+row_idx <- which(intensity_data_INC$study_id == "Hauser_et_al_2024" &
+                  intensity_data_INC$T_ID    == "60_T_1" &
+                  intensity_data_INC$C_ID    == "60_C_1")
+
+intensity_data_INC_sens <- intensity_data_INC[-row_idx, ]
+V_sens <- V[-row_idx, -row_idx]
+
+####################################
+###  Overall immunisation effect ###
+####################################
+
+M3_INC_sens <- rma.mv(yi = yi, V = V_sens,
+  mods = ~  1,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor_INC),
+  data = intensity_data_INC_sens,
+  method = "REML", test = "t")
+
+summary(M3_INC_sens)
+pred_M3_INC_sens <- predict(M3_INC_sens)
+pred_M3_INC_sens[, c("pi.lb","pi.ub")] 
+
+## Estimate absolute heterogeneity
+sum(M3_INC_sens$sigma2)
+## Estimate relative heterogeneity
+orchaRd::i2_ml(M3_INC_sens)
+orchaRd::cvh2_ml(M3_INC_sens)
+orchaRd::m2_ml(M3_INC_sens)
+
+############################################
+### Moderating effect: immunisation type ###
+############################################
+
+intensity_data_INC_sens$treatment <- factor(
+  intensity_data_INC_sens$treatment,
+  levels = c("other","synthetic_antiparastics", "dead_pathogen", "probiotic","live_pathogen","natural_chem"))
+
+M_T_INC_sens <- rma.mv(yi = yi, V = V_sens,
+  mods = ~  -1 + treatment,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor_INC),
+  data = intensity_data_INC_sens,
+  method = "REML", test = "t")
+
+summary(M_T_INC_sens)
+
+## Prediction intervals
+intensity_data_INC_sens$treatment <- droplevels(factor(intensity_data_INC_sens$treatment))
+levs <- levels(intensity_data_INC_sens$treatment)
+
+Xnew <- model.matrix(~ -1 + treatment,
+                     data = data.frame(treatment = factor(levs, levels = levs)))
+
+pred <- predict(M_T_INC_sens, newmods = Xnew)
+
+out_M_T_INC_sens <- data.frame(treatment = levs, as.data.frame(pred))
+out_M_T_INC_sens[-1] <- round(out_M_T_INC_sens[-1], 4)
+out_M_T_INC_sens
+
+# Check k for each treatment type
+count <- intensity_data_INC_sens %>% group_by(treatment) %>% summarise(total_k = n(), .groups = "drop")
+count
+
+#####################################
+### Moderating effect: life stage ###
+#####################################
+
+intensity_data_INC_sens$life_stage_tested <- factor(intensity_data_INC_sens$life_stage_tested, levels = c("adult","juvenile", "larva"))
+
+M_LS_INC_sens <- rma.mv(yi = yi, V = V_sens,
+  mods = ~  -1 + life_stage_tested,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor_INC),
+  data = intensity_data_INC_sens,
+  method = "REML", test = "t")
+
+summary(M_LS_INC_sens)
+
+## Prediction intervals
+levs <- levels(intensity_data_INC_sens$life_stage_tested)
+out_stage_int_sens <- cbind(life_stage_tested = levs,
+                   as.data.frame(predict(M_LS_INC_sens,
+                     newmods = model.matrix(~ -1 + life_stage_tested,
+                       data = data.frame(life_stage_tested = levs)))))
+options(digits = 4)
+out_stage_int_sens
+
+# Check k per life stage
+count <- intensity_data_INC_sens %>%
+  group_by(life_stage_tested) %>%
+  summarise(total_k = n(), .groups = "drop")
+count
+
+###################################
+### Moderating effect: Taxonomy ###
+###################################
+
+intensity_data_INC_sens$family <- factor(
+  intensity_data_INC_sens$family,
+  levels = c("Bufonidae", "Ranidae", "Hylidae", "Alytidae", "Cryptobranchidae", "Sirenidae", "Plethodontidae", "Pipidae", "Ambystomatidae"))
+
+M_taxa_INC_sens <- rma.mv(yi = yi, V = V_sens,
+  mods = ~  -1 + family,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor_INC),
+  data = intensity_data_INC_sens,
+  method = "REML", test = "t")
+
+summary(M_taxa_INC_sens)
+
+## Prediction intervals
+intensity_data_INC_sens$family <- droplevels(factor(intensity_data_INC_sens$family))
+levs <- levels(intensity_data_INC_sens$family)
+newdat <- data.frame(family = factor(levs, levels = levs))
+Xnew <- model.matrix(~ -1 + family, data = newdat)
+pred <- predict(M_taxa_INC_sens, newmods = Xnew)
+out_M_taxa_INC_sens <- data.frame(family = levs, as.data.frame(pred))
+out_M_taxa_INC_sens[-1] <- round(out_M_taxa_INC_sens[-1], 4)
+out_M_taxa_INC_sens
+
+# Check k for each family type
+count <- intensity_data_INC_sens %>% group_by(family) %>% summarise(total_k = n(), .groups = "drop")
+count
+
+####################################
+## Moderating effect: host origin ##
+####################################
+
+# Only "juvenile" while examining the effect of host origin (wild vs captive)
+# NB: the excluded Hauser row is juvenile/captive, so this subset also
+# loses one row (and one "captive" data point specifically).
+
+keepINC_sens <- (intensity_data_INC_sens$life_stage_tested %in% "juvenile") &
+  (intensity_data_INC_sens$host_origin %in% c("captive", "wild"))
+
+dat_INC_sens <- intensity_data_INC_sens[keepINC_sens, ]
+V_INC_sens <- V_sens[keepINC_sens, keepINC_sens]
+
+## Re-generate the phylogeny matrix
+tree <- read.tree("tree_for_imputation.tre")
+
+sp_data <- unique(trimws(gsub("\\s+", " ", dat_INC_sens$host_species)))
+sp_data_treefmt <- gsub(" ", "_", sp_data)
+
+sp_tree_spaces <- gsub("_", " ", tree$tip.label)
+setdiff(sp_data, sp_tree_spaces) # In data but not in tree
+
+tips_to_keep <- intersect(tree$tip.label, sp_data_treefmt)
+tree_juv_INC_sens <- keep.tip(tree, tips_to_keep)
+
+tree_juv_INC_sens <- multi2di(tree_juv_INC_sens)
+is.binary(tree_juv_INC_sens)
+
+phylo_cor_juv_INC_sens <- vcv(tree_juv_INC_sens, cor = T)
+
+dat_INC_sens$species_OTL <- gsub(" ", "_", trimws(dat_INC_sens$host_species))
+
+M_origin_juv_INC_sens <- rma.mv(yi = yi, V = V_INC_sens,
+                       mods = ~ -1 + host_origin,
+                       random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+                       R = list(species_OTL = phylo_cor_juv_INC_sens), data = dat_INC_sens,
+                       method = "REML", test = "t")
+
+summary(M_origin_juv_INC_sens)
+
+## Prediction intervals
+dat_INC_sens$host_origin <- droplevels(factor(dat_INC_sens$host_origin))
+levs <- levels(dat_INC_sens$host_origin)
+newdat <- data.frame(host_origin = factor(levs, levels = levs))
+Xnew <- model.matrix(~ -1 + host_origin, data = newdat)
+pred <- predict(M_origin_juv_INC_sens, newmods = Xnew)
+out_host_origin_INC_sens <- data.frame(host_origin = levs, as.data.frame(pred))
+out_host_origin_INC_sens[-1] <- round(out_host_origin_INC_sens[-1], 4)
+out_host_origin_INC_sens
+
+count <- dat_INC_sens %>%
+  group_by(host_origin) %>%
+  summarise(total_k = n(), .groups = "drop")
+count
+```
+
 ## infection intensity ##
 ## Do baseline mortality rate (= inherent susceptability) affect the effect size of infection loads?
 ```{r}
@@ -838,7 +1102,7 @@ inherent_load <- rma.mv(yi = yi, V = V,
 summary (inherent_load)
 ```
 
-## infection intensity (log response ratio) ##
+## infection intensity (natural log of response ratio) ##
 ## sensitivity analysis - including zero value (uninfected individuals) dataset
 ```{r}
 # Select intensity data
@@ -1405,7 +1669,7 @@ dat_NTV %>%
             
 ```
 
-## mortality (log risk ratio) ##
+## mortality (natural log of risk ratio) ##
 ## main analysis
 ```{r}
 ## Read.table
@@ -1615,6 +1879,45 @@ count <- mort_es %>%
             .groups = "drop")  
 count
 
+##########################################################
+## Mortality — immunisation type within JUVENILES only ###
+##########################################################
+
+# Keep only juvenile rows
+keep_juv_mor <- mort_es$life_stage_tested == "juvenile"
+
+# Subset the data and the matching variance-covariance matrix
+data_juv_mor <- mort_es[keep_juv_mor, ]
+V_juv_mor    <- V_mor[keep_juv_mor, keep_juv_mor]
+
+# Drop treatment levels not present in juveniles
+data_juv_mor$treatment <- droplevels(factor(data_juv_mor$treatment))
+
+## ANALYSIS: test for the effect of individual treatment within juveniles
+M_treat_juv_mor <- rma.mv(yi = yi, V = V_juv_mor,
+  mods = ~ -1 + treatment,
+  random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
+  R = list(species_OTL = phylo_cor_mor), data = data_juv_mor,
+  method = "REML", test = "t",
+  control = list(optimizer = "optim", optmethod = "BFGS", maxit = 20000, reltol = 1e-10))
+
+summary(M_treat_juv_mor)
+
+## Prediction intervals
+levs <- levels(data_juv_mor$treatment)
+out_mor_juv <- cbind(treatment = levs,
+                   as.data.frame(predict(M_treat_juv_mor,
+                     newmods = model.matrix(~ -1 + treatment,
+                       data = data.frame(treatment = levs)))))
+options(digits = 3)
+out_mor_juv
+
+# Check k per treatment type within juveniles
+count <- data_juv_mor %>%
+  group_by(treatment) %>%
+  summarise(total_k = n(), .groups = "drop")
+count
+
 #######################################
 ## categorical variable: host origin ##
 #######################################
@@ -1792,7 +2095,7 @@ all_es <- all_es %>%
 ## Effect correlation ##
 ########################
 
-# Model: within-EXPERIMENT correlation between effect sizes of three outcomes (cannot be estimated)
+# Model: within-EXPERIMENT correlation between effect sizes of three outcomes
 exp_cor <- rma.mv(yi = yi, V = vi,
                      mods = ~  -1 + trait,
                      random = list(~ trait -1 | study_exp_id),
@@ -1802,6 +2105,19 @@ exp_cor <- rma.mv(yi = yi, V = vi,
 
 summary (exp_cor)
 confint (exp_cor)
-
 ```
-            
+
+### Sample size per immunisation type and life stage ###
+```{r}
+n_by_treat_stage <- function(df) {
+  df %>%
+    count(treatment, life_stage_tested) %>%
+    pivot_wider(names_from = life_stage_tested, values_from = n, values_fill = 0)
+}
+
+n_by_treat_stage(preval_es)          # prevalence
+n_by_treat_stage(intensity_data_INC) # intensity
+n_by_treat_stage(mort_es)            # mortality
+```            
+
+

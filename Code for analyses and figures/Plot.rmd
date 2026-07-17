@@ -51,58 +51,49 @@ meta_count2 <- meta %>%
     lon_r = round(longitude, 2),
     lat_r = round(latitude, 2)
   ) %>%
-  group_by(lon_r, lat_r, life_stage_tested) %>%
+  group_by(lon_r, lat_r, life_stage_tested, pathogen_type) %>%
   summarise(n_obs = n(), .groups = "drop") %>%
-  arrange(factor(life_stage_tested, 
-                 levels = c("adult","juvenile","larva")))
+  # draw Bsal last so the (few) triangles sit on top of the Bd circles
+  arrange(pathogen_type == "Bsal",
+          factor(life_stage_tested,
+                 levels = c("adult", "juvenile", "larva")))
 
 # Plot
 ggplot(data = world) +
-  geom_sf(fill = "grey92", colour = "grey92") +  
+  geom_sf(fill = "grey92", colour = "grey92") +
   geom_text(
     data = meta_count2,
-    aes(x = lon_r, y = lat_r, label = n_obs, colour = "black"),
+    aes(x = lon_r, y = lat_r, label = n_obs),
+    colour = "black",
     size = 2.4, fontface = "bold", vjust = 0.4, alpha = 0.8
   ) +
   geom_point(
-    data = dplyr::filter(meta_count2, life_stage_tested != "larva"),
-    aes(x = lon_r, y = lat_r, shape = life_stage_tested,
+    data = meta_count2,
+    aes(x = lon_r, y = lat_r, shape = pathogen_type,
         fill = life_stage_tested, size = n_obs),
     colour = "black", stroke = 0.6
-  ) +
-  geom_point(
-    data = dplyr::filter(meta_count2, life_stage_tested == "larva"),
-    aes(x = lon_r, y = lat_r, shape = life_stage_tested,
-        fill = life_stage_tested, size = n_obs),
-    colour = "black", stroke = 0.6
-  ) +
-  scale_colour_manual(
-    values = c(larva = "#0077B6", juvenile = "#E69F00", adult = "#D62828"),
-    guide = "none"
   ) +
   scale_size_area(
     name = "No. of Exp",
     max_size = 10,
-    breaks = c(1, 3, 5),guide = "none"
+    breaks = c(1, 3, 5), guide = "none"
   ) +
   scale_shape_manual(
-    name = "Life Stage",
-    values = c(larva = 21, juvenile = 21, adult = 21)
+    name = "Pathogen",
+    values = c(Bd = 21, Bsal = 24),
+    guide = "none"
   ) +
   scale_fill_manual(
     name = "Life Stage",
-    values = scales::alpha(c(larva = "#0077B6", juvenile = "#E69F00", adult = "#D62828"), 0.5)
+    values = scales::alpha(c(larva = "#0077B6", juvenile = "#E69F00", adult = "#D62828"), 0.5),
+    guide = "none"
   ) +
   coord_sf(ylim = c(-90, 100), expand = FALSE) +
   theme_minimal() +
   theme(
     panel.background = element_rect(fill = "white"),
     panel.grid = element_line(colour = "gray90", linetype = "dotted"),
-    legend.title = element_text(size = 10, face = "bold"),
-    legend.text = element_text(size = 9),
-    legend.position = c(0.93,0.85),
-    legend.background = element_rect(fill = scales::alpha("white", 0.7), colour = NA),
-    legend.key = element_rect(fill = NA, colour = NA)
+    legend.position = "none"
   ) +
   labs(x = NULL, y = NULL, title = NULL) +
   geom_rect(aes(xmin = -180, xmax = 180, ymin = -90, ymax = 100),
@@ -183,11 +174,10 @@ base_plot(df_USA, "North America (n = 49 exp from 33 studies)")
 
 ## 5.61 * 1.9 inches (landscape)
 ```
-
+```{r}
 #########################################################
 ## Main figure - main phylogeny tree (with 23 species) ##
 #########################################################
-```{r}
 # Load the tree
 tree <- read.tree("tree_for_imputation.tre")
 amphib_tax <- read.csv("metadata.csv")
@@ -211,8 +201,8 @@ is.binary (tree_pruned)
 # Create a column in metadata that matches the tree’s tip-label format
 amphib_tax$species <- gsub(" ", "_", trimws(amphib_tax$host_species))
 
-# tidy ordering (optional)
-tree_clado <- ape::ladderize(tree_pruned)
+# tidy ordering (apply in place so it actually takes effect)
+tree_pruned <- ape::ladderize(tree_pruned)
 
 # Replace underscores in species names
 tree_pruned$tip.label <- gsub("_", " ", tree_pruned$tip.label)
@@ -220,108 +210,27 @@ tree_pruned$tip.label <- gsub("_", " ", tree_pruned$tip.label)
 ##########################
 #### A Basic tree (p) ####
 ##########################
+p <- ggtree( tree_pruned, layout = "rectangular", branch.length = "none") + geom_tree(linewidth = 0.4) + theme( plot.margin = margin(5, 5, 5, 5), legend.position = "none") + xlim (0, 15)
 
-p <- ggtree( tree_pruned, layout = "circular", branch.length = "none", open.angle = 90) + geom_tree(linewidth = 0.4) + theme( plot.margin = margin(2, 2, 2, 2), legend.position = "right") + xlim (-2, 20)
 p 
 
-###################################
-### Tree (p) + family nodes = p1 ##
-###################################
-
-# Match the family nodes and phylogeny tree
-
-tip_df <- tibble(label = tree_pruned$tip.label) %>%
-  left_join(
-    amphib_tax %>%
-      mutate(species_space = gsub("_", " ", species)),  # convert join key to spaces
-    by = c("label" = "species_space")
-  ) %>%
-  mutate(family = fct_infreq(fct_na_value_to_level(family, level = "Unknown")))
-
-# Colour palette (distinct blues/greens/purples)
-n_fam <- nlevels(tip_df$family)
-fam_cols <- setNames(hcl.colors(n_fam, palette = "Dynamic"), levels(tip_df$family))
-
-# Draw coloured tip nodes by family
-p1 <- p %<+% tip_df + new_scale_fill() + geom_tippoint (aes(fill = family), shape = 21, size = 3.5, colour = "black", stroke = 0.6) + scale_fill_manual(values = fam_cols, na.value = "grey80", name = "Family")
-p1
-
-#######################################################
-### Tree with family nodes (p1) + species name = p2 ###
-#######################################################
-p2 <- p1 +
-  geom_tiplab(aes(label = label), size = 2, offset = 0.85, align = FALSE, family = "sans") +
+#######################################
+### Tree (p) + species name = p2 ######
+#######################################
+p2 <- p +
+  geom_tiplab(aes(label = label), size = 7, offset = 0.2, align = FALSE, fontface = "italic", family = "sans") +
   theme(plot.margin = margin(50, 50, 50, 50))
-p2
 
-#################################################
-######## Basic tree (p) + Treatment count = p3 ##
-#################################################
-treat_levels <- c("live_pathogen","dead_pathogen","natural_chem","synthetic_antiparastics","probiotic","other")
+p2 
 
-counts_treat <- amphib_tax %>%
-  distinct(species, treatment, study_exp_id) %>%          # unique experiments
-  mutate(treatment = factor(treatment, levels = treat_levels)) %>%
-  count(species, treatment, name = "n") %>%
-  tidyr::complete(species = tree_pruned$tip.label,
-                  treatment = treat_levels, fill = list(n = 0)) %>%
-  rename(label = species)
+p2 + theme(aspect.ratio = 3)   # height:width = 2:1; raise for more vertical spread
 
-# colours for treatments
-treat_cols <- c(
-  live_pathogen           = "#E69F00",  # orange
-  dead_pathogen           = "#56B4E9",  # sky blue
-  natural_chem            = "#009E73",  # bluish green
-  synthetic_antiparastics = "#F0E442",  # yellow
-  probiotic               = "#0072B2",  # blue
-  other                   = "#D55E00"   # vermillion / reddish-orange
-)
-
-# ensure label format
-counts_treat <- counts_treat %>%
-  dplyr::mutate(
-    label = gsub("_", " ", label),
-    treatment = factor(treatment, levels = treat_levels))
-
-p3 <- p  + 
-  new_scale_fill() + geom_fruit(
-    data = counts_treat,
-    geom = geom_bar,
-    mapping = aes(y = label, x = n, fill = treatment, group = treatment),
-    colour = "black",
-    linewidth = 0.6,
-    stat = "identity",
-    width  = 0.06,
-    offset = 0.05) + scale_fill_manual(values = treat_cols, name = "Treatment") 
-p3
-
-#######################################################
-## Tree with treatment type (p3) + count number = p4 ##
-#######################################################
-
-## create a count table
-totals <- counts_treat %>%
-  dplyr::group_by(label) %>%
-  dplyr::summarise(n_total = sum(n), .groups = "drop")
-
-## adding numeric total counts
-p4 <- p3 + geom_fruit(
-    inherit.aes = FALSE,
-    data = totals,
-    geom = geom_text,
-    mapping = aes(y = label, x = n_total, label = n_total),
-    offset  = -0.18,    # same as the bar offset
-    nudge_x = 0,     # small push outward so text clears bar ends
-    color = "black",
-    size    = 0.2,
-    fontface = "bold"
-  )
-p4
+# Export = 25 * 35 inches
 ```
 
-#################################################################
-## Effect size figures - Overall effect (supplementary figure) ##
-#################################################################
+###################################################################
+## Effect size figures - Overall effect (Extended Data Figure 2) ##
+###################################################################
 ```{r}
 # Note that all models using here are all from the R script 'Meta_analyis_code'. You should ran that script before making figures here.
 
@@ -720,9 +629,9 @@ Load_O_plot + geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") 
 ## Effect size figures - Moderating effect of host taxonomy (Figure 4) ##
 #########################################################################
 
-# Note that all models using here are all from the R script 'Meta_analyis_code'. You should rUn that script before making figures here.
+# Note that all models using here are all from the R script 'Meta_analyis_code'. You should run that script before making figures here.
 
-
+```{r}
 # Set colours for host taxonomy (we only present three families with sufficient sample sizes)
 
 family_cols <- c(
