@@ -648,7 +648,7 @@ intensity_data_INC$time_persist_c <- scale(intensity_data_INC$time_interval, cen
 M3_covariate <- rma.mv(yi = yi, V = V,
   mods = ~ time_persist_c + time_measure_c + n_infection_measure_c,
   random = list(~1 | study_id, ~1 | species_OTL, ~1 | obs),
-  R = list(species_OTL = phylo_cor),
+  R = list(species_OTL = phylo_cor_INC),
   data = intensity_data_INC,
   method = "REML", test = "t")
 
@@ -904,7 +904,7 @@ abline(v = 0, lty = 2)
 ```
 
 ## Sensitivity analysis for infection intensity ##
-## The funnel plot identify and exclude the Hauser et al. 2024 - 21 dpi contrast (a very high-precision effect size)
+## The funnel plot identify and exclude the Hauser et al. 2024 - 21 dpi contrast (a very high-precision effect size) ##
 ```{r}
 ## build the sensitivity dataset & V matrix
 

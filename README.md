@@ -18,7 +18,7 @@
 | `metadata.csv` | Main dataset: 208 effect sizes from 38 studies |
 | `study_info_map.csv` | Study location data for Figure 1 (geographic map) |
 | `tree_for_imputation.tre` | Amphibian phylogenetic tree (from Pottier et al. 2024, *Nature*) |
-
+| `AmphibiaWeb_species_list.csv` | Updated species name based on AmphibiaWeb (checked on 2026-July-01) |
 ---
 
 ## System Requirements
@@ -132,7 +132,8 @@ Times are estimates for a standard desktop computer (8 GB RAM, quad-core process
 | `study_exp_id` | Unique experiment identifier |
 | `trait` | Outcome type: `prevalence`, `intensity`, or `mortality` |
 | `treatment` | Immunisation type: `live_pathogen`, `dead_pathogen`, `probiotic`, `natural_chem`, `synthetic_antiparastics`, `other` |
-| `host_species` | Amphibian species name |
+| `host_species` | Original amphibian species name |
+| `AmphibiaWeb_species` | Updated amphibian species name based on AmphibiaWeb |
 | `family` | Taxonomic family |
 | `life_stage_tested` | Life stage at Bd challenge: `adult`, `juvenile`, `larva` |
 | `host_origin` | `captive` or `wild` |
