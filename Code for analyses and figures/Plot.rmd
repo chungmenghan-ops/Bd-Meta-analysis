@@ -168,9 +168,9 @@ base_plot <- function(data, title) {
       )}
 
 # Individual plots (output size: 5.18 * 1.92)
-base_plot(df_AU,  "Oceania (n = 5 exp from 3 studies)")
+base_plot(df_AU,  "Oceania (n = 7 exp from 3 studies)")
 base_plot(df_EU,  "Europe (n = 5 exp from 2 studies)")
-base_plot(df_USA, "North America (n = 49 exp from 33 studies)")
+base_plot(df_USA, "North America (n = 54 exp from 33 studies)")
 
 ## 5.61 * 1.9 inches (landscape)
 ```
